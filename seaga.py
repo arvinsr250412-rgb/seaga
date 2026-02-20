@@ -315,16 +315,20 @@ CITY_MATRIX = {
 # ==========================================
 # 4. 功能函数
 # ==========================================
+# 修改 draw_radar 函数中的字体部分
 def draw_radar(s):
     import matplotlib.font_manager as fm
+    import os
+
+    # 尝试寻找云端环境下可用的中文字体
+    font_path = "simhei.ttf" # 假设你把字体文件也传到了 GitHub 根目录
+    if os.path.exists(font_path):
+        prop = fm.FontProperties(fname=font_path)
+    else:
+        # 如果没传字体文件，尝试调用 Linux 系统自带的（虽然通常没有中文）
+        prop = fm.FontProperties(family='sans-serif')
     
-    # 1. 字体配置 (保持你的原有逻辑)
-    try:
-        font_path = 'C:/Windows/Fonts/simhei.ttf' 
-        prop = fm.FontProperties(fname=font_path)
-    except:
-        font_path = 'C:/Windows/Fonts/msyh.ttc' 
-        prop = fm.FontProperties(fname=font_path)
+    # ... 后续绘图代码 ...
 
     labels = list(s.keys())
     values = list(s.values())
@@ -572,4 +576,5 @@ else:
     if st.button("✨ 重新开启灵魂之旅", use_container_width=True, key="reset_quiz"):
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
+
         st.rerun()
