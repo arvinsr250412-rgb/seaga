@@ -21,9 +21,23 @@ def get_font():
 # 在 draw_radar 内部调用
 prop = get_font()
 # --- 1. 页面配置与视觉样式 ---
-# 修改后（多巴胺风）
-st.markdown('<h1 class="hero-title">SOUL CITY.</h1>', unsafe_allow_html=True)
-st.markdown('<p class="hero-subtitle">寻找你灵魂的地理坐标 ✨</p>', unsafe_allow_html=True)
+    # 复用主页的 hero-title，并加入副标题
+    st.markdown(f'<h1 class="hero-title" style="font-size: 3.5rem !important; margin-top: 10px;">{match_1["name"]}</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: #FF6A88; margin-bottom: 30px;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
+    
+    # 多巴胺糖果风格的契合度卡片 (高对比度，绝不会看不清字)
+    st.markdown(f"""
+        <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 100%); padding: 20px 30px; border-radius: 30px; box-shadow: 0 15px 30px rgba(255,106,136,0.3); text-align: center; flex: 1;">
+                <div style="color: #FFFFFF; font-size: 1rem; font-weight: 800; opacity: 0.9; letter-spacing: 1px;">首选契合度</div>
+                <div style="color: #FFFFFF; font-size: 2.8rem; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">{rate_1}%</div>
+            </div>
+            <div style="background: white; padding: 20px 30px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 3px solid #FF99AC; text-align: center; flex: 1;">
+                <div style="color: #FF6A88; font-size: 1rem; font-weight: 800; letter-spacing: 1px;">次选参考</div>
+                <div style="color: #2D3748; font-size: 2.8rem; font-weight: 900;">{rate_2}%</div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 # 设置中文支持
 plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False
@@ -356,10 +370,9 @@ def draw_radar(s):
     ax.set_theta_direction(-1)     # 顺时针排列
     
     # 绘制填充区域
-    # 使用亮蓝色渐变效果，alpha 设置透明度
-    ax.fill(angles, values, color='#3B82F6', alpha=0.2)
-    # 绘制外轮廓线
-    ax.plot(angles, values, color='#3B82F6', linewidth=2.5, marker='o', 
+    # 将原本的蓝色 '#3B82F6' 换成粉橙色系
+    ax.fill(angles, values, color='#FF6A88', alpha=0.25)
+    ax.plot(angles, values, color='#FF6A88', linewidth=2.5, marker='o', 
             markersize=6, markerfacecolor='white', markeredgewidth=2)
     
     # 3. 圆形背景美化
@@ -511,72 +524,85 @@ else:
     """, unsafe_allow_html=True)
 
     # --- 3. 灵魂画像 (全页只展示一次，基于最匹配城市) ---
+  # --- 3. 灵魂画像 (多巴胺亮色风格重构) ---
     st.markdown(f"""
         <style>
         .soul-card {{
-            padding: 30px; border-radius: 24px;
-            background: linear-gradient(145deg, #2D3748, #1A202C);
-            color: #F7FAFC; border-left: 8px solid #D4AF37;
-            margin: 20px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 35px 30px; 
+            border-radius: 30px;
+            background: #FFFFFF;
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            color: #2D3748; /* 强制深色文字，确保清晰度 */
+            margin: 30px 0; 
+            box-shadow: 0 20px 40px rgba(255, 106, 136, 0.12);
+            position: relative;
         }}
-        .soul-title {{ color: #D4AF37; font-weight: 800; font-size: 1.1rem; margin-bottom: 10px; }}
+        /* 用伪元素做渐变边框 */
+        .soul-card::before {{
+            content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1; margin: -3px; border-radius: inherit;
+            background: var(--dopamine-gradient);
+        }}
+        .soul-title {{ 
+            color: #DD2476; /* 强对比度的玫红 */
+            font-weight: 900; 
+            font-size: 1.3rem; 
+            margin-bottom: 15px; 
+            text-align: center;
+            letter-spacing: 2px;
+        }}
+        .soul-text {{
+            line-height: 1.8; 
+            font-size: 1.1rem; 
+            text-align: justify;
+            font-weight: 500;
+        }}
         </style>
         <div class="soul-card">
             <div class="soul-title">✨ 灵魂画像 · PORTRAIT</div>
-            <div style="line-height: 1.7; font-size: 1.1rem; text-align: justify;">{res1['soul']}</div>
+            <div class="soul-text">{res1['soul']}</div>
         </div>
     """, unsafe_allow_html=True)
-
     # 展示雷达图
     st.pyplot(draw_radar(user_scores))
 
     # --- 4. 城市详情 (Tabs 切换展示首选和次选) ---
     # 在 else 分支的顶部或样式区添加这段代码
+  # --- 4. 城市详情 (Tabs 切换展示首选和次选) ---
     st.markdown("""
         <style>
-        /* 1. 默认状态（未点中）：文字设为灰色 */
-        .stTabs [data-baseweb="tab"] p {
-            color: #9CA3AF !important; /* 较浅的灰色 */
-            transition: color 0.3s ease;
-            font-weight: 600 !important;
-        }
-
-        /* 2. 选中状态：文字设为黑色 */
-        .stTabs [data-baseweb="tab"][aria-selected="true"] p {
-            color: #000000 !important; /* 纯黑色 */
-            font-weight: 800 !important; /* 加粗显示，增强视觉对比 */
-        }
-
-        /* 3. 悬停状态（鼠标滑过但没点）：稍微加深灰色，提升交互感 */
-        .stTabs [data-baseweb="tab"]:hover p {
-            color: #4B5563 !important; 
-        }
-        
-        /* 4. 修改下方那条横线的颜色（可选，建议设为蓝色或黑色以匹配风格） */
-        .stTabs [data-baseweb="tabHighlight"] {
-            background-color: #000000 !important;
-        }
+        .stTabs [data-baseweb="tab"] p { color: #9CA3AF !important; font-weight: 600 !important; transition: 0.3s; }
+        .stTabs [data-baseweb="tab"][aria-selected="true"] p { color: #DD2476 !important; font-weight: 900 !important; }
+        .stTabs [data-baseweb="tab"]:hover p { color: #FF6A88 !important; }
+        /* 将标签页下方的横线改成多巴胺红 */
+        .stTabs [data-baseweb="tabHighlight"] { background-color: #DD2476 !important; }
         </style>
     """, unsafe_allow_html=True)
+    
     tab1, tab2 = st.tabs([f"📍 首选：{match_1['name']}", f"🔍 次选：{match_2['name']}"])
 
     with tab1:
         st.markdown(f"""
-            <div style="background: #EFF6FF; padding: 20px; border-radius: 15px; border-left: 5px solid #3B82F6; margin-top:15px;">
-                <b style="color:#1E40AF;">🏙️ 城市共鸣：</b><p style="color:#1E3A8A; margin-top:10px;">{res1['city']}</p>
+            <div style="background: #FFF0F5; padding: 25px; border-radius: 20px; border-left: 6px solid #FF6A88; margin-top:20px; box-shadow: 0 4px 15px rgba(255,106,136,0.06);">
+                <b style="color:#DD2476; font-size: 1.1rem;">🏙️ 城市共鸣：</b>
+                <p style="color:#2D3748; margin-top:10px; line-height: 1.7; font-weight: 500;">{res1['city']}</p>
             </div>
-            <div style="background: #ECFDF5; padding: 20px; border-radius: 15px; border-left: 5px solid #10B981; margin-top:15px;">
-                <b style="color:#065F46;">🌿 生活提案：</b><p style="color:#064E3B; margin-top:10px;">{res1['advice']}</p>
+            <div style="background: #FFF5EE; padding: 25px; border-radius: 20px; border-left: 6px solid #FF9A8B; margin-top:15px; box-shadow: 0 4px 15px rgba(255,154,139,0.06);">
+                <b style="color:#FF512F; font-size: 1.1rem;">🌿 生活提案：</b>
+                <p style="color:#2D3748; margin-top:10px; line-height: 1.7; font-weight: 500;">{res1['advice']}</p>
             </div>
         """, unsafe_allow_html=True)
 
     with tab2:
         st.markdown(f"""
-            <div style="background: #F9FAFB; padding: 20px; border-radius: 15px; border-left: 5px solid #6B7280; margin-top:15px;">
-                <b style="color:#374151;">🏙️ 城市共鸣：</b><p style="color:#1F2937; margin-top:10px;">{res2['city']}</p>
+            <div style="background: #FAFAFA; padding: 25px; border-radius: 20px; border-left: 6px solid #A0AEC0; margin-top:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                <b style="color:#4A5568; font-size: 1.1rem;">🏙️ 城市共鸣：</b>
+                <p style="color:#2D3748; margin-top:10px; line-height: 1.7; font-weight: 500;">{res2['city']}</p>
             </div>
-            <div style="background: #FDF2F8; padding: 20px; border-radius: 15px; border-left: 5px solid #DB2777; margin-top:15px;">
-                <b style="color:#9D174D;">🌿 生活提案：</b><p style="color:#831843; margin-top:10px;">{res2['advice']}</p>
+            <div style="background: #FDF2F8; padding: 25px; border-radius: 20px; border-left: 6px solid #F687B3; margin-top:15px; box-shadow: 0 4px 15px rgba(246,135,179,0.06);">
+                <b style="color:#D53F8C; font-size: 1.1rem;">🌿 生活提案：</b>
+                <p style="color:#2D3748; margin-top:10px; line-height: 1.7; font-weight: 500;">{res2['advice']}</p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -586,4 +612,5 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
