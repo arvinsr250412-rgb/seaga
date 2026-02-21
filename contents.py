@@ -2,8 +2,6 @@
 import streamlit as st
 import sys
 import os
-# 路径保护，确保能找到 key_system
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from key_system import key_check_gate
 
 def apply_contents_settings():
