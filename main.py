@@ -10,30 +10,6 @@ from key_system import key_check_gate # 确保你已经修复了路径导入问�
 # 应用统一配置和侧边栏
 apply_contents_settings()
 
-# 初始化状态
-if "target_page" not in st.session_state:
-    st.session_state.target_page = "Home"
-
-# --- 路由分发逻辑 ---
-
-if st.session_state.target_page == "Home":
-    st.markdown("<h1 class='main-title'>欢迎来到 Spectrum</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-title'>探索你灵魂的颜色</p>", unsafe_allow_html=True)
-    # 首页展示内容...
-
-elif st.session_state.target_page == "SoulCity":
-    # 1. 拦截验证
-    key_check_gate("soul_city_v1")
-    
-    # 2. 验证通过后（因为 key_check_gate 通过后才会往下走）
-    # 自动重定向到真正的测试文件
-    st.switch_page("pages/01_🌆_灵魂城市.py")
-
-elif st.session_state.target_page == "Orientation":
-    key_check_gate("sexual_orientation_v1")
-    st.switch_page("pages/02_🌈_性取向探索.py")
-apply_contents_settings()
-
 # --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum", page_icon="💥", layout="centered")
 
@@ -472,6 +448,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
