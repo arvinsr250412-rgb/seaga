@@ -4,62 +4,71 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# --- 1. 页面配置与美化主题 ---
+# --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum | 性取向探索", layout="centered")
 
+# --- 2. 深度美化 CSS ---
 st.markdown("""
     <style>
-    /* 全局背景 */
+    /* 全局底色：极淡的灰色，衬托白色卡片 */
     .stApp {
-        background: radial-gradient(circle at top right, #fdf2f8, #f5f3ff);
-    }
-    
-    /* 强制全局正文文字颜色为深灰色，防止深色模式干扰 */
-    .stApp, .stMarkdown, p, span, label {
-        color: #1f2937 !important; 
+        background-color: #f8fafc;
     }
 
-    /* 卡片样式 */
-    .quiz-card {
-        background: rgba(255, 255, 255, 0.85); /* 提高不透明度 */
-        backdrop-filter: blur(15px);
+    /* 强制所有文字为深色，确保可读性 */
+    .stApp, p, span, label, .stMarkdown {
+        color: #1e293b !important;
+    }
+
+    /* 白色题目卡片 */
+    .white-card {
+        background-color: #ffffff;
         padding: 2.5rem;
-        border-radius: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-        margin: 1rem 0;
-    }
-
-    /* 选项按钮文字颜色与样式 */
-    div[data-testid="stRadio"] label {
-        background: white !important;
-        border: 1px solid #e5e7eb !important;
-        padding: 1.2rem 1.5rem !important;
-        border-radius: 1.2rem !important;
-        color: #111827 !important; /* 极深色文字 */
-        font-weight: 500 !important;
-    }
-
-    /* 选中状态（鼠标悬停或点击） */
-    div[data-testid="stRadio"] label:hover {
-        border-color: #8b5cf6 !important;
-        background-color: #f5f3ff !important;
-    }
-
-    /* 隐藏单选框的小圆圈 */
-    div[data-testid="stRadio"] [data-testid="stWidgetSelectionMarker"] {
-        display: none;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: 1px solid #f1f5f9;
+        margin-bottom: 2rem;
     }
 
     /* 标题样式 */
     .main-title {
-        font-size: 2.8rem;
+        font-size: 2.2rem;
         font-weight: 800;
+        text-align: center;
         background: linear-gradient(to right, #4f46e5, #ec4899);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-align: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* 选项按钮美化：纯白背景 + 深色边框 */
+    div[data-testid="stRadio"] > div {
+        gap: 0.8rem;
+    }
+    div[data-testid="stRadio"] label {
+        background: #ffffff !important;
+        border: 2px solid #f1f5f9 !important;
+        padding: 1rem 1.5rem !important;
+        border-radius: 1rem !important;
+        color: #334155 !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease;
+    }
+    
+    /* 鼠标悬停效果 */
+    div[data-testid="stRadio"] label:hover {
+        border-color: #8b5cf6 !important;
+        background-color: #f8fafc !important;
+    }
+
+    /* 隐藏原生的小圆圈 */
+    div[data-testid="stRadio"] [data-testid="stWidgetSelectionMarker"] {
+        display: none;
+    }
+    
+    /* 进度条颜色 */
+    .stProgress > div > div > div > div {
+        background-color: #8b5cf6;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -74,7 +83,7 @@ def get_prop():
 
 prop = get_prop()
 
-# --- 2. 题库设计 (保持30题) ---
+# --- 3. 题库 (保持30题) ---
 QUESTIONS = [
     {"q": "1. 在深夜感性时，你幻想的灵魂伴侣倾向于？", "options": ["显著异性", "较为中性", "显著同性", "跨越性别"], "scores": [0, 3, 5, 4]},
     {"q": "2. 对于‘柏拉图式’的同性亲密关系，你的接受度是？", "options": ["纯粹友谊", "偶尔会有模糊感", "渴望深度链接", "非常向往"], "scores": [0, 2, 4, 5]},
@@ -108,59 +117,51 @@ QUESTIONS = [
     {"q": "30. 最后一个问题：此时此刻，你觉得自己最真实的颜色是？", "options": ["纯白（单一方向）", "渐变（正在流动）", "虹色（多元共存）", "透明（尚未定性）"], "scores": [0, 3, 5, 2]},
 ]
 
-# --- 3. 核心逻辑 ---
+# --- 4. 逻辑控制 ---
 if 'q_idx' not in st.session_state: st.session_state.q_idx = 0
 if 'answers' not in st.session_state: st.session_state.answers = {}
 if 'finished' not in st.session_state: st.session_state.finished = False
 
 def handle_click():
-    current_key = f"radio_{st.session_state.q_idx}"
-    current_answer = st.session_state.get(current_key)
-    if current_answer:
-        st.session_state.answers[st.session_state.q_idx] = current_answer
+    key = f"radio_{st.session_state.q_idx}"
+    val = st.session_state.get(key)
+    if val:
+        st.session_state.answers[st.session_state.q_idx] = val
         if st.session_state.q_idx < 29:
             st.session_state.q_idx += 1
         else:
             st.session_state.finished = True
 
-# --- 4. 界面渲染 ---
+# --- 5. 页面渲染 ---
 
 if st.session_state.finished:
     st.balloons()
     total_score = sum([QUESTIONS[i]["scores"][QUESTIONS[i]["options"].index(st.session_state.answers[i])] for i in range(30)])
     
     # 结果逻辑
-    if total_score < 45:
-        tag, color, desc = "Indigo Blue | 异性偏向", "#4f46e5", "你的心动信号清晰地指向异性，拥有一份稳定且传统的感官共鸣。"
-    elif total_score < 85:
-        tag, color, desc = "Soft Violet | 异性倾向(含流动)", "#8b5cf6", "你对异性有着核心吸引，但在灵魂深处，你也珍视同性间那份微妙的张力。"
-    elif total_score < 115:
-        tag, color, desc = "Prism | 双向/泛性倾向", "#d946ef", "性别在你眼中并非围墙，而是点缀。你更痴迷于跨越生理标签的灵魂吸引。"
-    else:
-        tag, color, desc = "Rose Pink | 同性倾向", "#ec4899", "同性之间深度的情感共振是你生命的光源，你拥有一颗极具勇气和热度的赤诚之心。"
+    if total_score < 45: tag, color, desc = "Indigo | 异性倾向", "#4f46e5", "你的心动信号稳定地指向异性，拥有一种传统且坚定的感官共鸣。"
+    elif total_score < 115: tag, color, desc = "Prism | 多元倾向", "#8b5cf6", "你更看重灵魂的契合，性别在你的心动坐标中是一个流动的变量。"
+    else: tag, color, desc = "Rose | 同性倾向", "#ec4899", "同性之间深刻的情感联结是你生命的光源，你拥有一颗赤诚且勇敢的心。"
 
-    st.markdown(f'<div class="main-title">探索报告</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">Spectrum 报告</div>', unsafe_allow_html=True)
     
-    # 结果卡片
+    # 结果白色框
     st.markdown(f"""
-        <div style="background: linear-gradient(135deg, {color}, #a855f7); padding:3rem; border-radius:2rem; color:white; text-align:center; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
-            <h2 style="color:white; font-size:2rem; margin-bottom:1rem;">{tag}</h2>
-            <p style="font-size:1.1rem; line-height:1.6; opacity:0.9;">{desc}</p>
+        <div class="white-card" style="text-align:center;">
+            <h2 style="color:{color};">{tag}</h2>
+            <p style="font-size:1.1rem; line-height:1.6;">{desc}</p>
         </div>
     """, unsafe_allow_html=True)
 
-    # 可视化光谱
-    st.write("")
+    # 简易光谱
     fig, ax = plt.subplots(figsize=(10, 2))
-    # 绘制彩虹渐变底条
-    gradient = np.linspace(0, 1, 256).reshape(1, -1)
-    ax.imshow(gradient, aspect='auto', cmap='coolwarm', extent=[0, 150, -0.2, 0.2], alpha=0.2)
-    ax.scatter([total_score], [0], color=color, s=500, edgecolors='white', linewidth=3, zorder=5)
+    ax.axhline(0, color='#f1f5f9', lw=10, zorder=1)
+    ax.scatter([total_score], [0], color=color, s=400, edgecolors='white', linewidth=3, zorder=5)
     ax.set_xlim(0, 150)
     ax.set_xticks([0, 75, 150])
     ax.set_xticklabels(['异性轴', '多元轴', '同性轴'], fontproperties=prop)
     ax.set_yticks([])
-    for spine in ax.spines.values(): spine.set_visible(False)
+    for s in ax.spines.values(): s.set_visible(False)
     st.pyplot(fig)
 
     if st.button("✨ 重新探索", use_container_width=True):
@@ -171,28 +172,26 @@ if st.session_state.finished:
 
 else:
     curr = st.session_state.q_idx
-    
     st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
-    st.markdown(f'<p style="text-align:center; color:#6b7280;">第 {curr+1} / 30 步</p>', unsafe_allow_html=True)
     st.progress((curr + 1) / 30)
+    st.write(f"第 {curr+1} / 30 题")
 
-    # 答题卡片
-    st.markdown('<div class="quiz-card">', unsafe_allow_html=True)
+    # --- 关键：题目放在白色框里 ---
+    st.markdown('<div class="white-card">', unsafe_allow_html=True)
     st.subheader(QUESTIONS[curr]["q"])
     
-    prev_ans = st.session_state.answers.get(curr)
+    prev = st.session_state.answers.get(curr)
     st.radio(
         "选项：",
         options=QUESTIONS[curr]["options"],
         key=f"radio_{curr}",
-        index=QUESTIONS[curr]["options"].index(prev_ans) if prev_ans in QUESTIONS[curr]["options"] else None,
+        index=QUESTIONS[curr]["options"].index(prev) if prev in QUESTIONS[curr]["options"] else None,
         on_change=handle_click,
         label_visibility="collapsed"
     )
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # 辅助导航
     if curr > 0:
-        if st.button("⬅️ 返回上一题", type="secondary"):
+        if st.button("⬅️ 返回上一题"):
             st.session_state.q_idx -= 1
             st.rerun()
