@@ -38,7 +38,7 @@ def key_check_gate(test_id):
             <p style="color: #FF512F; font-weight: bold; margin-bottom: 5px;">请输入密钥</p>
         </div>
     """, unsafe_allow_html=True)
-    """, unsafe_allow_html=True)
+  
 
     # 输入框和按钮
     col1, col2 = st.columns([3, 1])
