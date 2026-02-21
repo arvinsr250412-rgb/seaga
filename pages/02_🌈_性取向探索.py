@@ -4,8 +4,63 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# --- 1. 基础配置 ---
-st.set_page_config(page_title="性取向多维探索", layout="centered")
+# --- 1. 页面配置与美化主题 ---
+st.set_page_config(page_title="Spectrum | 性取向探索", layout="centered")
+
+# 自定义 CSS：打造极简高级感
+st.markdown("""
+    <style>
+    /* 全局背景：浅色弥散渐变 */
+    .stApp {
+        background: radial-gradient(circle at top right, #fdf2f8, #f5f3ff);
+    }
+    
+    /* 卡片样式 */
+    .quiz-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        padding: 2.5rem;
+        border-radius: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin: 1rem 0;
+    }
+
+    /* 进度条美化 */
+    .stProgress > div > div > div > div {
+        background-image: linear-gradient(to right, #8b5cf6, #ec4899);
+    }
+
+    /* 标题样式：渐变文字 */
+    .main-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #6366f1, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    /* 选项按钮美化：隐藏圆圈，改为大卡片点击 */
+    div[data-testid="stRadio"] > div {
+        gap: 0.8rem;
+    }
+    div[data-testid="stRadio"] label {
+        background: white;
+        border: 1px solid #e5e7eb;
+        padding: 1rem 1.5rem;
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    div[data-testid="stRadio"] label:hover {
+        border-color: #8b5cf6;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(139, 92, 246, 0.1);
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 def get_prop():
     import matplotlib.font_manager as fm
@@ -17,7 +72,7 @@ def get_prop():
 
 prop = get_prop()
 
-# --- 2. 题库设计 (30题) ---
+# --- 2. 题库设计 (保持30题) ---
 QUESTIONS = [
     {"q": "1. 在深夜感性时，你幻想的灵魂伴侣倾向于？", "options": ["显著异性", "较为中性", "显著同性", "跨越性别"], "scores": [0, 3, 5, 4]},
     {"q": "2. 对于‘柏拉图式’的同性亲密关系，你的接受度是？", "options": ["纯粹友谊", "偶尔会有模糊感", "渴望深度链接", "非常向往"], "scores": [0, 2, 4, 5]},
@@ -51,101 +106,91 @@ QUESTIONS = [
     {"q": "30. 最后一个问题：此时此刻，你觉得自己最真实的颜色是？", "options": ["纯白（单一方向）", "渐变（正在流动）", "虹色（多元共存）", "透明（尚未定性）"], "scores": [0, 3, 5, 2]},
 ]
 
-# --- 3. 状态管理 ---
+# --- 3. 核心逻辑 ---
 if 'q_idx' not in st.session_state: st.session_state.q_idx = 0
 if 'answers' not in st.session_state: st.session_state.answers = {}
 if 'finished' not in st.session_state: st.session_state.finished = False
 
-# --- 4. 核心逻辑：自动跳转函数 ---
 def handle_click():
-    # 获取当前题目的选择结果（通过 key 访问）
     current_key = f"radio_{st.session_state.q_idx}"
     current_answer = st.session_state.get(current_key)
-    
     if current_answer:
-        # 保存答案
         st.session_state.answers[st.session_state.q_idx] = current_answer
-        # 如果不是最后一题，索引+1
         if st.session_state.q_idx < 29:
             st.session_state.q_idx += 1
         else:
-            # 最后一题答完，进入结果页
             st.session_state.finished = True
 
-# --- 5. 界面逻辑 ---
+# --- 4. 界面渲染 ---
 
-# A. 结果展示界面
 if st.session_state.finished:
     st.balloons()
     total_score = sum([QUESTIONS[i]["scores"][QUESTIONS[i]["options"].index(st.session_state.answers[i])] for i in range(30)])
     
-    # 定义分档
+    # 结果逻辑
     if total_score < 45:
-        tag, color, desc = "绝对异性偏向", "#3B82F6", "你的情感与吸引力维度高度集中在异性，拥有非常稳固的性别角色认知。"
+        tag, color, desc = "Indigo Blue | 异性偏向", "#4f46e5", "你的心动信号清晰地指向异性，拥有一份稳定且传统的感官共鸣。"
     elif total_score < 85:
-        tag, color, desc = "异性倾向 (含有潜性流动)", "#60A5FA", "你基本倾向异性，但灵魂深处对同性特质保有包容与欣赏。"
+        tag, color, desc = "Soft Violet | 异性倾向(含流动)", "#8b5cf6", "你对异性有着核心吸引，但在灵魂深处，你也珍视同性间那份微妙的张力。"
     elif total_score < 115:
-        tag, color, desc = "双向/泛性倾向", "#A78BFA", "性别在你的爱情观中不是第一要素。你更容易被灵魂的特质吸引。"
+        tag, color, desc = "Prism | 双向/泛性倾向", "#d946ef", "性别在你眼中并非围墙，而是点缀。你更痴迷于跨越生理标签的灵魂吸引。"
     else:
-        tag, color, desc = "同性倾向/偏向", "#EC4899", "你的心跳与情感指向非常明确，同性之间的联结是你生命中最核心的吸引力来源。"
+        tag, color, desc = "Rose Pink | 同性倾向", "#ec4899", "同性之间深度的情感共振是你生命的光源，你拥有一颗极具勇气和热度的赤诚之心。"
 
+    st.markdown(f'<div class="main-title">探索报告</div>', unsafe_allow_html=True)
+    
+    # 结果卡片
     st.markdown(f"""
-        <div style="background:{color}; padding:40px; border-radius:25px; color:white; text-align:center;">
-            <h1 style="color:white;">探索报告：{tag}</h1>
-            <p style="font-size:1.2rem; opacity:0.9;">{desc}</p>
+        <div style="background: linear-gradient(135deg, {color}, #a855f7); padding:3rem; border-radius:2rem; color:white; text-align:center; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+            <h2 style="color:white; font-size:2rem; margin-bottom:1rem;">{tag}</h2>
+            <p style="font-size:1.1rem; line-height:1.6; opacity:0.9;">{desc}</p>
         </div>
     """, unsafe_allow_html=True)
 
-    # 光谱图可视化
-    st.write("### 📊 吸引力光谱分析")
-    fig, ax = plt.subplots(figsize=(10, 2.5))
-    # 绘制背景装饰线
-    ax.axhline(0, color='#F3F4F6', lw=15, solid_capstyle='round', zorder=1)
-    # 绘制得分点
-    ax.scatter([total_score], [0], color=color, s=500, edgecolors='white', linewidth=4, zorder=5)
+    # 可视化光谱
+    st.write("")
+    fig, ax = plt.subplots(figsize=(10, 2))
+    # 绘制彩虹渐变底条
+    gradient = np.linspace(0, 1, 256).reshape(1, -1)
+    ax.imshow(gradient, aspect='auto', cmap='coolwarm', extent=[0, 150, -0.2, 0.2], alpha=0.2)
+    ax.scatter([total_score], [0], color=color, s=500, edgecolors='white', linewidth=3, zorder=5)
     ax.set_xlim(0, 150)
     ax.set_xticks([0, 75, 150])
-    ax.set_xticklabels(['异性轴', '多元轴', '同性轴'], fontproperties=prop, fontsize=12)
+    ax.set_xticklabels(['异性轴', '多元轴', '同性轴'], fontproperties=prop)
     ax.set_yticks([])
-    # 移除边框
     for spine in ax.spines.values(): spine.set_visible(False)
     st.pyplot(fig)
 
-    if st.button("✨ 重新开启探索之旅", use_container_width=True):
+    if st.button("✨ 重新探索", use_container_width=True):
         st.session_state.q_idx = 0
         st.session_state.answers = {}
         st.session_state.finished = False
         st.rerun()
 
-# B. 答题界面
 else:
     curr = st.session_state.q_idx
-    item = QUESTIONS[curr]
-
-    # 进度显示
-    st.caption(f"PROGRESS: {curr + 1} / 30")
+    
+    st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
+    st.markdown(f'<p style="text-align:center; color:#6b7280;">第 {curr+1} / 30 步</p>', unsafe_allow_html=True)
     st.progress((curr + 1) / 30)
 
-    # 题目区域
-    with st.container(border=True):
-        st.subheader(item["q"])
-        
-        # 核心改动：加入 on_change 回调
-        prev_ans = st.session_state.answers.get(curr)
-        st.radio(
-            "选项：",
-            options=item["options"],
-            key=f"radio_{curr}", # 每个题目必须有唯一的 key
-            index=item["options"].index(prev_ans) if prev_ans in item["options"] else None,
-            on_change=handle_click, # 用户一点选，立刻执行 handle_click
-            label_visibility="collapsed"
-        )
+    # 答题卡片
+    st.markdown('<div class="quiz-card">', unsafe_allow_html=True)
+    st.subheader(QUESTIONS[curr]["q"])
+    
+    prev_ans = st.session_state.answers.get(curr)
+    st.radio(
+        "选项：",
+        options=QUESTIONS[curr]["options"],
+        key=f"radio_{curr}",
+        index=QUESTIONS[curr]["options"].index(prev_ans) if prev_ans in QUESTIONS[curr]["options"] else None,
+        on_change=handle_click,
+        label_visibility="collapsed"
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # 辅助按钮：保留“上一题”以防手滑
-    st.write("")
+    # 辅助导航
     if curr > 0:
-        if st.button("⬅️ 返回上一题", use_container_width=True):
+        if st.button("⬅️ 返回上一题", type="secondary"):
             st.session_state.q_idx -= 1
             st.rerun()
-    
-    st.info("💡 点击选项即可自动进入下一题")
