@@ -130,6 +130,15 @@ st.markdown("""
         border: 2px solid #FF99AC !important;
         padding: 1rem !important;
     }
+        /* 隐藏输入框下方的 "Press enter to apply" 提示 */
+    [data-testid="InputInstructions"] {
+        display: none !important;
+    }
+    
+    /* 针对特定手机端可能出现的提示进行二次隐藏 */
+    .stTextInput small {
+        display: none !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -269,6 +278,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
