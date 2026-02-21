@@ -6,7 +6,7 @@ import uuid
 import pandas as pd
 from contents import apply_contents_settings
 from pages.灵魂城市 import show_soul_city
-
+from pages.性取向探索 import sexual_text
 # --- 1. 页面配置 (必须是 Streamlit 命令的第一条) ---
 st.set_page_config(page_title="Spectrum", page_icon="💥", layout="wide")
 
@@ -132,9 +132,9 @@ elif st.session_state.target_page == "SoulCity":
 
 # 页面 C: 性取向探索 (示例)
 elif st.session_state.target_page == "Orientation":
-    st.markdown("<h1 class='hero-title' style='font-size:3.5rem !important;'>Spectrum 🌈</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='blog-card'><h3>探索你的色彩</h3><p>深度解构模块准备就绪。</p></div>", unsafe_allow_html=True)
-    if st.button("⬅️ 返回首页"):
+    sexual_text()
+    # 在底部加一个回主页的小按钮
+    if st.sidebar.button("🏠 回到主页"):
         st.session_state.target_page = "Home"
         st.rerun()
 
@@ -161,6 +161,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
