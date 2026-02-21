@@ -7,57 +7,59 @@ import os
 # --- 1. 页面配置与美化主题 ---
 st.set_page_config(page_title="Spectrum | 性取向探索", layout="centered")
 
-# 自定义 CSS：打造极简高级感
 st.markdown("""
     <style>
-    /* 全局背景：浅色弥散渐变 */
+    /* 全局背景 */
     .stApp {
         background: radial-gradient(circle at top right, #fdf2f8, #f5f3ff);
     }
     
+    /* 强制全局正文文字颜色为深灰色，防止深色模式干扰 */
+    .stApp, .stMarkdown, p, span, label {
+        color: #1f2937 !important; 
+    }
+
     /* 卡片样式 */
     .quiz-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.85); /* 提高不透明度 */
+        backdrop-filter: blur(15px);
         padding: 2.5rem;
         border-radius: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
         margin: 1rem 0;
     }
 
-    /* 进度条美化 */
-    .stProgress > div > div > div > div {
-        background-image: linear-gradient(to right, #8b5cf6, #ec4899);
+    /* 选项按钮文字颜色与样式 */
+    div[data-testid="stRadio"] label {
+        background: white !important;
+        border: 1px solid #e5e7eb !important;
+        padding: 1.2rem 1.5rem !important;
+        border-radius: 1.2rem !important;
+        color: #111827 !important; /* 极深色文字 */
+        font-weight: 500 !important;
     }
 
-    /* 标题样式：渐变文字 */
+    /* 选中状态（鼠标悬停或点击） */
+    div[data-testid="stRadio"] label:hover {
+        border-color: #8b5cf6 !important;
+        background-color: #f5f3ff !important;
+    }
+
+    /* 隐藏单选框的小圆圈 */
+    div[data-testid="stRadio"] [data-testid="stWidgetSelectionMarker"] {
+        display: none;
+    }
+
+    /* 标题样式 */
     .main-title {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         font-weight: 800;
-        background: linear-gradient(to right, #6366f1, #ec4899);
+        background: linear-gradient(to right, #4f46e5, #ec4899);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-align: center;
         margin-bottom: 0.5rem;
-    }
-
-    /* 选项按钮美化：隐藏圆圈，改为大卡片点击 */
-    div[data-testid="stRadio"] > div {
-        gap: 0.8rem;
-    }
-    div[data-testid="stRadio"] label {
-        background: white;
-        border: 1px solid #e5e7eb;
-        padding: 1rem 1.5rem;
-        border-radius: 1rem;
-        transition: all 0.3s ease;
-        width: 100%;
-    }
-    div[data-testid="stRadio"] label:hover {
-        border-color: #8b5cf6;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(139, 92, 246, 0.1);
     }
     </style>
 """, unsafe_allow_html=True)
