@@ -180,6 +180,62 @@ st.markdown("""
     div[data-testid="stTextInput"] div::after {
         display: none !important;
     }
+        /* --- 1. 彻底斩断 Expander (管理员入口) 的黑边 --- */
+    [data-testid="stExpander"] {
+        border: none !important; /* 移除外边框 */
+        box-shadow: none !important;
+        background-color: transparent !important;
+    }
+    
+    [data-testid="stExpander"] summary {
+        border: none !important; /* 移除折叠头部边框 */
+        outline: none !important;
+        color: #FF9F43 !important; /* 让标题也变橙色 */
+    }
+    
+    /* 移除折叠框展开后的内容区边框 */
+    [data-testid="stExpanderDetails"] {
+        border: none !important;
+        padding-top: 0 !important;
+    }
+    
+    /* --- 2. 彻底移除输入框的所有包裹层边框 --- */
+    
+    /* 针对 BaseWeb 容器层 */
+    div[data-baseweb="input"], 
+    div[data-baseweb="base-input"] {
+        border: none !important;
+        outline: none !important;
+        background-color: transparent !important;
+    }
+    
+    /* 针对 Streamlit 内部多层 div 的边框清除 */
+    div[data-testid="stTextInput"] > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* 再次强化输入框本身，确保没有任何残留 */
+    .stTextInput input {
+        border: 2px solid #FFD8A8 !important; /* 只有这根奶油橙边框 */
+        outline: 0 !important;
+        box-shadow: none !important;
+        -webkit-appearance: none !important;
+    }
+    
+    /* 点击时的状态 */
+    .stTextInput input:focus {
+        outline: none !important;
+        border-color: #FFA94D !important;
+        box-shadow: 0 0 10px rgba(255, 169, 77, 0.2) !important;
+    }
+    
+    /* --- 3. 移除侧边栏可能存在的默认线条 --- */
+    [data-testid="stSidebar"] hr {
+        border-top: 1px solid #FFD8A8 !important; /* 把黑线分割线换成奶油橙 */
+        opacity: 0.3;
+    }
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -319,6 +375,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
