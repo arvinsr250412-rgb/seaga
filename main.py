@@ -268,7 +268,8 @@ else:
     """, unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum Blog | Stay Colorful.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
