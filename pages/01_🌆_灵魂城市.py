@@ -5,7 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import matplotlib.font_manager as fm
+from contents import apply_contents_settings
 
+apply_contents_settings()
 
 
 # 重点：这段逻辑能确保无论在本地还是云端，都能准确找到根目录的字体
@@ -598,6 +600,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
