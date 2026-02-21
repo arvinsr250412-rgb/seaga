@@ -21,8 +21,9 @@ def get_font():
 # 在 draw_radar 内部调用
 prop = get_font()
 # --- 1. 页面配置与视觉样式 ---
-st.set_page_config(page_title="灵魂城市测试", page_icon="🏙️", layout="centered")
-
+# 修改后（多巴胺风）
+st.markdown('<h1 class="hero-title">SOUL CITY.</h1>', unsafe_allow_html=True)
+st.markdown('<p class="hero-subtitle">寻找你灵魂的地理坐标 ✨</p>', unsafe_allow_html=True)
 # 设置中文支持
 plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False
@@ -34,64 +35,58 @@ KEY_MAP = {"E": "事业搞钱", "C": "环境气候", "P": "生活节奏", "V": "
 
 st.markdown("""
     <style>
-    /* 全局背景：使用极浅的蓝灰色，衬托白色卡片 */
-    .stApp { background-color: #F0F2F5 !important; }
-    
-    /* 标题：增加一点字间距和渐变感 */
-    .main-title {
-        color: #1A1A1A !important;
-        font-size: 3.2rem; font-weight: 900; text-align: center;
-        margin: 40px 0 10px 0; letter-spacing: -2px;
+    :root {
+        --dopamine-gradient: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+        --text-color: #2D3748;
     }
-
-    /* 答题卡片：增加顶部彩色条和深度阴影 */
-    .q-card {
-        padding: 60px 40px; 
-        background: white; 
-        border-radius: 30px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08); /* 更柔和的深阴影 */
-        border: none; 
-        border-top: 12px solid #3B82F6; /* 顶部亮蓝色条，增加视觉重心 */
-        margin-bottom: 40px; 
+    
+    .stApp { background-color: #ffffff !important; }
+    
+    /* 巨大的多巴胺标题 */
+    .hero-title {
+        font-size: 5rem !important;
+        font-weight: 900 !important;
+        background: linear-gradient(to right, #FF512F, #DD2476);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-align: center;
+        line-height: 1;
+        margin-bottom: 0px;
+    }
+    
+    /* 像博文一样的糖果卡片 */
+    .blog-card {
+        background: white;
+        padding: 3rem 2rem;
+        border-radius: 40px;
+        border: 6px solid transparent;
+        background-clip: padding-box;
         position: relative;
+        box-shadow: 0 25px 50px rgba(255, 106, 136, 0.15);
+        margin: 2rem 0;
+    }
+    .blog-card::before {
+        content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+        z-index: -1; margin: -6px; border-radius: inherit;
+        background: var(--dopamine-gradient);
     }
     
-    /* 问题文字：加大字号，提升阅读舒适度 */
-    .q-text { 
-        color: #1F2937 !important; 
-        font-size: 1.8rem; 
-        font-weight: 800; 
-        line-height: 1.5;
-        margin-bottom: 10px;
+    /* 选项按钮：渐变+药丸形 */
+    div.stButton > button {
+        background-image: linear-gradient(to right, #FF512F 0%, #DD2476 51%, #FF512F 100%) !important;
+        background-size: 200% auto !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 1.2rem !important;
+        font-size: 1.3rem !important;
+        font-weight: 800 !important;
+        transition: 0.5s !important;
     }
-
-    /* 进度条文字 */
-    .progress-text {
-        color: #9CA3AF; font-size: 0.9rem; font-weight: 600; letter-spacing: 1px;
-    }
-    
-    /* 选项按钮：从死板变灵动 */
-    .stButton > button {
-        width: 100%; 
-        border-radius: 20px; 
-        border: 2px solid #F3F4F6; /* 浅灰色边框 */
-        background-color: #FFFFFF !important; 
-        color: #4B5563 !important;
-        padding: 1.5em; 
-        font-size: 1.2rem; 
-        font-weight: 600; 
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 丝滑动效 */
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    }
-
-    /* 选项按钮悬停效果：变色并微微放大 */
-    .stButton > button:hover {
-        border-color: #3B82F6 !important; 
-        color: #3B82F6 !important;
-        background-color: #EFF6FF !important; /* 浅蓝色背景 */
-        transform: translateY(-3px); /* 向上微微漂浮 */
-        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.1);
+    div.stButton > button:hover {
+        background-position: right center !important;
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(221, 36, 118, 0.4) !important;
     }
     div[data-testid="stColumn"]:first-child button {
         background-color: rgba(0,0,0,0.05) !important; /* 浅灰色背景 */
@@ -591,3 +586,4 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
