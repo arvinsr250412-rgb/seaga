@@ -225,7 +225,30 @@ if st.session_state.finished:
                 <p style="color: {res['color']}; font-weight: bold; font-size: 1.1rem;">探索总分：{total} / 150</p>
             </div>
         """, unsafe_allow_html=True)
+else:
+    curr = st.session_state.q_idx
+    st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
+    
+    # 进度条
+    progress_val = (curr + 1) / len(QUESTIONS)
+    st.progress(progress_val)
+    st.markdown(f"<p style='text-align:center; font-weight:bold;'>探索进度：{curr+1} / {len(QUESTIONS)}</p>", unsafe_allow_html=True)
 
+    # 题目白框容器
+    with st.container():
+        st.markdown('<div class="white-quiz-card-anchor"></div>', unsafe_allow_html=True)
+        st.markdown(f"### {QUESTIONS[curr]['q']}")
+        
+        # 选项渲染
+        prev_val = st.session_state.answers.get(curr)
+        st.radio(
+            "Select",
+            options=QUESTIONS[curr]["options"],
+            key=f"radio_{curr}",
+            index=QUESTIONS[curr]["options"].index(prev_val) if prev_val in QUESTIONS[curr]["options"] else None,
+            on_change=handle_click,
+            label_visibility="collapsed"
+        )
     # 按钮美化
     st.write("")
     if st.button("✨ 重新开始探索", use_container_width=True):
