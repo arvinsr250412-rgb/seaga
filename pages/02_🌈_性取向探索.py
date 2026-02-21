@@ -7,20 +7,19 @@ import os
 # --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum | 性取向探索", layout="centered")
 
-# --- 2. 深度美化 CSS ---
 st.markdown("""
     <style>
-    /* 全局底色：极淡的灰色，衬托白色卡片 */
+    /* 全局底色 */
     .stApp {
         background-color: #f8fafc;
     }
 
-    /* 强制所有文字为深色，确保可读性 */
-    .stApp, p, span, label, .stMarkdown {
+    /* 强制全局文字颜色（不包含按钮内部） */
+    p, span, label, .stMarkdown {
         color: #1e293b !important;
     }
 
-    /* 白色题目卡片 */
+    /* 白色卡片 */
     .white-card {
         background-color: #ffffff;
         padding: 2.5rem;
@@ -30,7 +29,7 @@ st.markdown("""
         margin-bottom: 2rem;
     }
 
-    /* 标题样式 */
+    /* 标题渐变 */
     .main-title {
         font-size: 2.2rem;
         font-weight: 800;
@@ -41,10 +40,7 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* 选项按钮美化：纯白背景 + 深色边框 */
-    div[data-testid="stRadio"] > div {
-        gap: 0.8rem;
-    }
+    /* 选项单选框样式 */
     div[data-testid="stRadio"] label {
         background: #ffffff !important;
         border: 2px solid #f1f5f9 !important;
@@ -52,27 +48,37 @@ st.markdown("""
         border-radius: 1rem !important;
         color: #334155 !important;
         font-weight: 500 !important;
-        transition: all 0.2s ease;
     }
     
-    /* 鼠标悬停效果 */
     div[data-testid="stRadio"] label:hover {
         border-color: #8b5cf6 !important;
-        background-color: #f8fafc !important;
     }
 
-    /* 隐藏原生的小圆圈 */
     div[data-testid="stRadio"] [data-testid="stWidgetSelectionMarker"] {
         display: none;
     }
+
+    /* --- 修复按钮：解决黑底黑字问题 --- */
+    button {
+        background-color: #ffffff !important;
+        color: #4f46e5 !important; 
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.8rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+
+    button:hover {
+        background-color: #f8fafc !important;
+        border-color: #8b5cf6 !important;
+        color: #8b5cf6 !important;
+    }
     
-    /* 进度条颜色 */
-    .stProgress > div > div > div > div {
-        background-color: #8b5cf6;
+    /* 确保按钮里的文字不被全局样式覆盖 */
+    button p {
+        color: inherit !important;
     }
     </style>
 """, unsafe_allow_html=True)
-
 def get_prop():
     import matplotlib.font_manager as fm
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
