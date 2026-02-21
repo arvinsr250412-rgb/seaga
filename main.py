@@ -132,11 +132,11 @@ st.markdown("""
 
 # --- 3. 登录与后台逻辑 (保持不变) ---
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
-REPO_OWNER = "YourName"
-REPO_NAME = "YourRepo"
+REPO_OWNER = "arvinsr250412-rgb"
+REPO_NAME = "seaga"
 FILE_PATH = "keys.json"
-ADMIN_USER = "admin"
-ADMIN_PWD = "password"
+ADMIN_USER = "arvin"
+ADMIN_PWD = "Srbm1121"
 
 def get_keys_from_github():
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
@@ -266,6 +266,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum Blog | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
