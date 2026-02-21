@@ -257,6 +257,29 @@ st.markdown("""
         transform: scale(1.02);
         transition: transform 0.2s ease;
     }
+        /* 1. 彻底移除选中后移开鼠标残留的背景框 */
+    [data-testid="stExpander"] summary:focus,
+    [data-testid="stExpander"] summary:focus-visible,
+    [data-testid="stExpander"] summary:active {
+        background-color: transparent !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* 2. 针对内部文字容器也进行清除 */
+    [data-testid="stExpander"] summary div {
+        background-color: transparent !important;
+    }
+    
+    /* 3. 确保在任何点击或选中状态下都不产生背景色 */
+    [data-testid="stExpander"] {
+        -webkit-tap-highlight-color: transparent !important; /* 针对移动端点击阴影 */
+    }
+    
+    /* 4. 优化：点击时文字可以稍微变色作为反馈，而不是出黑框 */
+    [data-testid="stExpander"] summary:focus p {
+        color: #FF6A88 !important; /* 点击后文字变粉红 */
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -396,6 +419,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
