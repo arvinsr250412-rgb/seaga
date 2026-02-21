@@ -34,11 +34,10 @@ def key_check_gate(test_id):
 
     # 3. 未解锁时显示的 UI 界面
     st.markdown(f"""
-        <div style="max-width: 600px; margin: 50px auto; padding: 40px; border-radius: 30px; background: white; box-shadow: 0 15px 50px rgba(255,106,136,0.2); text-align: center; border: 4px solid #FFE4E9;">
-            <h1 style="font-size: 3rem;">🔐</h1>
-            <h2 style="color: #FF512F;">激活项目</h2>
-            <p style="color: #666;">请输入密钥开启本次探索</p>
+        <div style="padding: 10px; border-radius: 15px; background: white; border: 2px solid #FFE4E9; text-align: center;">
+            <p style="color: #FF512F; font-weight: bold; margin-bottom: 5px;">请输入密钥</p>
         </div>
+    """, unsafe_allow_html=True)
     """, unsafe_allow_html=True)
 
     # 输入框和按钮
