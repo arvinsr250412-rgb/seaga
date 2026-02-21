@@ -1,6 +1,6 @@
 # contents.py
 import streamlit as st
-
+from key_system import key_check_gate
 def apply_contents_settings():
     # 1. 统一页面配置
     st.set_page_config(page_title="Spectrum", layout="wide")
@@ -88,14 +88,43 @@ def apply_contents_settings():
     """, unsafe_allow_html=True)
 
     # 3. 统一侧边栏内容
+    # 3. 统一侧边栏内容
     with st.sidebar:
         st.markdown("<h2 style='text-align:center; color:#FF1493;'>🌈 Spectrum</h2>", unsafe_allow_html=True)
         st.markdown("---")
         
-        # 强制所有页面显示相同的导航菜单
-        st.page_link("main.py", label=" 首页中心", icon="🏠")
-        st.page_link("pages/01_🌆_灵魂城市.py", label=" 灵魂城市测试", icon="🌆")
-        st.page_link("pages/02_🌈_性取向探索.py", label=" 性取向探索", icon="🌈")
+        # --- 🚀 核心修改：导航逻辑 ---
         
+        # 首页通常不需要密钥，直接跳转
+        if st.button("🏠 首页中心", use_container_width=True):
+            st.switch_page("main.py")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # 🌆 灵魂城市测试
+        if st.button("🌆 灵魂城市测试", use_container_width=True):
+            st.session_state.pending_target = "pages/01_🌆_灵魂城市.py"
+            st.session_state.target_id = "soul_city_v1" # 密钥系统识别ID
+
+        # 🌈 性取向探索
+        if st.button("🌈 性取向探索", use_container_width=True):
+            st.session_state.pending_target = "pages/02_🌈_性取向探索.py"
+            st.session_state.target_id = "sexual_orientation_v1"
+
+        # --- 🔐 密钥拦截层 ---
+        # 如果用户点击了某个测试（即 pending_target 有值）
+        if "pending_target" in st.session_state and st.session_state.pending_target:
+            # 只有当用户还没解锁这个特定测试时，才触发门禁
+            unlock_key = f"unlocked_{st.session_state.target_id}"
+            if not st.session_state.get(unlock_key, False):
+                # 召唤门禁
+                key_check_gate(st.session_state.target_id)
+            
+            # 如果程序能运行到这里，说明 key_check_gate 通过了（或已经解锁）
+            target = st.session_state.pending_target
+            # 清除意向，防止死循环刷新
+            st.session_state.pending_target = None 
+            st.switch_page(target)
+
         st.markdown("---")
         st.caption("© 2026 Spectrum")
