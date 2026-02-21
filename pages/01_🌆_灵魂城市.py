@@ -379,6 +379,10 @@ def draw_radar(s):
 # --- 5. 流程控制 (答题逻辑与结果展示) ---
 
 if st.session_state.step < 30:
+
+    # --- 2. 彩色答题界面 UI 渲染 ---
+    st.markdown('<div class="main-title">灵魂城市测试</div>', unsafe_allow_html=True)
+
     if st.session_state.step < len(st.session_state.quiz_data):
         # --- 1. 数据预处理 ---
         curr_q = st.session_state.quiz_data[st.session_state.step]
@@ -390,8 +394,8 @@ if st.session_state.step < 30:
         # 计算当前进度百分比
         progress_val = (st.session_state.step) / 30 # 使用 step 表现已完成比例
 
-        # --- 2. 彩色答题界面 UI 渲染 ---
-        st.markdown('<div class="main-title">灵魂城市测试</div>', unsafe_allow_html=True)
+        
+        
         
         # 彩色进度条
         st.progress(progress_val)
@@ -576,6 +580,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
