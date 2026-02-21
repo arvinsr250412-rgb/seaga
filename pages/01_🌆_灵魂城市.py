@@ -34,83 +34,66 @@ plt.rcParams['axes.unicode_minus'] = False
 D_NAMES = ["事业搞钱", "环境气候", "生活节奏", "人文底蕴", "自然景观", "社交活力"]
 # 缩写映射表（用于解析题目中的权重）
 KEY_MAP = {"E": "事业搞钱", "C": "环境气候", "P": "生活节奏", "V": "人文底蕴", "G": "自然景观", "S": "社交活力"}
-
+# --- 1. 样式配置 (多巴胺色彩增强) ---
 st.markdown("""
     <style>
-    :root {
-        --dopamine-gradient: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
-        --text-color: #2D3748;
-    }
-    
-    .stApp { background-color: #ffffff !important; }
-    
-    /* 巨大的多巴胺标题 */
-    .hero-title {
-        font-size: 5rem !important;
+    /* 页面背景 */
+    .stApp { background-color: #FFFFFF; }
+
+    /* 居中大标题 */
+    .main-hero-title {
+        font-size: 4rem !important;
         font-weight: 900 !important;
-        background: linear-gradient(to right, #FF512F, #DD2476);
+        text-align: center;
+        background: linear-gradient(45deg, #FF512F, #DD2476, #FF99AC);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-align: center;
-        line-height: 1;
         margin-bottom: 0px;
+        padding-top: 20px;
     }
-    
-    /* 像博文一样的糖果卡片 */
-    .blog-card {
+
+    /* 题目卡片：多巴胺彩虹边框 */
+    .q-card {
         background: white;
-        padding: 3rem 2rem;
+        padding: 40px;
         border-radius: 40px;
-        border: 6px solid transparent;
+        border: 8px solid transparent;
         background-clip: padding-box;
         position: relative;
-        box-shadow: 0 25px 50px rgba(255, 106, 136, 0.15);
-        margin: 2rem 0;
+        box-shadow: 0 20px 40px rgba(255, 106, 136, 0.15);
+        margin: 30px auto;
+        max-width: 800px;
+        text-align: center;
     }
-    .blog-card::before {
+    .q-card::before {
         content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
-        z-index: -1; margin: -6px; border-radius: inherit;
-        background: var(--dopamine-gradient);
+        z-index: -1; margin: -8px; border-radius: inherit;
+        background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #80D0C7 100%);
     }
-    
-    /* 选项按钮：渐变+药丸形 */
+
+    /* 题目文字 */
+    .q-text {
+        font-size: 1.8rem !important;
+        font-weight: 800 !important;
+        color: #2D3748;
+        line-height: 1.4;
+    }
+
+    /* 自定义按钮样式 */
     div.stButton > button {
-        background-image: linear-gradient(to right, #FF512F 0%, #DD2476 51%, #FF512F 100%) !important;
+        background: linear-gradient(to right, #FF512F 0%, #DD2476 51%, #FF512F 100%) !important;
         background-size: 200% auto !important;
         color: white !important;
         border: none !important;
         border-radius: 50px !important;
-        padding: 1.2rem !important;
+        padding: 1.5rem !important;
         font-size: 1.3rem !important;
         font-weight: 800 !important;
         transition: 0.5s !important;
     }
     div.stButton > button:hover {
         background-position: right center !important;
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(221, 36, 118, 0.4) !important;
-    }
-    div[data-testid="stColumn"]:first-child button {
-        background-color: rgba(0,0,0,0.05) !important; /* 浅灰色背景 */
-        border: 1px solid #BDC3C7 !important; /* 细边框 */
-        color: #7F8C8D !important; /* 灰文字 */
-        font-size: 0.9rem !important;
-        padding: 0.5em !important;
-        height: auto !important;
-        width: auto !important; /* 不铺满 */
-        min-width: 80px;
-    }
-
-    div[data-testid="stColumn"]:first-child button:hover {
-        color: #E74C3C !important; /* 悬停变红，提示撤销操作 */
-        border-color: #E74C3C !important;
-        background-color: #FDEDEC !important;
-        transform: none !important; /* 撤回按钮不需要位移动画 */
-    }
-    
-    /* 进度条颜色修改 */
-    .stProgress > div > div > div > div {
-        background-color: #3B82F6 !important;
+        transform: scale(1.02);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -589,6 +572,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
