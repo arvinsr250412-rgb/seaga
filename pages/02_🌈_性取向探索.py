@@ -130,43 +130,86 @@ def handle_click():
 
 # --- 5. 渲染逻辑 ---
 if st.session_state.finished:
-    # 结果展示页 (使用相同的卡片逻辑)
     st.balloons()
-    st.markdown('<div class="main-title">探索报告</div>', unsafe_allow_html=True)
+    
+    # 1. 计算总分
+    total_score = sum([QUESTIONS[i]["scores"][QUESTIONS[i]["options"].index(st.session_state.answers[i])] for i in range(len(QUESTIONS))])
+    
+    # 2. 定义结果维度
+    if total_score < 50:
+        tag, color, gradient = "Indigo | 极光深蓝", "#4f46e5", "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)"
+        summary = "你的情感频率如同深海，深沉且专注。在异性之间，你最能找到那种灵魂共振的安定感。"
+        traits = ["传统审美的细腻捕捉", "异性引力的强指向性", "稳固的情感安全感"]
+    elif total_score < 110:
+        tag, color, gradient = "Prism | 棱镜幻彩", "#8b5cf6", "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)"
+        summary = "你的内心拥有一个多维的棱镜，光影交错。性别对你而言并非围墙，而是可以流动的色彩。"
+        traits = ["跨越性别的审美感知", "对灵魂契合度的高度敏感", "自由且流动的爱情观"]
+    else:
+        tag, color, gradient = "Rose | 绯红迷雾", "#ec4899", "linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)"
+        summary = "你站在色彩最瑰丽的一端。同性之间那种极致的共情与理解，是你心动信号最猛烈的来源。"
+        traits = ["深度同频的共情力", "同性吸引力的极致敏锐", "突破传统的自由灵魂"]
+
+    # 3. 渲染结果页
+    st.markdown('<div class="main-title">Spectrum 探索报告</div>', unsafe_allow_html=True)
     
     with st.container():
         st.markdown('<div class="white-quiz-card-anchor"></div>', unsafe_allow_html=True)
-        # 这里计算分数并展示结果...
-        st.markdown("### 您的测试已完成！")
-        # (此处填入你原有的 tag, color, desc 逻辑)
-
-else:
-    curr = st.session_state.q_idx
-    st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
-    st.progress((curr + 1) / len(QUESTIONS))
-    st.markdown(f"<p style='text-align:center; font-weight:bold;'>第 {curr+1} / {len(QUESTIONS)} 题</p>", unsafe_allow_html=True)
-
-    # --- 【重点】题目容器 ---
-    with st.container():
-        # 这个 div 只是一个“标记”，让上面的 CSS 能找到这个 container
-        st.markdown('<div class="white-quiz-card-anchor"></div>', unsafe_allow_html=True)
         
-        # 题目
-        st.markdown(f"### {QUESTIONS[curr]['q']}")
+        # 结果头部
+        st.markdown(f"""
+            <div style="text-align:center; padding: 1rem 0;">
+                <p style="font-size: 0.9rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.1rem;">你的核心色域</p>
+                <h1 style="background: {gradient}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 3rem; font-weight: 800; margin: 0.5rem 0;">{tag}</h1>
+            </div>
+        """, unsafe_allow_html=True)
         
-        # 选项
-        prev_val = st.session_state.answers.get(curr)
-        st.radio(
-            "Quiz",
-            options=QUESTIONS[curr]["options"],
-            key=f"radio_{curr}",
-            index=QUESTIONS[curr]["options"].index(prev_val) if prev_val in QUESTIONS[curr]["options"] else None,
-            on_change=handle_click,
-            label_visibility="collapsed"
-        )
+        st.divider()
+        
+        # 维度分析
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            st.markdown("#### 🌈 情感底色")
+            st.write(summary)
+        with col2:
+            st.markdown("#### ✨ 核心特质")
+            for trait in traits:
+                st.markdown(f"- **{trait}**")
 
-    # 导航按钮
-    if curr > 0:
-        if st.button("⬅️ 返回上一题"):
-            st.session_state.q_idx -= 1
-            st.rerun()
+        st.divider()
+
+        # 图表分析：雷达图替代方案（使用条形图展示维度）
+        st.markdown("#### 📊 多维引力场分析")
+        
+        # 模拟三个维度的得分
+        # 这里可以根据题目权重细化，此处演示逻辑：
+        dim_data = pd.DataFrame({
+            '维度': ['传统引力', '灵魂契合', '流动感知'],
+            '强度': [
+                max(10, 100 - total_score * 0.6), 
+                min(95, total_score * 0.8), 
+                min(100, (total_score**1.2) / 10)
+            ]
+        })
+        
+        # 简单的百分比条展示
+        for index, row in dim_data.iterrows():
+            st.write(f"{row['维度']}")
+            st.progress(int(row['强度'])/100)
+
+        st.markdown(f"""
+            <div style="background: #f1f5f9; padding: 1.5rem; border-radius: 1rem; margin-top: 1.5rem;">
+                <p style="font-size: 0.85rem; color: #475569; line-height: 1.6;">
+                    <b>Spectrum 寄语：</b> 性取向是一个连续的光谱，而不是非黑即白的方块。
+                    这份报告仅基于你此刻的直觉，它代表了你探索自我的一个锚点。
+                    无论结果如何，去爱那个让你心跳加速的灵魂，才是唯一的真相。
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    # 重新开始按钮
+    st.write("")
+    if st.button("✨ 重新开启探索", use_container_width=True):
+        st.session_state.q_idx = 0
+        st.session_state.answers = {}
+        st.session_state.finished = False
+        st.rerun()
