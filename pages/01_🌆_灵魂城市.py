@@ -9,6 +9,8 @@ from contents import apply_contents_settings
 
 apply_contents_settings()
 
+# --- 1. 页面配置 ---
+st.set_page_config(page_title="Spectrum | 灵魂城市测试", layout="centered")
 
 # 重点：这段逻辑能确保无论在本地还是云端，都能准确找到根目录的字体
 def get_font():
@@ -600,6 +602,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
