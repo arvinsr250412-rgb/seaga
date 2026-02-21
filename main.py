@@ -43,7 +43,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-""", unsafe_allow_html=True)
 
 # --- 4. GitHub API 逻辑 ---
 def get_keys_from_github():
@@ -138,4 +137,5 @@ else:
     
     st.markdown("---")
     st.caption("© 2026 测试实验室 | 探索未知的自己")
+
 
