@@ -270,6 +270,25 @@ st.markdown("""
             color: #FF6B35 !important;
             transform: scale(1.02);
         }
+        /* --- 将数字输入框（生成数量、可用次数）的文字改为黑色 --- */
+    
+        /* 锁定数字输入框的 input 元素 */
+        .stNumberInput input {
+            color: #000000 !important; /* 纯黑色 */
+            -webkit-text-fill-color: #000000 !important; /* 确保兼容性 */
+            font-weight: 700 !important; /* 加粗一点更清晰 */
+        }
+    
+        /* 如果你希望侧边栏的账号密码输入框文字还是橙色，但后台的变黑，
+           可以使用这个更精准的选择器 */
+        [data-testid="stSidebar"] .stTextInput input {
+            color: #FF8B3D !important; /* 侧边栏保持柔和橙 */
+        }
+    
+        div.stNumberInput div[data-baseweb="input"] {
+            background-color: #ffffff !important; /* 背景改白，黑字更显眼 */
+            border: 2px solid #FFD8A8 !important; /* 保持奶油橙边框 */
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -409,6 +428,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
