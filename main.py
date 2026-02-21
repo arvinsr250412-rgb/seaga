@@ -361,8 +361,12 @@ if st.session_state.admin_logged_in:
         with col2: uses = st.number_input("可用次数", 1, 10, 2)
         st.write("")
         if st.button("🎉 立即制造密钥"):
-            # --- 清除已耗尽密钥的逻辑 ---
-            if st.button("🧹 清除已用完密钥", use_container_width=True):
+            for _ in range(count): db[str(uuid.uuid4()).upper()[:8]] = uses
+            if update_keys_to_github(db, sha):
+                st.success("云端同步成功！")
+                st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+        if st.button("🧹 清除已用完密钥", use_container_width=True):
                 # 过滤掉次数为 0 的密钥
                 filtered_db = {k: v for k, v in db.items() if v > 0}
                 removed_count = len(db) - len(filtered_db)
@@ -375,12 +379,6 @@ if st.session_state.admin_logged_in:
                         st.error("云端同步失败，请重试")
                 else:
                     st.info("目前没有已用完的密钥哦~")
-            for _ in range(count): db[str(uuid.uuid4()).upper()[:8]] = uses
-            if update_keys_to_github(db, sha):
-                st.success("云端同步成功！")
-                st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
-
     if db:
         st.divider()
         st.dataframe(pd.DataFrame(list(db.items()), columns=['Key', 'Remaining']), use_container_width=True)
@@ -448,6 +446,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
