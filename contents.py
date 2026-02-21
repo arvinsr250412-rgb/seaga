@@ -98,4 +98,4 @@ def apply_contents_settings():
         st.page_link("pages/02_🌈_性取向探索.py", label=" 性取向探索", icon="🌈")
         
         st.markdown("---")
-        st.caption("© 2026 SEAGA Studio")
+        st.caption("© 2026 Spectrum")
