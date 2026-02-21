@@ -8,6 +8,17 @@ def apply_contents_settings():
     # 2. 统一多巴胺 CSS 样式
     st.markdown("""
         <style>
+
+    
+                /* 强行隐藏 Streamlit 默认生成的导航项 */
+        [data-testid="stSidebarNav"] ul {
+            display: none !important;
+        }
+        
+        /* 但要保留侧边栏的顶部空白或其他手动添加的元素 */
+        [data-testid="stSidebarNav"] {
+            display: block !important;
+        }
         /* 侧边栏背景渐变 */
         [data-testid="stSidebar"] {
             background: linear-gradient(180deg, #FFF5F7 0%, #FFE4E9 100%) !important;
