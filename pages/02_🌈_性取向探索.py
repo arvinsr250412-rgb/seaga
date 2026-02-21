@@ -21,12 +21,13 @@ st.markdown("""
 
     /* 白色卡片 */
     .white-card {
-        background-color: #ffffff;
-        padding: 2.5rem;
-        border-radius: 1.5rem;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        border: 1px solid #f1f5f9;
-        margin-bottom: 2rem;
+        background-color: #ffffff !important;
+        padding: 2rem !important;
+        border-radius: 1.5rem !important;
+        border: 1px solid #f1f5f9 !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+        margin: 1rem 0 !important;
+}
     }
 
     /* 标题渐变 */
@@ -179,18 +180,19 @@ if st.session_state.finished:
 else:
     curr = st.session_state.q_idx
     
-    # 1. 先渲染标题和进度条（在最上方）
+    # 1. 进度条在最上方（框外）
     st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
     st.progress((curr + 1) / 30)
-    st.write(f"第 {curr+1} / 30 题")
+    st.caption(f"已完成 {curr+1} / 30")
 
-    # 2. 再开启白色卡片容器（将题目包裹在内）
+    # 2. 核心：用 Markdown 开启白框，并紧接着用容器装题目
+    # 注意：这里我们分两次注入 HTML，中间夹着 Streamlit 原生组件
     st.markdown('<div class="white-card">', unsafe_allow_html=True)
     
-    # 题目文字
-    st.subheader(QUESTIONS[curr]["q"])
+    # 在白框内部渲染题目
+    st.markdown(f"### {QUESTIONS[curr]['q']}") 
     
-    # 选项内容
+    # 在白框内部渲染选项
     prev = st.session_state.answers.get(curr)
     st.radio(
         "选项：",
@@ -201,12 +203,12 @@ else:
         label_visibility="collapsed"
     )
     
-    # 3. 关闭白色卡片容器
+    # 关闭白框容器
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # 4. 渲染导航按钮（在白色框外部下方）
+    # 3. 导航按钮（放在白框外下方）
     if curr > 0:
-        st.write("") # 留出一点空隙
+        st.write("") 
         if st.button("⬅️ 返回上一题"):
             st.session_state.q_idx -= 1
             st.rerun()
