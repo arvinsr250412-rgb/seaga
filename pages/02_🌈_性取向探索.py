@@ -21,13 +21,12 @@ st.markdown("""
 
     /* 白色卡片 */
     .white-card {
-        background-color: #ffffff !important;
-        padding: 2rem !important;
-        border-radius: 1.5rem !important;
-        border: 1px solid #f1f5f9 !important;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
-        margin: 1rem 0 !important;
-}
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: 1px solid #f1f5f9;
+        margin-top: 1rem; /* 与进度条拉开距离 */
     }
 
     /* 标题渐变 */
