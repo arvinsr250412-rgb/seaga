@@ -325,7 +325,7 @@ def update_keys_to_github(new_data, sha=None):
     encoded_content = base64.b64encode(json.dumps(new_data, indent=4).encode('utf-8')).decode('utf-8')
     payload = {"message": "Update keys", "content": encoded_content}
     if sha: payload["sha"] = sha
-        r = requests.put(url, headers=headers, json=payload)
+    r = requests.put(url, headers=headers, json=payload)
     return r.status_code in [200, 201]
     
     # --- 4. 侧边栏逻辑 ---
@@ -449,6 +449,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
