@@ -506,25 +506,24 @@ else:
     res1 = CITY_DB.get(match_1["name"])
     res2 = CITY_DB.get(match_2["name"])
 
-    # --- 2. 结果页顶部：标题与契合度 (修复文字看不清) ---
-    st.markdown(f'<div class="main-title">灵魂归宿：{match_1["name"]}</div>', unsafe_allow_html=True)
+    # --- 2. 结果页顶部：标题与契合度 (多巴胺风升级) ---
+    st.markdown(f'<h1 class="hero-title" style="font-size: 3.5rem !important; margin-top: 10px;">{match_1["name"]}</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: #FF6A88; margin-bottom: 30px;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
     
-    # 使用自定义 HTML 代替 st.metric，确保文字颜色可见
     st.markdown(f"""
         <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
-            <div style="background: white; padding: 15px 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid #3B82F6;">
-                <div style="color: #6B7280; font-size: 0.9rem; font-weight: bold;">首选契合度</div>
-                <div style="color: #1F2937; font-size: 1.8rem; font-weight: 900;">{rate_1}%</div>
+            <div style="background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 100%); padding: 20px 30px; border-radius: 30px; box-shadow: 0 15px 30px rgba(255,106,136,0.3); text-align: center; flex: 1;">
+                <div style="color: #FFFFFF; font-size: 1rem; font-weight: 800; opacity: 0.9; letter-spacing: 1px;">首选契合度</div>
+                <div style="color: #FFFFFF; font-size: 2.8rem; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">{rate_1}%</div>
             </div>
-            <div style="background: white; padding: 15px 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid #9CA3AF;">
-                <div style="color: #6B7280; font-size: 0.9rem; font-weight: bold;">次选参考</div>
-                <div style="color: #4B5563; font-size: 1.8rem; font-weight: 900;">{rate_2}%</div>
+            <div style="background: white; padding: 20px 30px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 3px solid #FF99AC; text-align: center; flex: 1;">
+                <div style="color: #FF6A88; font-size: 1rem; font-weight: 800; letter-spacing: 1px;">次选参考</div>
+                <div style="color: #2D3748; font-size: 2.8rem; font-weight: 900;">{rate_2}%</div>
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-    # --- 3. 灵魂画像 (全页只展示一次，基于最匹配城市) ---
-  # --- 3. 灵魂画像 (多巴胺亮色风格重构) ---
+    # --- 3. 灵魂画像 (多巴胺亮色风格重构) ---
     st.markdown(f"""
         <style>
         .soul-card {{
@@ -533,19 +532,18 @@ else:
             background: #FFFFFF;
             border: 3px solid transparent;
             background-clip: padding-box;
-            color: #2D3748; /* 强制深色文字，确保清晰度 */
+            color: #2D3748;
             margin: 30px 0; 
             box-shadow: 0 20px 40px rgba(255, 106, 136, 0.12);
             position: relative;
         }}
-        /* 用伪元素做渐变边框 */
         .soul-card::before {{
             content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
             z-index: -1; margin: -3px; border-radius: inherit;
             background: var(--dopamine-gradient);
         }}
         .soul-title {{ 
-            color: #DD2476; /* 强对比度的玫红 */
+            color: #DD2476; 
             font-weight: 900; 
             font-size: 1.3rem; 
             margin-bottom: 15px; 
@@ -564,18 +562,16 @@ else:
             <div class="soul-text">{res1['soul']}</div>
         </div>
     """, unsafe_allow_html=True)
+
     # 展示雷达图
     st.pyplot(draw_radar(user_scores))
 
     # --- 4. 城市详情 (Tabs 切换展示首选和次选) ---
-    # 在 else 分支的顶部或样式区添加这段代码
-  # --- 4. 城市详情 (Tabs 切换展示首选和次选) ---
     st.markdown("""
         <style>
         .stTabs [data-baseweb="tab"] p { color: #9CA3AF !important; font-weight: 600 !important; transition: 0.3s; }
         .stTabs [data-baseweb="tab"][aria-selected="true"] p { color: #DD2476 !important; font-weight: 900 !important; }
         .stTabs [data-baseweb="tab"]:hover p { color: #FF6A88 !important; }
-        /* 将标签页下方的横线改成多巴胺红 */
         .stTabs [data-baseweb="tabHighlight"] { background-color: #DD2476 !important; }
         </style>
     """, unsafe_allow_html=True)
