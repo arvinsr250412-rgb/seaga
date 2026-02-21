@@ -564,6 +564,10 @@ else:
                 <b style="color:#4A5568; font-size: 1.1rem;">🏙️ 城市共鸣：</b>
                 <p style="color:#2D3748; margin-top:10px; line-height: 1.7;">{res2['city']}</p>
             </div>
+            <div style="background: #FFF5EE; padding: 25px; border-radius: 20px; border-left: 6px solid #FF9A8B; margin-top:15px;">
+                <b style="color:#FF512F; font-size: 1.1rem;">🌿 生活提案：</b>
+                <p style="color:#2D3748; margin-top:10px; line-height: 1.7;">{res1['advice']}</p>
+            </div>
         """, unsafe_allow_html=True)
 
     # --- 5. 底部重置按钮 (这里是关键：必须保持缩进！) ---
@@ -572,6 +576,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
