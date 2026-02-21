@@ -61,7 +61,8 @@ QUESTIONS = [
 # --- 3. Session State 初始化 ---
 if 'step' not in st.session_state: st.session_state.step = 0
 if 'ans' not in st.session_state: st.session_state.ans = {}
-
+if 'show_res' not in st.session_state:
+    st.session_state.show_res = False
 # --- 4. 界面渲染 ---
 st.title("🌈 多维性取向探索实验室")
 st.markdown("---")
@@ -85,14 +86,20 @@ st.info(f"📍 当前阶段：第 {st.session_state.step + 1} 篇章 / 共 3 篇
 
 for i in range(start_idx, end_idx):
     item = QUESTIONS[i]
+    
+    # --- 安全索引逻辑开始 ---
+    default_index = None
+    if i in st.session_state.ans and st.session_state.ans[i] in item["options"]:
+        default_index = item["options"].index(st.session_state.ans[i])
+    # --- 安全索引逻辑结束 ---
+
     st.session_state.ans[i] = st.radio(
         item["q"],
         options=item["options"],
         key=f"q_{i}",
-        index=None if i not in st.session_state.ans else item["options"].index(st.session_state.ans[i])
+        index=default_index  # 使用安全索引
     )
     st.write("")
-
 # 翻页按钮
 col1, col2 = st.columns(2)
 with col1:
