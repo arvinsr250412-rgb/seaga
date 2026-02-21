@@ -605,9 +605,10 @@ else:
     # --- 5. 底部重置按钮 ---
 st.markdown("<br><br>", unsafe_allow_html=True)
 if st.button("✨ 重新开启灵魂之旅", use_container_width=True, key="reset_quiz"):
-        for k in list(st.session_state.keys()): 
-            del st.session_state[k]
-        st.rerun()
+    for k in list(st.session_state.keys()): 
+        del st.session_state[k]
+    st.rerun()
+
 
 
 
