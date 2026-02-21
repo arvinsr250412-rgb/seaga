@@ -178,14 +178,19 @@ if st.session_state.finished:
 
 else:
     curr = st.session_state.q_idx
+    
+    # 1. 先渲染标题和进度条（在最上方）
     st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
     st.progress((curr + 1) / 30)
     st.write(f"第 {curr+1} / 30 题")
 
-    # --- 关键：题目放在白色框里 ---
+    # 2. 再开启白色卡片容器（将题目包裹在内）
     st.markdown('<div class="white-card">', unsafe_allow_html=True)
+    
+    # 题目文字
     st.subheader(QUESTIONS[curr]["q"])
     
+    # 选项内容
     prev = st.session_state.answers.get(curr)
     st.radio(
         "选项：",
@@ -195,9 +200,13 @@ else:
         on_change=handle_click,
         label_visibility="collapsed"
     )
+    
+    # 3. 关闭白色卡片容器
     st.markdown('</div>', unsafe_allow_html=True)
 
+    # 4. 渲染导航按钮（在白色框外部下方）
     if curr > 0:
+        st.write("") # 留出一点空隙
         if st.button("⬅️ 返回上一题"):
             st.session_state.q_idx -= 1
             st.rerun()
