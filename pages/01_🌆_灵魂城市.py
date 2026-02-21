@@ -602,12 +602,13 @@ else:
             </div>
         """, unsafe_allow_html=True)
 
-    # --- 5. 底部重置按钮 ---
-st.markdown("<br><br>", unsafe_allow_html=True)
-if st.button("✨ 重新开启灵魂之旅", use_container_width=True, key="reset_quiz"):
-    for k in list(st.session_state.keys()): 
-        del st.session_state[k]
-    st.rerun()
+# --- 5. 底部重置按钮 ---
+    # 注意：下面这些行必须保持和上面代码一样的缩进（通常是 4 个空格）
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    if st.button("✨ 重新开启灵魂之旅", use_container_width=True, key="reset_quiz"):
+        for k in list(st.session_state.keys()): 
+            del st.session_state[k]
+        st.rerun()
 
 
 
