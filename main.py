@@ -5,6 +5,7 @@ import base64
 import uuid
 import pandas as pd
 from contents import apply_contents_settings
+from pages.灵魂城市 import show_soul_city
 
 # --- 1. 页面配置 (必须是 Streamlit 命令的第一条) ---
 st.set_page_config(page_title="Spectrum", page_icon="💥", layout="wide")
@@ -120,11 +121,12 @@ if st.session_state.target_page == "Admin" and st.session_state.admin_logged_in:
             update_keys_to_github(new_db, sha)
             st.rerun()
 
-# 页面 B: 灵魂城市测试 (示例)
+# 页面 B: 灵魂城市测试
 elif st.session_state.target_page == "SoulCity":
-    st.markdown("<h1 class='hero-title' style='font-size:3.5rem !important;'>Soul City 🌆</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='blog-card'><h3>欢迎来到灵魂中心</h3><p>测试题目正在加载...</p></div>", unsafe_allow_html=True)
-    if st.button("⬅️ 返回首页"):
+    # 直接调用封装好的函数
+    show_soul_city()
+    # 在底部加一个回主页的小按钮
+    if st.sidebar.button("🏠 回到主页"):
         st.session_state.target_page = "Home"
         st.rerun()
 
@@ -159,6 +161,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
