@@ -49,6 +49,34 @@ def apply_contents_settings():
             border-radius: 20px !important;
             font-weight: 700 !important;
         }
+        div[data-baseweb="input"], 
+        div[data-baseweb="base-input"],
+        .stTextInput input,
+        .stPasswordInput input {
+            background-color: #FFF9F2 !important; /* 奶油底色，拒绝黑色 */
+            color: #FF8B3D !important;            /* 多巴胺橙色文字 */
+            -webkit-text-fill-color: #FF8B3D !important;
+            border: 2px solid #FFD8A8 !important;
+        }
+
+        /* 2. 强制侧边栏未选中按钮的样式（拒绝黑字/黑背景） */
+        [data-testid="stSidebar"] .stButton > button {
+            background-color: #ffffff !important;
+            border: 2px solid #FFE4E9 !important;
+        }
+        
+        /* 强制侧边栏按钮里面的文字颜色 */
+        [data-testid="stSidebar"] .stButton > button p,
+        [data-testid="stSidebar"] .stButton > button span {
+            color: #FF6A88 !important; 
+            font-weight: 800 !important;
+        }
+
+        /* 侧边栏按钮悬停效果 */
+        [data-testid="stSidebar"] .stButton > button:hover {
+            border-color: #FF99AC !important;
+            background-color: #FFF0F5 !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
