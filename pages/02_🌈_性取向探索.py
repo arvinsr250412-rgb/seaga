@@ -7,91 +7,83 @@ import os
 # --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum | 性取向探索", layout="centered")
 
+# --- 2. 深度美化 CSS (解决所有颜色冲突) ---
 st.markdown("""
     <style>
-    /* 全局底色 */
+    /* 全局背景：浅灰色 */
     .stApp {
         background-color: #f8fafc;
     }
 
-    /* 强制全局文字颜色（不包含按钮内部） */
-    p, span, label, .stMarkdown {
+    /* 强制所有非按钮文字为深色，确保清晰度 */
+    p, span, label, .stMarkdown, h3 {
         color: #1e293b !important;
     }
 
-    /* 题目白框卡片 */
-    .white-card {
-        background-color: #ffffff !important;  /* 纯白背景 */
-        padding: 2.5rem !important;           /* 内部留白，让圆框看起来更高级 */
-        border-radius: 2rem !important;        /* 大圆角 */
-        border: 1px solid #e2e8f0 !important;  /* 淡淡的边框线 */
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important; /* 柔和阴影 */
-        margin: 1.5rem 0 !important;          /* 外边距 */
-    }
-    
-    /* 强制题目文字颜色为深色 */
-    .white-card h3 {
-        color: #1e293b !important;
-        margin-bottom: 1.5rem !important;
-    }
-    .white-quiz-container {
-        background-color: #ffffff !important;
-        border-radius: 25px !important;
-        padding: 30px !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
-        border: 1px solid #edf2f7 !important;
-        margin: 20px 0px !important;
-    }
-    /* 标题渐变 */
+    /* 标题渐变效果 */
     .main-title {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
         font-weight: 800;
         text-align: center;
         background: linear-gradient(to right, #4f46e5, #ec4899);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
     }
 
-    /* 选项单选框样式 */
+    /* 【核心】题目白色圆角框容器 */
+    .white-quiz-card {
+        background-color: #ffffff !important;
+        padding: 2.5rem !important;
+        border-radius: 2rem !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+        border: 1px solid #edf2f7 !important;
+        margin: 1.5rem 0 !important;
+    }
+
+    /* 选项单选框美化 */
     div[data-testid="stRadio"] label {
         background: #ffffff !important;
         border: 2px solid #f1f5f9 !important;
         padding: 1rem 1.5rem !important;
-        border-radius: 1rem !important;
-        color: #334155 !important;
-        font-weight: 500 !important;
+        border-radius: 1.2rem !important;
+        margin-bottom: 0.6rem !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
     }
-    
     div[data-testid="stRadio"] label:hover {
         border-color: #8b5cf6 !important;
+        background-color: #f5f3ff !important;
     }
-
+    /* 隐藏选项前面的小圆圈 */
     div[data-testid="stRadio"] [data-testid="stWidgetSelectionMarker"] {
         display: none;
     }
 
-    /* --- 修复按钮：解决黑底黑字问题 --- */
+    /* 按钮样式修复：解决黑底黑字 */
     button {
         background-color: #ffffff !important;
-        color: #4f46e5 !important; 
+        color: #4f46e5 !important;
         border: 1px solid #e2e8f0 !important;
         border-radius: 0.8rem !important;
-        padding: 0.5rem 1rem !important;
+        padding: 0.5rem 1.5rem !important;
+        font-weight: 600 !important;
     }
-
     button:hover {
-        background-color: #f8fafc !important;
+        background-color: #f1f5f9 !important;
         border-color: #8b5cf6 !important;
-        color: #8b5cf6 !important;
     }
-    
-    /* 确保按钮里的文字不被全局样式覆盖 */
     button p {
         color: inherit !important;
     }
+
+    /* 进度条颜色 */
+    .stProgress > div > div > div > div {
+        background-image: linear-gradient(to right, #8b5cf6, #ec4899);
+    }
     </style>
 """, unsafe_allow_html=True)
+
 def get_prop():
     import matplotlib.font_manager as fm
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -102,7 +94,8 @@ def get_prop():
 
 prop = get_prop()
 
-# --- 3. 题库 (保持30题) ---
+# --- 3. 完整 30 题题库 ---
+# (为了代码简洁，这里展示 30 题逻辑，实际运行请确保 QUESTIONS 列表完整)
 QUESTIONS = [
     {"q": "1. 在深夜感性时，你幻想的灵魂伴侣倾向于？", "options": ["显著异性", "较为中性", "显著同性", "跨越性别"], "scores": [0, 3, 5, 4]},
     {"q": "2. 对于‘柏拉图式’的同性亲密关系，你的接受度是？", "options": ["纯粹友谊", "偶尔会有模糊感", "渴望深度链接", "非常向往"], "scores": [0, 2, 4, 5]},
@@ -136,7 +129,7 @@ QUESTIONS = [
     {"q": "30. 最后一个问题：此时此刻，你觉得自己最真实的颜色是？", "options": ["纯白（单一方向）", "渐变（正在流动）", "虹色（多元共存）", "透明（尚未定性）"], "scores": [0, 3, 5, 2]},
 ]
 
-# --- 4. 逻辑控制 ---
+# --- 4. 状态管理与自动翻页函数 ---
 if 'q_idx' not in st.session_state: st.session_state.q_idx = 0
 if 'answers' not in st.session_state: st.session_state.answers = {}
 if 'finished' not in st.session_state: st.session_state.finished = False
@@ -146,78 +139,69 @@ def handle_click():
     val = st.session_state.get(key)
     if val:
         st.session_state.answers[st.session_state.q_idx] = val
-        if st.session_state.q_idx < 29:
+        if st.session_state.q_idx < len(QUESTIONS) - 1:
             st.session_state.q_idx += 1
         else:
             st.session_state.finished = True
 
-# --- 5. 页面渲染 ---
+# --- 5. 页面布局渲染 ---
 
+# A. 结果展示页
 if st.session_state.finished:
     st.balloons()
-    total_score = sum([QUESTIONS[i]["scores"][QUESTIONS[i]["options"].index(st.session_state.answers[i])] for i in range(30)])
+    total_score = sum([QUESTIONS[i]["scores"][QUESTIONS[i]["options"].index(st.session_state.answers[i])] for i in range(len(QUESTIONS))])
     
-    # 结果逻辑
-    if total_score < 45: tag, color, desc = "Indigo | 异性倾向", "#4f46e5", "你的心动信号稳定地指向异性，拥有一种传统且坚定的感官共鸣。"
-    elif total_score < 115: tag, color, desc = "Prism | 多元倾向", "#8b5cf6", "你更看重灵魂的契合，性别在你的心动坐标中是一个流动的变量。"
-    else: tag, color, desc = "Rose | 同性倾向", "#ec4899", "同性之间深刻的情感联结是你生命的光源，你拥有一颗赤诚且勇敢的心。"
+    # 结果逻辑分档
+    if total_score < 45: tag, color, desc = "Indigo | 异性偏向", "#4f46e5", "你的心动信号稳定且清晰地指向异性。"
+    elif total_score < 115: tag, color, desc = "Prism | 多元/泛性倾向", "#8b5cf6", "性别在你的爱情观中是流动的变量，你更看重灵魂的共鸣。"
+    else: tag, color, desc = "Rose | 同性偏向", "#ec4899", "同性之间深度的联结是你情感的核心驱动力。"
 
-    st.markdown('<div class="main-title">Spectrum 报告</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">探索报告</div>', unsafe_allow_html=True)
     
-    # 结果白色框
+    # 结果白色卡片
     st.markdown(f"""
-        <div class="white-card" style="text-align:center;">
+        <div class="white-quiz-card" style="text-align:center;">
             <h2 style="color:{color};">{tag}</h2>
             <p style="font-size:1.1rem; line-height:1.6;">{desc}</p>
         </div>
     """, unsafe_allow_html=True)
 
-    # 简易光谱
-    fig, ax = plt.subplots(figsize=(10, 2))
-    ax.axhline(0, color='#f1f5f9', lw=10, zorder=1)
-    ax.scatter([total_score], [0], color=color, s=400, edgecolors='white', linewidth=3, zorder=5)
-    ax.set_xlim(0, 150)
-    ax.set_xticks([0, 75, 150])
-    ax.set_xticklabels(['异性轴', '多元轴', '同性轴'], fontproperties=prop)
-    ax.set_yticks([])
-    for s in ax.spines.values(): s.set_visible(False)
-    st.pyplot(fig)
-
-    if st.button("✨ 重新探索", use_container_width=True):
+    if st.button("✨ 重新开始测试", use_container_width=True):
         st.session_state.q_idx = 0
         st.session_state.answers = {}
         st.session_state.finished = False
         st.rerun()
 
+# B. 答题界面
 else:
     curr = st.session_state.q_idx
     
-    # 标题和进度条在框外（上方）
+    # 1. 标题和进度条（在白框外）
     st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
-    st.progress((curr + 1) / 30)
-    st.write(f"第 {curr+1} / 30 步")
+    st.progress((curr + 1) / len(QUESTIONS))
+    st.markdown(f"<p style='text-align:center; font-weight:bold;'>第 {curr+1} / {len(QUESTIONS)} 题</p>", unsafe_allow_html=True)
 
-    # --- 关键修改：开始白框 ---
-    st.markdown('<div class="white-quiz-container">', unsafe_allow_html=True)
+    # 2. 【核心】开启题目白色圆框
+    st.markdown('<div class="white-quiz-card">', unsafe_allow_html=True)
     
-    # 题目（在框内）
+    # 题目内容
     st.markdown(f"### {QUESTIONS[curr]['q']}")
     
-    # 选项（在框内）
-    prev = st.session_state.answers.get(curr)
+    # 选项内容
+    prev_val = st.session_state.answers.get(curr)
     st.radio(
-        "选择你的答案：",
+        "Label",
         options=QUESTIONS[curr]["options"],
         key=f"radio_{curr}",
-        index=QUESTIONS[curr]["options"].index(prev) if prev in QUESTIONS[curr]["options"] else None,
+        index=QUESTIONS[curr]["options"].index(prev_val) if prev_val in QUESTIONS[curr]["options"] else None,
         on_change=handle_click,
-        label_visibility="collapsed" # 隐藏“选择你的答案”字样，让白框更整洁
+        label_visibility="collapsed"
     )
     
-    # --- 关键修改：关闭白框 ---
+    # 【核心】关闭题目白色圆框
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # 导航按钮在框外（下方）
+    # 3. 导航按钮（在白框外下方）
     if curr > 0:
         st.write("")
         if st.button("⬅️ 返回上一题"):
