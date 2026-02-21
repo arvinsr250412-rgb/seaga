@@ -308,6 +308,48 @@ FILE_PATH = "keys.json"
 ADMIN_USER = "arvin"
 ADMIN_PWD = "Srbm1121"
 
+def get_keys_from_github():
+        url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+        try:
+            r = requests.get(url, headers=headers)
+            if r.status_code == 200:
+                content = r.json()
+                return json.loads(base64.b64decode(content['content']).decode('utf-8')), content['sha']
+        except: pass
+        return {}, None
+    
+    def update_keys_to_github(new_data, sha=None):
+        url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+        encoded_content = base64.b64encode(json.dumps(new_data, indent=4).encode('utf-8')).decode('utf-8')
+        payload = {"message": "Update keys", "content": encoded_content}
+        if sha: payload["sha"] = sha
+        r = requests.put(url, headers=headers, json=payload)
+        return r.status_code in [200, 201]
+    
+    # --- 4. 侧边栏逻辑 ---
+    if 'admin_logged_in' not in st.session_state:
+        st.session_state.admin_logged_in = False
+    
+    with st.sidebar:
+        st.markdown("<h2 style='text-align:center; font-size:2rem;'>🍭 控制台</h2>", unsafe_allow_html=True)
+        if not st.session_state.admin_logged_in:
+            with st.expander("🔐 管理员入口"):
+                u = st.text_input("账号")
+                p = st.text_input("密码", type="password")
+                if st.button("💥 登录后台", use_container_width=True):
+                    if u == ADMIN_USER and p == ADMIN_PWD:
+                        st.session_state.admin_logged_in = True
+                        st.rerun()
+                    else: st.error("验证失败")
+        else:
+            st.success("✨ 管理员在线 ✨")
+            if st.button("👋 退出登录", use_container_width=True):
+                st.session_state.admin_logged_in = False
+                st.rerun()
+    
+
 # --- 5. 页面渲染逻辑 ---
 
 if st.session_state.admin_logged_in:
@@ -407,6 +449,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
