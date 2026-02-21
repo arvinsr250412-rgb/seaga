@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from contents import apply_contents_settings
+
+apply_contents_settings()
 
 # --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum | 性取向探索", layout="centered")
