@@ -212,7 +212,7 @@ else:
     # 1. 巨大的 Hero 标题区
     st.markdown("""
         <div class="hero-container">
-            <h1 class="hero-title">SPECTRUM<br>BLOG.</h1>
+            <h1 class="hero-title">SPECTRUM.</h1>
             <p class="hero-subtitle">🦄 探索潜意识的游乐场 ✨</p>
         </div>
     """, unsafe_allow_html=True)
@@ -269,6 +269,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum Blog | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
