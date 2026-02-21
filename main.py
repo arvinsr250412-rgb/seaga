@@ -22,24 +22,40 @@ ADMIN_PWD = "Srbm1121"
 # --- 3. 样式美化 (Spectrum 风格) ---
 st.markdown("""
     <style>
-    /* 1. 强制全局正文文字、标签、Markdown 颜色为深色 */
-    .stApp, .stMarkdown, p, span, label, h1, h2, h3 {
-        color: #1f2937 !important; 
+    /* 1. 强制全局背景为白色 */
+    .stApp {
+        background-color: #ffffff !important;
     }
 
-    /* 2. 专门针对单选框（st.radio）的选项文字 */
+    /* 2. 强制所有文字颜色为黑色 (#000000) */
+    /* 涵盖了正文、Markdown、标题、标签和输入框文字 */
+    .stApp, .stMarkdown, p, span, label, h1, h2, h3, .stTextInput input {
+        color: #000000 !important;
+    }
+
+    /* 3. 特别修复单选框选项文字 */
     div[data-testid="stRadio"] label p {
-        color: #1f2937 !important;
+        color: #000000 !important;
     }
 
-    /* 3. 如果你使用了白色卡片，确保里面的文字也是深色 */
-    .white-quiz-card, .glass-card {
-        color: #1f2937 !important;
+    /* 4. 标题渐变色（保留美感，如果你坚持全黑，可改为 color: #000000） */
+    .main-title {
+        font-size: 3rem; 
+        font-weight: 800; 
+        text-align: center;
+        color: #000000; /* 这里改为纯黑 */
+        margin-bottom: 1rem;
     }
     
-    /* 4. 针对输入框的文字颜色 */
-    .stTextInput input {
-        color: #1f2937 !important;
+    /* 5. 玻璃卡片样式：改为浅灰边框突出白色背景 */
+    .glass-card {
+        background-color: #ffffff !important;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        border: 2px solid #eeeeee; /* 增加边框感 */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+        color: #000000 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -137,5 +153,6 @@ else:
     
     st.markdown("---")
     st.caption("© 2026 测试实验室 | 探索未知的自己")
+
 
 
