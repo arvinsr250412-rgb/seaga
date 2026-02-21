@@ -139,6 +139,40 @@ st.markdown("""
     .stTextInput small {
         display: none !important;
     }
+    /* 1. 修改输入框的默认边框颜色和背景 */
+    .stTextInput input {
+        border: 2px solid #FF9F43 !important; /* 多巴胺亮橙色 */
+        background-color: #FFF9F3 !important; /* 极浅橙色背景，增加呼吸感 */
+        color: #FF6B35 !important; /* 输入文字颜色 */
+        border-radius: 15px !important;
+        padding: 0.8rem 1rem !important;
+        font-weight: 600 !important;
+    }
+    
+    /* 2. 修改输入框标签（"账号"、"密码"文字）的颜色 */
+    [data-testid="stWidgetLabel"] p {
+        color: #FF9F43 !important;
+        font-weight: 800 !important;
+        font-size: 1.1rem !important;
+    }
+    
+    /* 3. 修改鼠标悬停时的状态 */
+    .stTextInput input:hover {
+        border-color: #FF6B35 !important;
+        background-color: #ffffff !important;
+    }
+    
+    /* 4. 修改输入框获取焦点（点击输入）时的状态 */
+    .stTextInput input:focus {
+        border-color: #FF4D00 !important; /* 焦点时变为更深的橙色 */
+        box-shadow: 0 0 12px rgba(255, 159, 67, 0.4) !important; /* 橙色发光光晕 */
+        outline: none !important;
+    }
+    
+    /* 5. 顺便美化一下密码遮罩点的颜色（可选） */
+    .stTextInput input[type="password"] {
+        -webkit-text-security: disc !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -278,6 +312,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
