@@ -6,7 +6,7 @@ import uuid
 import pandas as pd
 
 # --- 1. 页面配置 ---
-st.set_page_config(page_title="Spectrum Blog", page_icon="💥", layout="centered")
+st.set_page_config(page_title="Spectrum", page_icon="💥", layout="centered")
 
 # --- 2. 多巴胺风格 CSS 大爆炸 ---
 st.markdown("""
@@ -266,6 +266,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum Blog | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
