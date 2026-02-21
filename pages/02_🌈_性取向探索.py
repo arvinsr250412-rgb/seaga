@@ -38,7 +38,6 @@ st.markdown("""
         border-radius: 2rem !important;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
         border: 1px solid #edf2f7 !important;
-        margin: 1.5rem 0 !important;
     }
 
     /* 选项单选框美化 */
