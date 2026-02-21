@@ -22,40 +22,36 @@ ADMIN_PWD = "Srbm1121"
 # --- 3. 样式美化 (Spectrum 风格) ---
 st.markdown("""
     <style>
-    /* 1. 强制全局背景为白色 */
-    .stApp {
-        background-color: #ffffff !important;
+    /* 1. 全局背景与文字（保持你要求的白底黑字） */
+    .stApp { background-color: #ffffff !important; }
+    .stApp, .stMarkdown, p, span, label, h1, h2, h3 { color: #000000 !important; }
+
+    /* 2. 专门优化所有按钮 (st.button) */
+    div.stButton > button {
+        background-color: #f0f7ff !important; /* 极淡的蓝色背景，非常柔和 */
+        color: #1e40af !important;           /* 深蓝色文字，比纯黑更有质感 */
+        border: 1px solid #dbeafe !important; /* 淡淡的蓝色边框 */
+        border-radius: 10px !important;
+        padding: 0.5rem 1rem !important;
+        transition: all 0.2s ease-in-out !important;
+        width: 100%; /* 让按钮撑满容器，更整齐 */
     }
 
-    /* 2. 强制所有文字颜色为黑色 (#000000) */
-    /* 涵盖了正文、Markdown、标题、标签和输入框文字 */
-    .stApp, .stMarkdown, p, span, label, h1, h2, h3, .stTextInput input {
-        color: #000000 !important;
+    /* 3. 按钮悬停效果（鼠标放上去时颜色加深一点点） */
+    div.stButton > button:hover {
+        background-color: #e0f2fe !important;
+        border-color: #3b82f6 !important;
+        color: #1d4ed8 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
     }
 
-    /* 3. 特别修复单选框选项文字 */
-    div[data-testid="stRadio"] label p {
-        color: #000000 !important;
-    }
-
-    /* 4. 标题渐变色（保留美感，如果你坚持全黑，可改为 color: #000000） */
-    .main-title {
-        font-size: 3rem; 
-        font-weight: 800; 
-        text-align: center;
-        color: #000000; /* 这里改为纯黑 */
-        margin-bottom: 1rem;
-    }
+    /* 4. 特别针对“清理/删除”类的按钮（如果你想让它颜色稍有区分） */
+    /* 注意：Streamlit 按钮在 HTML 中结构相似，这里我们用一个通用的柔和色调 */
     
-    /* 5. 玻璃卡片样式：改为浅灰边框突出白色背景 */
-    .glass-card {
-        background-color: #ffffff !important;
-        padding: 2rem;
-        border-radius: 1.5rem;
-        border: 2px solid #eeeeee; /* 增加边框感 */
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        margin-bottom: 2rem;
+    /* 5. 修复输入框文字颜色 */
+    .stTextInput input {
         color: #000000 !important;
+        background-color: #f8fafc !important; /* 给输入框一点淡淡的灰，方便区分 */
     }
     </style>
 """, unsafe_allow_html=True)
@@ -86,29 +82,40 @@ def admin_panel():
     st.markdown("### 🔐 密钥管理后台")
     db, sha = get_keys_from_github()
     
-    with st.expander("➕ 生成新密钥", expanded=True):
-        col1, col2 = st.columns(2)
-        with col1:
-            count = st.number_input("生成数量", 1, 10, 1)
-        with col2:
-            uses = st.number_input("初始次数", 1, 10, 2)
-        if st.button("立即生成并同步", use_container_width=True):
-            for _ in range(count):
-                new_key = str(uuid.uuid4()).upper()[:8]
-                db[new_key] = uses
-            if update_keys_to_github(db, sha):
-                st.success("GitHub 数据库已更新！")
-                st.rerun()
+    # 使用白色卡片样式包裹生成区域
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.markdown("#### ➕ 生成新密钥")
+    col1, col2 = st.columns(2)
+    with col1:
+        count = st.number_input("生成数量", 1, 10, 1)
+    with col2:
+        uses = st.number_input("初始次数", 1, 10, 2)
+    
+    # 生成按钮
+    if st.button("🚀 立即生成并同步", use_container_width=True):
+        for _ in range(count):
+            new_key = str(uuid.uuid4()).upper()[:8]
+            db[new_key] = uses
+        if update_keys_to_github(db, sha):
+            st.success("GitHub 数据库已更新！")
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
+    st.markdown("---")
+
+    # 密钥展示区域
     if db:
-        st.markdown("#### 当前有效密钥")
+        st.markdown("#### 当前有效密钥清单")
         df = pd.DataFrame(list(db.items()), columns=['密钥', '剩余次数'])
         st.dataframe(df, use_container_width=True)
-        if st.button("清理次数已耗尽密钥"):
+        
+        # 清理按钮：使用宽版设计
+        if st.button("🧹 清理次数已耗尽的密钥", use_container_width=True):
             db = {k: v for k, v in db.items() if v > 0}
             update_keys_to_github(db, sha)
             st.rerun()
-
+    else:
+        st.info("当前暂无活跃密钥")
 # --- 6. 主界面逻辑 ---
 if 'admin_logged_in' not in st.session_state:
     st.session_state.admin_logged_in = False
@@ -153,6 +160,7 @@ else:
     
     st.markdown("---")
     st.caption("© 2026 测试实验室 | 探索未知的自己")
+
 
 
 
