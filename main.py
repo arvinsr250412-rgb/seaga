@@ -235,7 +235,28 @@ st.markdown("""
         border-top: 1px solid #FFD8A8 !important; /* 把黑线分割线换成奶油橙 */
         opacity: 0.3;
     }
-
+    /* 1. 移除管理员入口悬停时的背景变色 */
+    [data-testid="stExpander"] summary:hover {
+        background-color: transparent !important; /* 强制背景透明 */
+        color: #FF6B35 !important; /* 悬停时文字稍微变深，增加交互感 */
+    }
+    
+    /* 2. 移除点击/选中时的焦点框颜色 */
+    [data-testid="stExpander"] summary:focus {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+    
+    /* 3. 针对一些浏览器，彻底禁用默认的暗色叠加 */
+    [data-testid="stExpander"] summary:active {
+        background-color: transparent !important;
+    }
+    
+    /* 4. 优化：让鼠标浮动在上面时，光标变成手型，文字微微放大 */
+    [data-testid="stExpander"] summary:hover p {
+        transform: scale(1.02);
+        transition: transform 0.2s ease;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -375,6 +396,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
