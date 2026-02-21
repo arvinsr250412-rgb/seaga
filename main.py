@@ -140,27 +140,69 @@ elif st.session_state.target_page == "Orientation":
 
 # 默认页面: 首页
 else:
+    # --- 主界面 (多巴胺博客风格) ---
+    
+    # 1. 巨大的 Hero 标题区
     st.markdown("""
         <div class="hero-container">
             <h1 class="hero-title">SPECTRUM.</h1>
             <p class="hero-subtitle">🦄 探索潜意识的游乐场 ✨</p>
         </div>
+    """, unsafe_allow_html=True)
+
+    # 2. 置顶博文风格的欢迎卡片
+    st.markdown("""
         <div class="blog-card" style="text-align:center;">
-            <h2 style="font-size: 2.2rem;">准备好起飞了吗？</h2>
-            <p>这里没有枯燥的问卷。选择左侧项目并激活，开启你的探索。</p>
+            <div class="card-emoji-title">🚀</div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">准备好起飞了吗？</h2>
+            <p style="font-size: 1.4rem;">这里没有枯燥的问卷。我们收集了最酷、最有趣的性格探索工具，用算法解构你未知的另一面。</p>
+            <br>
+            <p style="font-weight: 900; color: #FF6A88; font-size: 1.3rem;">👇 快看左侧菜单选择一个项目！</p>
         </div>
     """, unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns(3)
-    features = [("🧠", "深度分析"), ("🎨", "视觉盛宴"), ("🔥", "阅后即焚")]
-    for col, (icon, text) in zip([col1, col2, col3], features):
-        with col:
-            st.markdown(f"<div style='text-align:center;'><span style='font-size:3rem;'>{icon}</span><h4>{text}</h4></div>", unsafe_allow_html=True)
 
-    st.markdown("<br><div style='border-radius:30px; overflow:hidden; box-shadow:0 15px 40px rgba(0,0,0,0.1);'><img src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200' width='100%'></div>", unsafe_allow_html=True)
+    st.write("") # 间距
+
+    # 3. 博客特色区 (使用 Emoji 和大字体)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("""
+            <div style="text-align:center; padding: 1rem;">
+                <span style="font-size: 4rem;">🧠</span>
+                <h3>深度分析</h3>
+                <p>不只是娱乐，背后是科学模型支撑。</p>
+            </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+            <div style="text-align:center; padding: 1rem;">
+                <span style="font-size: 4rem;">🎨</span>
+                <h3>视觉盛宴</h3>
+                <p>沉浸在色彩与交互的愉悦体验中。</p>
+            </div>
+        """, unsafe_allow_html=True)
+    with col3:
+        st.markdown("""
+            <div style="text-align:center; padding: 1rem;">
+                <span style="font-size: 4rem;">🔥</span>
+                <h3>阅后即焚</h3>
+                <p>密钥机制确保你的探索绝对私密。</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+    st.write("")
+    
+    # 4. 大图展示 (增加圆角和彩色投影)
+    st.markdown("""
+        <div style="border-radius: 30px; overflow: hidden; box-shadow: 0 20px 50px rgba(255, 126, 95, 0.4);">
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80" width="100%">
+        </div>
+    """, unsafe_allow_html=True)
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
