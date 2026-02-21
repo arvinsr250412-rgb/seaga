@@ -7,66 +7,75 @@ import os
 # --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum | 性取向探索", layout="centered")
 
-# --- 2. 精准 CSS 美化 ---
+# --- 2. 深度美化 CSS (解决所有颜色冲突) ---
 st.markdown("""
     <style>
-    /* 全局背景保持浅灰 */
+    /* 全局背景：浅灰色 */
     .stApp {
         background-color: #f8fafc;
     }
 
-    /* 顶部标题样式（无框） */
-    .header-text {
-        font-size: 2.2rem;
+    /* 强制所有非按钮文字为深色，确保清晰度 */
+    p, span, label, .stMarkdown, h3 {
+        color: #1e293b !important;
+    }
+
+    /* 标题渐变效果 */
+    .main-title {
+        font-size: 2.5rem;
         font-weight: 800;
         text-align: center;
         background: linear-gradient(to right, #4f46e5, #ec4899);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
     }
 
-    /* 【唯一白框】精准定义题目区的圆角白框 */
-    .quiz-container-box {
+    /* 【核心】题目白色圆角框容器 */
+    .white-quiz-card {
         background-color: #ffffff !important;
         padding: 2.5rem !important;
         border-radius: 2rem !important;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
-        border: 1px solid #f1f5f9 !important;
-        margin-top: 2rem !important;
-        margin-bottom: 2rem !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+        border: 1px solid #edf2f7 !important;
+        margin: 1.5rem 0 !important;
     }
 
-    /* 强制题目和选项文字为深色，确保可读 */
-    .quiz-container-box h3, .quiz-container-box label p {
-        color: #1e293b !important;
-    }
-
-    /* 选项按钮美化 */
+    /* 选项单选框美化 */
     div[data-testid="stRadio"] label {
-        background: #fdfdfd !important;
+        background: #ffffff !important;
         border: 2px solid #f1f5f9 !important;
         padding: 1rem 1.5rem !important;
         border-radius: 1.2rem !important;
-        margin-bottom: 0.8rem !important;
+        margin-bottom: 0.6rem !important;
         transition: all 0.2s ease !important;
+        cursor: pointer !important;
     }
     div[data-testid="stRadio"] label:hover {
         border-color: #8b5cf6 !important;
         background-color: #f5f3ff !important;
     }
+    /* 隐藏选项前面的小圆圈 */
     div[data-testid="stRadio"] [data-testid="stWidgetSelectionMarker"] {
-        display: none; /* 隐藏小圆点 */
+        display: none;
     }
 
-    /* 修复按钮颜色：解决黑底看不清问题 */
+    /* 按钮样式修复：解决黑底黑字 */
     button {
         background-color: #ffffff !important;
         color: #4f46e5 !important;
         border: 1px solid #e2e8f0 !important;
         border-radius: 0.8rem !important;
+        padding: 0.5rem 1.5rem !important;
+        font-weight: 600 !important;
     }
-    button p { color: inherit !important; }
+    button:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #8b5cf6 !important;
+    }
+    button p {
+        color: inherit !important;
+    }
 
     /* 进度条颜色 */
     .stProgress > div > div > div > div {
@@ -85,7 +94,8 @@ def get_prop():
 
 prop = get_prop()
 
-# --- 3. 题库 (30题) ---
+# --- 3. 完整 30 题题库 ---
+# (为了代码简洁，这里展示 30 题逻辑，实际运行请确保 QUESTIONS 列表完整)
 QUESTIONS = [
     {"q": "1. 在深夜感性时，你幻想的灵魂伴侣倾向于？", "options": ["显著异性", "较为中性", "显著同性", "跨越性别"], "scores": [0, 3, 5, 4]},
     {"q": "2. 对于‘柏拉图式’的同性亲密关系，你的接受度是？", "options": ["纯粹友谊", "偶尔会有模糊感", "渴望深度链接", "非常向往"], "scores": [0, 2, 4, 5]},
@@ -119,7 +129,7 @@ QUESTIONS = [
     {"q": "30. 最后一个问题：此时此刻，你觉得自己最真实的颜色是？", "options": ["纯白（单一方向）", "渐变（正在流动）", "虹色（多元共存）", "透明（尚未定性）"], "scores": [0, 3, 5, 2]},
 ]
 
-# --- 4. 逻辑控制 ---
+# --- 4. 状态管理与自动翻页函数 ---
 if 'q_idx' not in st.session_state: st.session_state.q_idx = 0
 if 'answers' not in st.session_state: st.session_state.answers = {}
 if 'finished' not in st.session_state: st.session_state.finished = False
@@ -134,50 +144,53 @@ def handle_click():
         else:
             st.session_state.finished = True
 
-# --- 5. 页面渲染 ---
+# --- 5. 页面布局渲染 ---
 
+# A. 结果展示页
 if st.session_state.finished:
     st.balloons()
     total_score = sum([QUESTIONS[i]["scores"][QUESTIONS[i]["options"].index(st.session_state.answers[i])] for i in range(len(QUESTIONS))])
     
-    st.markdown('<div class="header-text">探索报告</div>', unsafe_allow_html=True)
-    
     # 结果逻辑分档
-    if total_score < 45: tag, color, desc = "Indigo | 异性倾向", "#4f46e5", "你的心动信号稳定且清晰地指向异性。"
-    elif total_score < 115: tag, color, desc = "Prism | 泛性/多元", "#8b5cf6", "灵魂的共鸣对你而言超越了性别标签。"
-    else: tag, color, desc = "Rose | 同性倾向", "#ec4899", "同性之间的联结是你生命中最深刻的吸引力来源。"
+    if total_score < 45: tag, color, desc = "Indigo | 异性偏向", "#4f46e5", "你的心动信号稳定且清晰地指向异性。"
+    elif total_score < 115: tag, color, desc = "Prism | 多元/泛性倾向", "#8b5cf6", "性别在你的爱情观中是流动的变量，你更看重灵魂的共鸣。"
+    else: tag, color, desc = "Rose | 同性偏向", "#ec4899", "同性之间深度的联结是你情感的核心驱动力。"
 
-    # 结果也放在白框里
+    st.markdown('<div class="main-title">探索报告</div>', unsafe_allow_html=True)
+    
+    # 结果白色卡片
     st.markdown(f"""
-        <div class="quiz-container-box" style="text-align:center;">
+        <div class="white-quiz-card" style="text-align:center;">
             <h2 style="color:{color};">{tag}</h2>
             <p style="font-size:1.1rem; line-height:1.6;">{desc}</p>
         </div>
     """, unsafe_allow_html=True)
 
-    if st.button("✨ 重新开始探索", use_container_width=True):
+    if st.button("✨ 重新开始测试", use_container_width=True):
         st.session_state.q_idx = 0
         st.session_state.answers = {}
         st.session_state.finished = False
         st.rerun()
 
+# B. 答题界面
 else:
     curr = st.session_state.q_idx
     
-    # A. 顶部（无框区域）
-    st.markdown('<div class="header-text">Spectrum Lab</div>', unsafe_allow_html=True)
+    # 1. 标题和进度条（在白框外）
+    st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
     st.progress((curr + 1) / len(QUESTIONS))
-    st.markdown(f"<p style='text-align:center;'>Progress: {curr + 1} / 30</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align:center; font-weight:bold;'>第 {curr+1} / {len(QUESTIONS)} 题</p>", unsafe_allow_html=True)
 
-    # B. 中间（白框区域）
-    # --- 开启白框 ---
-    st.markdown('<div class="quiz-container-box">', unsafe_allow_html=True)
+    # 2. 【核心】开启题目白色圆框
+    st.markdown('<div class="white-quiz-card">', unsafe_allow_html=True)
     
+    # 题目内容
     st.markdown(f"### {QUESTIONS[curr]['q']}")
     
+    # 选项内容
     prev_val = st.session_state.answers.get(curr)
     st.radio(
-        "Choice",
+        "Label",
         options=QUESTIONS[curr]["options"],
         key=f"radio_{curr}",
         index=QUESTIONS[curr]["options"].index(prev_val) if prev_val in QUESTIONS[curr]["options"] else None,
@@ -185,11 +198,12 @@ else:
         label_visibility="collapsed"
     )
     
-    # --- 关闭白框 ---
+    # 【核心】关闭题目白色圆框
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # C. 底部（无框区域）
+    # 3. 导航按钮（在白框外下方）
     if curr > 0:
+        st.write("")
         if st.button("⬅️ 返回上一题"):
             st.session_state.q_idx -= 1
             st.rerun()
