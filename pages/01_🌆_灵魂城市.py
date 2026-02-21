@@ -22,8 +22,7 @@ def get_font():
 prop = get_font()
 # --- 1. 页面配置与视觉样式 ---
     # 复用主页的 hero-title，并加入副标题
-st.markdown(f'<h1 class="hero-title" style="font-size: 3.5rem !important; margin-top: 10px;">{match_1["name"]}</h1>', unsafe_allow_html=True)
-st.markdown('<p class="hero-subtitle" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: #FF6A88; margin-bottom: 30px;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
+
     
     # 多巴胺糖果风格的契合度卡片 (高对比度，绝不会看不清字)
 st.markdown(f"""
@@ -504,7 +503,8 @@ else:
     
     res1 = CITY_DB.get(match_1["name"])
     res2 = CITY_DB.get(match_2["name"])
-
+    st.markdown(f'<h1 class="hero-title" style="font-size: 3.5rem !important; margin-top: 10px;">{match_1["name"]}</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: #FF6A88; margin-bottom: 30px;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
     # --- 2. 结果页顶部：标题与契合度 ---
     st.markdown(f'<h1 class="hero-title" style="font-size: 3.5rem !important; margin-top: 10px;">{match_1["name"]}</h1>', unsafe_allow_html=True)
     st.markdown('<p class="hero-subtitle" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: #FF6A88; margin-bottom: 30px;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
@@ -602,6 +602,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
