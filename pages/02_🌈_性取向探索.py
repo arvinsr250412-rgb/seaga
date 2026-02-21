@@ -33,31 +33,28 @@ st.markdown("""
 
     /* 【核心】题目白色圆角框容器 */
     .white-quiz-card {
+        [data-testid="stVerticalBlock"] > div:has(div.quiz-container-mark) {
+        /* 这里就是你原本的白色圆框样式 */
         background-color: #ffffff !important;
         padding: 2.5rem !important;
         border-radius: 2rem !important;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
         border: 1px solid #edf2f7 !important;
         margin: 1.5rem 0 !important;
+        
+        /* 确保内部所有组件居中（可选） */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
-
-    /* 选项单选框美化 */
-    div[data-testid="stRadio"] label {
-        background: #ffffff !important;
-        border: 2px solid #f1f5f9 !important;
-        padding: 1rem 1.5rem !important;
-        border-radius: 1.2rem !important;
-        margin-bottom: 0.6rem !important;
-        transition: all 0.2s ease !important;
-        cursor: pointer !important;
-    }
-    div[data-testid="stRadio"] label:hover {
-        border-color: #8b5cf6 !important;
-        background-color: #f5f3ff !important;
-    }
-    /* 隐藏选项前面的小圆圈 */
-    div[data-testid="stRadio"] [data-testid="stWidgetSelectionMarker"] {
-        display: none;
+    
+        /* 由于 Streamlit 的 container 默认会有一些内边距，
+           我们可以微调一下，让题目(h3)和选项更贴合 
+        */
+        [data-testid="stVerticalBlock"] > div:has(div.quiz-container-mark) h3 {
+            margin-top: 0 !important;
+            text-align: center;
+        }
     }
 
     /* 按钮样式修复：解决黑底黑字 */
@@ -181,25 +178,24 @@ else:
     st.progress((curr + 1) / len(QUESTIONS))
     st.markdown(f"<p style='text-align:center; font-weight:bold;'>第 {curr+1} / {len(QUESTIONS)} 题</p>", unsafe_allow_html=True)
 
-    # 2. 【核心】开启题目白色圆框
-    st.markdown('<div class="white-quiz-card">', unsafe_allow_html=True)
-    
-    # 题目内容
-    st.markdown(f"### {QUESTIONS[curr]['q']}")
-    
-    # 选项内容
-    prev_val = st.session_state.answers.get(curr)
-    st.radio(
-        "Label",
-        options=QUESTIONS[curr]["options"],
-        key=f"radio_{curr}",
-        index=QUESTIONS[curr]["options"].index(prev_val) if prev_val in QUESTIONS[curr]["options"] else None,
-        on_change=handle_click,
-        label_visibility="collapsed"
-    )
-    
-    # 【核心】关闭题目白色圆框
-    st.markdown('</div>', unsafe_allow_html=True)
+    # 2. 【核心修改】使用 container 包裹题目
+    with st.container():
+        # 这个隐藏的 div 是给上面 CSS 识别用的“锚点”
+        st.markdown('<div class="quiz-container-mark"></div>', unsafe_allow_html=True)
+        
+        # 题目内容
+        st.markdown(f"### {QUESTIONS[curr]['q']}")
+        
+        # 选项内容
+        prev_val = st.session_state.answers.get(curr)
+        st.radio(
+            "Label",
+            options=QUESTIONS[curr]["options"],
+            key=f"radio_{curr}",
+            index=QUESTIONS[curr]["options"].index(prev_val) if prev_val in QUESTIONS[curr]["options"] else None,
+            on_change=handle_click,
+            label_visibility="collapsed"
+        )
 
     # 3. 导航按钮（在白框外下方）
     if curr > 0:
