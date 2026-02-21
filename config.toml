@@ -1,3 +1,0 @@
-[client]
-# 隐藏 Streamlit 默认在侧边栏生成的页面列表
-showSidebarNavigation = False
