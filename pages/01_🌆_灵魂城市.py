@@ -25,18 +25,7 @@ prop = get_font()
 
     
     # 多巴胺糖果风格的契合度卡片 (高对比度，绝不会看不清字)
-st.markdown(f"""
-    <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
-        <div style="background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 100%); padding: 20px 30px; border-radius: 30px; box-shadow: 0 15px 30px rgba(255,106,136,0.3); text-align: center; flex: 1;">
-            <div style="color: #FFFFFF; font-size: 1rem; font-weight: 800; opacity: 0.9; letter-spacing: 1px;">首选契合度</div>
-            <div style="color: #FFFFFF; font-size: 2.8rem; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">{rate_1}%</div>
-        </div>
-        <div style="background: white; padding: 20px 30px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 3px solid #FF99AC; text-align: center; flex: 1;">
-             <div style="color: #FF6A88; font-size: 1rem; font-weight: 800; letter-spacing: 1px;">次选参考</div>
-            <div style="color: #2D3748; font-size: 2.8rem; font-weight: 900;">{rate_2}%</div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
+
 # 设置中文支持
 plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False
@@ -503,8 +492,7 @@ else:
     
     res1 = CITY_DB.get(match_1["name"])
     res2 = CITY_DB.get(match_2["name"])
-    st.markdown(f'<h1 class="hero-title" style="font-size: 3.5rem !important; margin-top: 10px;">{match_1["name"]}</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="hero-subtitle" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: #FF6A88; margin-bottom: 30px;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
+
     # --- 2. 结果页顶部：标题与契合度 ---
     st.markdown(f'<h1 class="hero-title" style="font-size: 3.5rem !important; margin-top: 10px;">{match_1["name"]}</h1>', unsafe_allow_html=True)
     st.markdown('<p class="hero-subtitle" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: #FF6A88; margin-bottom: 30px;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
@@ -516,12 +504,11 @@ else:
                 <div style="color: #FFFFFF; font-size: 2.8rem; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">{rate_1}%</div>
             </div>
             <div style="background: white; padding: 20px 30px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 3px solid #FF99AC; text-align: center; flex: 1;">
-                <div style="color: #FF6A88; font-size: 1rem; font-weight: 800; letter-spacing: 1px;">次选参考</div>
+                 <div style="color: #FF6A88; font-size: 1rem; font-weight: 800; letter-spacing: 1px;">次选参考</div>
                 <div style="color: #2D3748; font-size: 2.8rem; font-weight: 900;">{rate_2}%</div>
             </div>
         </div>
     """, unsafe_allow_html=True)
-
     # --- 3. 灵魂画像 ---
     st.markdown(f"""
         <style>
@@ -602,6 +589,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
