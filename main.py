@@ -4,6 +4,9 @@ import requests
 import base64
 import uuid
 import pandas as pd
+from contents import apply_contents_settings
+
+apply_contents_settings()
 
 # --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum", page_icon="💥", layout="centered")
@@ -266,6 +269,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum Blog | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
