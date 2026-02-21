@@ -319,14 +319,14 @@ def get_keys_from_github():
         except: pass
         return {}, None
     
-    def update_keys_to_github(new_data, sha=None):
-        url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
-        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-        encoded_content = base64.b64encode(json.dumps(new_data, indent=4).encode('utf-8')).decode('utf-8')
-        payload = {"message": "Update keys", "content": encoded_content}
-        if sha: payload["sha"] = sha
+def update_keys_to_github(new_data, sha=None):
+    url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    encoded_content = base64.b64encode(json.dumps(new_data, indent=4).encode('utf-8')).decode('utf-8')
+    payload = {"message": "Update keys", "content": encoded_content}
+    if sha: payload["sha"] = sha
         r = requests.put(url, headers=headers, json=payload)
-        return r.status_code in [200, 201]
+    return r.status_code in [200, 201]
     
     # --- 4. 侧边栏逻辑 ---
     if 'admin_logged_in' not in st.session_state:
@@ -449,6 +449,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
