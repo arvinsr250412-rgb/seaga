@@ -35,7 +35,6 @@ st.markdown("""
     /* 我们寻找包含特定的“锚点”div 的那个容器 */
     div[data-testid="stVerticalBlock"] > div:has(div.white-quiz-card-anchor) {
         background-color: #ffffff !important;
-        padding: 2.5rem !important;
         border-radius: 2rem !important;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
         border: 1px solid #edf2f7 !important;
