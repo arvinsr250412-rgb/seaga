@@ -235,51 +235,41 @@ st.markdown("""
         border-top: 1px solid #FFD8A8 !important; /* 把黑线分割线换成奶油橙 */
         opacity: 0.3;
     }
-    /* 1. 移除管理员入口悬停时的背景变色 */
-    [data-testid="stExpander"] summary:hover {
-        background-color: transparent !important; /* 强制背景透明 */
-        color: #FF6B35 !important; /* 悬停时文字稍微变深，增加交互感 */
-    }
+
+        /* 1. 强制所有交互状态背景透明，移除所有边框和阴影 */
+        [data-testid="stExpander"], 
+        [data-testid="stExpander"] summary,
+        [data-testid="stExpander"] summary:hover,
+        [data-testid="stExpander"] summary:focus,
+        [data-testid="stExpander"] summary:active,
+        [data-testid="stExpander"] summary:focus-visible,
+        [data-testid="stExpander"]:focus-within summary,
+        [data-testid="stExpander"] summary div[role="button"] {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+            background: transparent !important;
+            transition: all 0.3s ease;
+        }
     
-    /* 2. 移除点击/选中时的焦点框颜色 */
-    [data-testid="stExpander"] summary:focus {
-        background-color: transparent !important;
-        box-shadow: none !important;
-    }
+        /* 2. 移除展开后内容区的任何边框 */
+        [data-testid="stExpanderDetails"] {
+            border: none !important;
+            padding-top: 0 !important;
+        }
     
-    /* 3. 针对一些浏览器，彻底禁用默认的暗色叠加 */
-    [data-testid="stExpander"] summary:active {
-        background-color: transparent !important;
-    }
+        /* 3. 保持管理员入口文字颜色始终为多巴胺橙 */
+        [data-testid="stExpander"] summary p {
+            color: #FF9F43 !important;
+            font-weight: 800 !important;
+        }
     
-    /* 4. 优化：让鼠标浮动在上面时，光标变成手型，文字微微放大 */
-    [data-testid="stExpander"] summary:hover p {
-        transform: scale(1.02);
-        transition: transform 0.2s ease;
-    }
-        /* 1. 彻底移除选中后移开鼠标残留的背景框 */
-    [data-testid="stExpander"] summary:focus,
-    [data-testid="stExpander"] summary:focus-visible,
-    [data-testid="stExpander"] summary:active {
-        background-color: transparent !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }
-    
-    /* 2. 针对内部文字容器也进行清除 */
-    [data-testid="stExpander"] summary div {
-        background-color: transparent !important;
-    }
-    
-    /* 3. 确保在任何点击或选中状态下都不产生背景色 */
-    [data-testid="stExpander"] {
-        -webkit-tap-highlight-color: transparent !important; /* 针对移动端点击阴影 */
-    }
-    
-    /* 4. 优化：点击时文字可以稍微变色作为反馈，而不是出黑框 */
-    [data-testid="stExpander"] summary:focus p {
-        color: #FF6A88 !important; /* 点击后文字变粉红 */
-    }
+        /* 4. 可选：增加一个微小的文字缩放反馈，代替生硬的黑框 */
+        [data-testid="stExpander"] summary:hover p {
+            color: #FF6B35 !important;
+            transform: scale(1.02);
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -419,6 +409,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
