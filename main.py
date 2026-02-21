@@ -13,6 +13,15 @@ apply_contents_settings()
 # --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum", page_icon="💥", layout="centered")
 
+# --- 初始化 Session State 变量 ---
+if "admin_logged_in" not in st.session_state:
+    st.session_state.admin_logged_in = False
+
+if "target_page" not in st.session_state:
+    st.session_state.target_page = "Home"
+
+if "needs_auth" not in st.session_state:
+    st.session_state.needs_auth = None
 # --- 2. 多巴胺风格 CSS 大爆炸 ---
 st.markdown("""
     <style>
@@ -449,6 +458,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
