@@ -34,7 +34,14 @@ st.markdown("""
         color: #1e293b !important;
         margin-bottom: 1.5rem !important;
     }
-
+    .white-quiz-container {
+        background-color: #ffffff !important;
+        border-radius: 25px !important;
+        padding: 30px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+        border: 1px solid #edf2f7 !important;
+        margin: 20px 0px !important;
+    }
     /* 标题渐变 */
     .main-title {
         font-size: 2.2rem;
@@ -185,33 +192,34 @@ if st.session_state.finished:
 else:
     curr = st.session_state.q_idx
     
-    # 1. 进度条（在白框外面）
+    # 标题和进度条在框外（上方）
     st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
     st.progress((curr + 1) / 30)
-    st.caption(f"Progress: {curr + 1} / 30")
+    st.write(f"第 {curr+1} / 30 步")
 
-    # 2. 【开启圆框】
-    st.markdown('<div class="white-card">', unsafe_allow_html=True)
+    # --- 关键修改：开始白框 ---
+    st.markdown('<div class="white-quiz-container">', unsafe_allow_html=True)
     
-    # 渲染题目（放在框内）
+    # 题目（在框内）
     st.markdown(f"### {QUESTIONS[curr]['q']}")
     
-    # 渲染选项（放在框内）
+    # 选项（在框内）
     prev = st.session_state.answers.get(curr)
     st.radio(
-        "选项：",
+        "选择你的答案：",
         options=QUESTIONS[curr]["options"],
         key=f"radio_{curr}",
         index=QUESTIONS[curr]["options"].index(prev) if prev in QUESTIONS[curr]["options"] else None,
         on_change=handle_click,
-        label_visibility="collapsed"
+        label_visibility="collapsed" # 隐藏“选择你的答案”字样，让白框更整洁
     )
     
-    # 【关闭圆框】
+    # --- 关键修改：关闭白框 ---
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # 3. 导航按钮（在白框外面）
+    # 导航按钮在框外（下方）
     if curr > 0:
+        st.write("")
         if st.button("⬅️ 返回上一题"):
             st.session_state.q_idx -= 1
             st.rerun()
