@@ -22,32 +22,27 @@ ADMIN_PWD = "Srbm1121"
 # --- 3. 样式美化 (Spectrum 风格) ---
 st.markdown("""
     <style>
-    .stApp { background-color: #f8fafc; }
-    
-    /* 渐变标题 */
-    .main-title {
-        font-size: 3rem; font-weight: 800; text-align: center;
-        background: linear-gradient(to right, #4f46e5, #ec4899);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        margin-bottom: 1rem;
+    /* 1. 强制全局正文文字、标签、Markdown 颜色为深色 */
+    .stApp, .stMarkdown, p, span, label, h1, h2, h3 {
+        color: #1f2937 !important; 
+    }
+
+    /* 2. 专门针对单选框（st.radio）的选项文字 */
+    div[data-testid="stRadio"] label p {
+        color: #1f2937 !important;
+    }
+
+    /* 3. 如果你使用了白色卡片，确保里面的文字也是深色 */
+    .white-quiz-card, .glass-card {
+        color: #1f2937 !important;
     }
     
-    /* 容器卡片 */
-    .glass-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 1.5rem;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        margin-bottom: 2rem;
-    }
-    
-    /* 管理员面板按钮 */
-    .stButton button {
-        border-radius: 0.8rem !important;
-        font-weight: 600 !important;
+    /* 4. 针对输入框的文字颜色 */
+    .stTextInput input {
+        color: #1f2937 !important;
     }
     </style>
+""", unsafe_allow_html=True)
 """, unsafe_allow_html=True)
 
 # --- 4. GitHub API 逻辑 ---
@@ -143,3 +138,4 @@ else:
     
     st.markdown("---")
     st.caption("© 2026 测试实验室 | 探索未知的自己")
+
