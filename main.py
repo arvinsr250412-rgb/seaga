@@ -211,9 +211,11 @@ if 'admin_logged_in' not in st.session_state:
 with st.sidebar:
     st.markdown("<h2 style='text-align:center; font-size:2rem;'>🍭 控制台</h2>", unsafe_allow_html=True)
     if not st.session_state.admin_logged_in:
-        with st.expander("🔐 管理员入口"):
-            u = st.text_input("账号")
-            p = st.text_input("密码", type="password")
+        # 使用容器包裹，增加侧边距
+        with st.container():
+            st.markdown("<p style='text-align:center; color:#FF9F43; font-weight:bold;'>LOGIN</p>", unsafe_allow_html=True)
+            u = st.text_input("账号", placeholder="Admin ID")
+            p = st.text_input("密码", type="password", placeholder="Password")
             if st.button("💥 登录后台", use_container_width=True):
                 if u == ADMIN_USER and p == ADMIN_PWD:
                     st.session_state.admin_logged_in = True
@@ -312,6 +314,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
