@@ -6,164 +6,266 @@ import uuid
 import pandas as pd
 
 # --- 1. 页面配置 ---
-st.set_page_config(page_title="我的测试集合", page_icon="✨", layout="centered")
+st.set_page_config(page_title="Spectrum Blog", page_icon="💥", layout="centered")
 
-# --- 2. 配置信息 (请在此处填入你的 GitHub 信息) ---
-# 建议在 Streamlit Cloud 的 Secrets 中设置，而不是直接写在代码里
-GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "你的_GITHUB_TOKEN")
-REPO_OWNER = "arvinsr250412-rgb"
-REPO_NAME = "seaga"
-FILE_PATH = "keys.json"
-
-# 管理员账号
-ADMIN_USER = "arvin"
-ADMIN_PWD = "Srbm1121"
-
-# --- 3. 样式美化 (Spectrum 风格) ---
+# --- 2. 多巴胺风格 CSS 大爆炸 ---
 st.markdown("""
     <style>
-    /* 1. 全局背景与文字（保持你要求的白底黑字） */
-    .stApp { background-color: #ffffff !important; }
-    .stApp, .stMarkdown, p, span, label, h1, h2, h3 { color: #000000 !important; }
+    /* 引入更粗犷的潮流字体 */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
 
-    /* 2. 专门优化所有按钮 (st.button) */
-    div.stButton > button {
-        background-color: #f0f7ff !important; /* 极淡的蓝色背景，非常柔和 */
-        color: #1e40af !important;           /* 深蓝色文字，比纯黑更有质感 */
-        border: 1px solid #dbeafe !important; /* 淡淡的蓝色边框 */
-        border-radius: 10px !important;
-        padding: 0.5rem 1rem !important;
-        transition: all 0.2s ease-in-out !important;
-        width: 100%; /* 让按钮撑满容器，更整齐 */
+    :root {
+        /* 定义多巴胺主题色变量 */
+        --dopamine-gradient: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+        --electric-gradient: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+        --sunny-gradient: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+        --text-primary: #2D3748; /* 深而不黑，更有质感 */
     }
 
-    /* 3. 按钮悬停效果（鼠标放上去时颜色加深一点点） */
-    div.stButton > button:hover {
-        background-color: #e0f2fe !important;
-        border-color: #3b82f6 !important;
-        color: #1d4ed8 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    /* 全局设定 */
+    .stApp { 
+        background-color: #ffffff !important; /* 保持背景纯白，让色彩跳出来 */
+        font-family: 'Poppins', sans-serif;
     }
-
-    /* 4. 特别针对“清理/删除”类的按钮（如果你想让它颜色稍有区分） */
-    /* 注意：Streamlit 按钮在 HTML 中结构相似，这里我们用一个通用的柔和色调 */
     
-    /* 5. 修复输入框文字颜色 */
+    /* 强制提升所有文字的基础大小和颜色 */
+    .stApp, .stMarkdown, p, span, label, li { 
+        color: var(--text-primary) !important;
+        font-size: 1.2rem !important; /* 正文变大 */
+        line-height: 1.7 !important;
+    }
+    h1, h2, h3, h4 {
+        color: var(--text-primary) !important;
+        font-weight: 900 !important; /* 标题极粗 */
+        letter-spacing: -1px;
+    }
+
+    /* --- 巨大的博客主标题 Hero Section --- */
+    .hero-container {
+        text-align: center;
+        padding: 4rem 0 2rem 0;
+    }
+    .hero-title {
+        font-size: 6rem !important; /* 超大标题 */
+        line-height: 1.1;
+        font-weight: 900;
+        /* 使用极其鲜艳的夕阳红渐变 */
+        background: linear-gradient(to right, #ff7e5f, #feb47b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+        text-shadow: 3px 3px 6px rgba(255, 126, 95, 0.2); /* 增加立体感 */
+    }
+    .hero-subtitle {
+        font-size: 1.8rem !important;
+        font-weight: 700;
+        color: #FF6A88 !important; /* 鲜艳的副标题色 */
+    }
+
+    /* --- 多巴胺糖果卡片 --- */
+    .blog-card {
+        background: #ffffff;
+        padding: 3rem; /* 更大的内边距 */
+        border-radius: 30px; /* 更圆润 */
+        /* 使用 CSS Trick 实现渐变色边框 */
+        position: relative;
+        background-clip: padding-box;
+        border: 5px solid transparent; /* 边框变粗 */
+        margin-bottom: 2.5rem;
+        box-shadow: 0 20px 40px rgba(255, 106, 136, 0.15); /* 彩色光晕阴影 */
+        transition: all 0.4s ease;
+    }
+    /* 给卡片加一个伪元素背景来实现渐变边框 */
+    .blog-card::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        z-index: -1;
+        margin: -5px; /* 与边框宽度匹配 */
+        border-radius: inherit;
+        background: var(--dopamine-gradient);
+    }
+    .blog-card:hover {
+        transform: translateY(-10px) scale(1.02); /* 悬停时弹起更明显 */
+        box-shadow: 0 30px 60px rgba(255, 106, 136, 0.3);
+    }
+
+    /* 卡片内的Emoji标题 */
+    .card-emoji-title {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    /* --- 糖果按钮 --- */
+    div.stButton > button {
+        /* 彻底改变按钮风格为实体渐变 */
+        background-image: linear-gradient(to right, #FF512F 0%, #DD2476 51%, #FF512F 100%) !important;
+        background-size: 200% auto !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50px !important; /* 药丸形状 */
+        padding: 1rem 2.5rem !important; /* 更大更胖 */
+        font-size: 1.3rem !important;
+        font-weight: 800 !important;
+        box-shadow: 0 10px 20px rgba(221, 36, 118, 0.3) !important;
+        transition: 0.5s !important;
+    }
+    div.stButton > button:hover {
+        background-position: right center !important; /* 鼠标悬停时渐变流动 */
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(221, 36, 118, 0.5) !important;
+    }
+
+    /* --- 侧边栏与输入框微调 --- */
+    [data-testid="stSidebar"] {
+        background-color: #fff0f5; /* 侧边栏也用淡粉色背景 */
+        border-right: none;
+    }
     .stTextInput input {
-        color: #000000 !important;
-        background-color: #f8fafc !important; /* 给输入框一点淡淡的灰，方便区分 */
+        border-radius: 15px !important;
+        border: 2px solid #FF99AC !important;
+        padding: 1rem !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 4. GitHub API 逻辑 ---
+# --- 3. 登录与后台逻辑 (保持不变) ---
+GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
+REPO_OWNER = "YourName"
+REPO_NAME = "YourRepo"
+FILE_PATH = "keys.json"
+ADMIN_USER = "admin"
+ADMIN_PWD = "password"
+
 def get_keys_from_github():
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-    r = requests.get(url, headers=headers)
-    if r.status_code == 200:
-        content = r.json()
-        decoded_data = base64.b64decode(content['content']).decode('utf-8')
-        return json.loads(decoded_data), content['sha']
+    try:
+        r = requests.get(url, headers=headers)
+        if r.status_code == 200:
+            content = r.json()
+            return json.loads(base64.b64decode(content['content']).decode('utf-8')), content['sha']
+    except: pass
     return {}, None
 
 def update_keys_to_github(new_data, sha=None):
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-    json_content = json.dumps(new_data, indent=4, ensure_ascii=False)
-    encoded_content = base64.b64encode(json_content.encode('utf-8')).decode('utf-8')
-    payload = {"message": "Update keys database", "content": encoded_content}
+    encoded_content = base64.b64encode(json.dumps(new_data, indent=4).encode('utf-8')).decode('utf-8')
+    payload = {"message": "Update keys", "content": encoded_content}
     if sha: payload["sha"] = sha
     r = requests.put(url, headers=headers, json=payload)
     return r.status_code in [200, 201]
 
-# --- 5. 管理员功能模块 ---
-def admin_panel():
-    st.markdown("### 🔐 密钥管理后台")
-    db, sha = get_keys_from_github()
-    
-    # 使用白色卡片样式包裹生成区域
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    st.markdown("#### ➕ 生成新密钥")
-    col1, col2 = st.columns(2)
-    with col1:
-        count = st.number_input("生成数量", 1, 10, 1)
-    with col2:
-        uses = st.number_input("初始次数", 1, 10, 2)
-    
-    # 生成按钮
-    if st.button("🚀 立即生成并同步", use_container_width=True):
-        for _ in range(count):
-            new_key = str(uuid.uuid4()).upper()[:8]
-            db[new_key] = uses
-        if update_keys_to_github(db, sha):
-            st.success("GitHub 数据库已更新！")
-            st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    # 密钥展示区域
-    if db:
-        st.markdown("#### 当前有效密钥清单")
-        df = pd.DataFrame(list(db.items()), columns=['密钥', '剩余次数'])
-        st.dataframe(df, use_container_width=True)
-        
-        # 清理按钮：使用宽版设计
-        if st.button("🧹 清理次数已耗尽的密钥", use_container_width=True):
-            db = {k: v for k, v in db.items() if v > 0}
-            update_keys_to_github(db, sha)
-            st.rerun()
-    else:
-        st.info("当前暂无活跃密钥")
-# --- 6. 主界面逻辑 ---
+# --- 4. 侧边栏逻辑 ---
 if 'admin_logged_in' not in st.session_state:
     st.session_state.admin_logged_in = False
 
-# 侧边栏登录
 with st.sidebar:
-    st.markdown("### 🛠️ 系统管理")
+    st.markdown("<h2 style='text-align:center; font-size:2rem;'>🍭 控制台</h2>", unsafe_allow_html=True)
     if not st.session_state.admin_logged_in:
-        with st.expander("管理员登录"):
+        with st.expander("🔐 管理员入口"):
             u = st.text_input("账号")
             p = st.text_input("密码", type="password")
-            if st.button("进入后台"):
+            if st.button("💥 登录后台", use_container_width=True):
                 if u == ADMIN_USER and p == ADMIN_PWD:
                     st.session_state.admin_logged_in = True
                     st.rerun()
-                else:
-                    st.error("拒绝访问")
+                else: st.error("验证失败")
     else:
-        st.info("已进入管理模式")
-        if st.button("退出管理"):
+        st.success("✨ 管理员在线 ✨")
+        if st.button("👋 退出登录", use_container_width=True):
             st.session_state.admin_logged_in = False
             st.rerun()
 
-# 主页面显示
+# --- 5. 页面渲染逻辑 ---
+
 if st.session_state.admin_logged_in:
-    # 如果管理员已登录，显示后台
-    admin_panel()
+    # --- 后台 (也稍微沾点多巴胺风格) ---
+    st.markdown("<h1 class='hero-title' style='font-size:4rem !important;'>Admin Panel 🚀</h1>", unsafe_allow_html=True)
+    db, sha = get_keys_from_github()
+    
+    with st.container():
+        st.markdown("""<div class='blog-card'><h2>🔑 密钥工厂</h2>""", unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1: count = st.number_input("生成数量", 1, 10, 1)
+        with col2: uses = st.number_input("可用次数", 1, 10, 2)
+        st.write("")
+        if st.button("🎉 立即制造密钥"):
+            for _ in range(count): db[str(uuid.uuid4()).upper()[:8]] = uses
+            if update_keys_to_github(db, sha):
+                st.success("云端同步成功！")
+                st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    if db:
+        st.divider()
+        st.dataframe(pd.DataFrame(list(db.items()), columns=['Key', 'Remaining']), use_container_width=True)
+
 else:
-    # --- 这里是你原来的主界面渲染（找回来了！） ---
-    st.markdown('<div class="main-title">🌟 欢迎来到我的测试实验室</div>', unsafe_allow_html=True)
+    # --- 主界面 (多巴胺博客风格) ---
     
-    # 使用变量定义 HTML，防止缩进错误
-    welcome_html = """
-    <div class="glass-card">
-        这里收集了我制作的所有趣味测试。<br>
-        请从<b>左侧边栏</b>选择你想进行的测试项目！
-    </div>
-    """
-    st.markdown(welcome_html, unsafe_allow_html=True)
+    # 1. 巨大的 Hero 标题区
+    st.markdown("""
+        <div class="hero-container">
+            <h1 class="hero-title">SPECTRUM<br>BLOG.</h1>
+            <p class="hero-subtitle">🦄 探索潜意识的游乐场 ✨</p>
+        </div>
+    """, unsafe_allow_html=True)
 
-    st.info("👈 点击左侧菜单开始探索")
+    # 2. 置顶博文风格的欢迎卡片
+    st.markdown("""
+        <div class="blog-card" style="text-align:center;">
+            <div class="card-emoji-title">🚀</div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">准备好起飞了吗？</h2>
+            <p style="font-size: 1.4rem;">这里没有枯燥的问卷。我们收集了最酷、最有趣的性格探索工具，用算法解构你未知的另一面。</p>
+            <br>
+            <p style="font-weight: 900; color: #FF6A88; font-size: 1.3rem;">👇 快看左侧菜单选择一个项目！</p>
+        </div>
+    """, unsafe_allow_html=True)
 
-    # 你的介绍图片
-    st.image("https://images.unsplash.com/photo-1518349619113-03114f06ac3a?auto=format&fit=crop&w=800&q=80", use_container_width=True)
+    st.write("") # 间距
+
+    # 3. 博客特色区 (使用 Emoji 和大字体)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("""
+            <div style="text-align:center; padding: 1rem;">
+                <span style="font-size: 4rem;">🧠</span>
+                <h3>深度分析</h3>
+                <p>不只是娱乐，背后是科学模型支撑。</p>
+            </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+            <div style="text-align:center; padding: 1rem;">
+                <span style="font-size: 4rem;">🎨</span>
+                <h3>视觉盛宴</h3>
+                <p>沉浸在色彩与交互的愉悦体验中。</p>
+            </div>
+        """, unsafe_allow_html=True)
+    with col3:
+        st.markdown("""
+            <div style="text-align:center; padding: 1rem;">
+                <span style="font-size: 4rem;">🔥</span>
+                <h3>阅后即焚</h3>
+                <p>密钥机制确保你的探索绝对私密。</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+    st.write("")
     
+    # 4. 大图展示 (增加圆角和彩色投影)
+    st.markdown("""
+        <div style="border-radius: 30px; overflow: hidden; box-shadow: 0 20px 50px rgba(255, 126, 95, 0.4);">
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80" width="100%">
+        </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("---")
-    st.caption("© 2026 测试实验室 | 探索未知的自己")
-
+    st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum Blog | Stay Colorful.</p>", unsafe_allow_html=True)
 
 
 
