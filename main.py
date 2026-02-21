@@ -141,17 +141,20 @@ with st.sidebar:
 
 # 主页面显示
 if st.session_state.admin_logged_in:
+    # 如果管理员已登录，显示后台
     admin_panel()
 else:
-    # 这里是你原来的主界面内容，包装在玻璃卡片里
+    # --- 这里是你原来的主界面渲染（找回来了！） ---
     st.markdown('<div class="main-title">🌟 欢迎来到我的测试实验室</div>', unsafe_allow_html=True)
     
-    st.markdown("""
+    # 使用变量定义 HTML，防止缩进错误
+    welcome_html = """
     <div class="glass-card">
         这里收集了我制作的所有趣味测试。<br>
         请从<b>左侧边栏</b>选择你想进行的测试项目！
     </div>
-    """, unsafe_allow_html=True)
+    """
+    st.markdown(welcome_html, unsafe_allow_html=True)
 
     st.info("👈 点击左侧菜单开始探索")
 
@@ -160,6 +163,7 @@ else:
     
     st.markdown("---")
     st.caption("© 2026 测试实验室 | 探索未知的自己")
+
 
 
 
