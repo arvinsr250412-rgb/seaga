@@ -1,5 +1,9 @@
 # contents.py
 import streamlit as st
+import sys
+import os
+# 路径保护，确保能找到 key_system
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from key_system import key_check_gate
 
 def apply_contents_settings():
@@ -142,24 +146,47 @@ def apply_contents_settings():
         }
         </style>
     """, unsafe_allow_html=True)
-    # 3. 统一侧边栏内容
-    with st.sidebar:
+   with st.sidebar:
         st.markdown("<h2 style='text-align:center; color:#FF1493;'>🌈 Spectrum</h2>", unsafe_allow_html=True)
         st.markdown("---")
-        # 强制所有页面显示相同的导航菜单
-        # 首页按钮
+        
+        # 1. 首页按钮 (不需要密钥)
         if st.button("🏠 首页中心", use_container_width=True):
             st.session_state.target_page = "Home"
+            st.session_state.needs_auth = None # 切换页面时清除验证状态
             st.rerun()
 
-        # 🌆 灵魂城市测试按钮
-        if st.button("🌆 灵魂城市测试", use_container_width=True):
-            st.session_state.target_page = "SoulCity"
+        # 2. 🌆 灵魂城市测试按钮
+        is_soul_unlocked = st.session_state.get("unlocked_SoulCity", False)
+        btn_label = "🌆 灵魂城市测试" + (" ✅" if is_soul_unlocked else " 🔒")
+        if st.button(btn_label, use_container_width=True):
+            if is_soul_unlocked:
+                st.session_state.target_page = "SoulCity"
+            else:
+                st.session_state.needs_auth = "SoulCity" # 标记需要验证
             st.rerun()
 
-        # 🌈 性取向探索按钮
-        if st.button("🌈 性取向探索", use_container_width=True):
-            st.session_state.target_page = "Orientation"
+        # 3. 🌈 性取向探索按钮
+        is_orient_unlocked = st.session_state.get("unlocked_Orientation", False)
+        btn_label_2 = "🌈 性取向探索" + (" ✅" if is_orient_unlocked else " 🔒")
+        if st.button(btn_label_2, use_container_width=True):
+            if is_orient_unlocked:
+                st.session_state.target_page = "Orientation"
+            else:
+                st.session_state.needs_auth = "Orientation"
             st.rerun()
+
+        # --- 🔐 侧边栏专属验证区 ---
+        if st.session_state.get("needs_auth"):
+            st.markdown("---")
+            st.warning(f"请在下方激活项目")
+            # 这里调用密钥系统
+            # 注意：因为 key_check_gate 内部有 st.stop()，它会在这里拦截
+            # 只有当 key_check_gate 返回 True（已解锁）时，才会继续往下走
+            if key_check_gate(st.session_state.needs_auth):
+                st.session_state.target_page = st.session_state.needs_auth
+                st.session_state.needs_auth = None
+                st.rerun()
+
         st.markdown("---")
         st.caption("© 2026 Spectrum")
