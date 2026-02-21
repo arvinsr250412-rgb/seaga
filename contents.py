@@ -52,6 +52,38 @@ def apply_contents_settings():
             letter-spacing: 5px;
             margin-bottom: 30px;
         }
+
+                /* 1. 修改侧边栏所有普通文本和手动 page_link 的文字颜色 */
+        [data-testid="stSidebar"] p, 
+        [data-testid="stSidebar"] span {
+            color: #FF4B4B !important; /* 经典多巴胺红色 */
+            font-weight: 800 !important;
+            font-size: 1.1rem !important;
+        }
+        
+        /* 2. 专门针对 st.page_link 的美化（多巴胺圆角按钮感） */
+        [data-testid="stSidebar"] a {
+            background-color: rgba(255, 75, 75, 0.05) !important; /* 极淡的底色 */
+            border-radius: 15px !important;
+            margin: 5px 0 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        /* 3. 悬停效果：文字变色并产生位移，增加互动感 */
+        [data-testid="stSidebar"] a:hover {
+            background-color: #FF4B4B !important; /* 悬停时背景变红 */
+            transform: translateX(5px); /* 轻轻向右滑动 */
+        }
+        
+        [data-testid="stSidebar"] a:hover span {
+            color: white !important; /* 悬停时文字变白 */
+        }
+        
+        /* 4. 侧边栏底部的 Caption 文字（版本号等） */
+        [data-testid="stSidebar"] .stCaption {
+            color: #FF99AC !important; /* 柔和粉色 */
+            font-weight: 400 !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
