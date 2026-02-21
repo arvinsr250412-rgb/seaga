@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="我的 AI 测试集合", page_icon="✨")
+st.set_page_config(page_title="我的测试集合", page_icon="✨")
 
 st.title("🌟 欢迎来到我的测试实验室")
 st.markdown("""
@@ -13,3 +13,4 @@ st.info("👈 点击左侧菜单开始探索")
 
 # 你可以在这里放一些炫酷的介绍图片或总览
 st.image("https://images.unsplash.com/photo-1518349619113-03114f06ac3a?auto=format&fit=crop&w=800&q=80")
+
