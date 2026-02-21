@@ -147,8 +147,19 @@ def apply_contents_settings():
         st.markdown("<h2 style='text-align:center; color:#FF1493;'>🌈 Spectrum</h2>", unsafe_allow_html=True)
         st.markdown("---")
         # 强制所有页面显示相同的导航菜单
-        st.page_link("main.py", label=" 首页中心", icon="🏠")
-        st.page_link("pages/01_🌆_灵魂城市.py", label=" 灵魂城市测试", icon="🌆")
-        st.page_link("pages/02_🌈_性取向探索.py", label=" 性取向探索", icon="🌈")
+        # 首页按钮
+        if st.button("🏠 首页中心", use_container_width=True):
+            st.session_state.target_page = "Home"
+            st.rerun()
+
+        # 🌆 灵魂城市测试按钮
+        if st.button("🌆 灵魂城市测试", use_container_width=True):
+            st.session_state.target_page = "SoulCity"
+            st.rerun()
+
+        # 🌈 性取向探索按钮
+        if st.button("🌈 性取向探索", use_container_width=True):
+            st.session_state.target_page = "Orientation"
+            st.rerun()
         st.markdown("---")
         st.caption("© 2026 Spectrum")
