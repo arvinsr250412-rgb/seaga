@@ -141,43 +141,44 @@ st.markdown("""
     }
      /* --- 柔和多巴胺输入框定制 --- */
     
-    /* 1. 基础状态：移除黑边，使用柔和奶油橙 */
+    /* --- 彻底移除所有黑边的多巴胺输入框 --- */
+    
+    /* 1. 针对输入框本身：移除所有外轮廓 */
     .stTextInput input {
-        border: 2px solid #FFD8A8 !important; /* 极浅的奶油橙边框 */
-        background-color: #FFF9F2 !important; /* 柔和的杏仁色背景 */
-        color: #FF8B3D !important; /* 字体颜色也调柔和一点 */
+        border: 2px solid #FFD8A8 !important; /* 奶油橙边框 */
+        background-color: #FFF9F2 !important;
+        color: #FF8B3D !important;
         border-radius: 16px !important;
-        padding: 0.8rem 1rem !important;
-        font-weight: 600 !important;
-        box-shadow: none !important; /* 彻底移除默认阴影 */
+        box-shadow: none !important;
+        outline: none !important; /* 核心：移除点击时的黑色外圈 */
     }
     
-    /* 2. 鼠标悬停状态：边框微深，背景变白 */
-    .stTextInput input:hover {
-        border-color: #FFC078 !important;
-        background-color: #ffffff !important;
-    }
-    
-    /* 3. 焦点状态（点击时）：移除黑色外框，改用半透明柔光 */
+    /* 2. 针对点击状态：确保点击时没有任何系统强制的边框 */
     .stTextInput input:focus {
-        border-color: #FFA94D !important; /* 边框色稍深 */
-        box-shadow: 0 0 15px rgba(255, 169, 77, 0.3) !important; /* 柔和的橙色光晕，无硬边 */
-        outline: none !important; /* 强制移除浏览器默认黑框 */
+        border-color: #FFA94D !important;
+        box-shadow: 0 0 10px rgba(255, 169, 77, 0.2) !important; /* 柔和橙光 */
+        outline: none !important;
+        -webkit-box-shadow: 0 0 10px rgba(255, 169, 77, 0.2) !important;
     }
     
-    /* 4. 修改输入框上方的文字颜色（账号/密码） */
-    [data-testid="stWidgetLabel"] p {
-        color: #FFA94D !important;
-        font-weight: 700 !important;
-        font-size: 1.1rem !important;
-        letter-spacing: 1px;
+    /* 3. 核心修改：移除 Streamlit 输入框外部容器的黑色投影和边框 */
+    div[data-baseweb="input"] {
+        border: none !important;
+        outline: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
     }
     
-    /* 5. 隐藏密码切换时的黑色焦点圈 */
+    /* 4. 针对密码可见性按钮：移除点击时的黑色焦点方框 */
     .stTextInput button {
+        outline: none !important;
         border: none !important;
         box-shadow: none !important;
-        outline: none !important;
+    }
+    
+    /* 5. 确保在输入时没有底部的蓝色或黑色装饰线（某些版本 Streamlit 的特征） */
+    div[data-testid="stTextInput"] div::after {
+        display: none !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -318,6 +319,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
