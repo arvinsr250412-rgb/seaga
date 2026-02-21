@@ -477,8 +477,8 @@ else:
     res2 = CITY_DB.get(match_2["name"])
 
     # --- 2. 结果页顶部：标题与契合度 ---
-    st.markdown(f'<h1 class="hero-title" style="font-size: 3.5rem !important; margin-top: 10px;">{match_1["name"]}</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="hero-subtitle" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: #FF6A88; margin-bottom: 30px;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
+    st.markdown(f'<h1 class="main-hero-title">{match_1["name"]}</h1>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align:center; font-weight:800; color:#FF6A88;">✨ 你的灵魂地理坐标</p>', unsafe_allow_html=True)
     
     st.markdown(f"""
         <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
@@ -572,6 +572,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
