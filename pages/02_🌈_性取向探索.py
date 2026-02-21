@@ -56,7 +56,23 @@ if 'q_idx' not in st.session_state: st.session_state.q_idx = 0
 if 'answers' not in st.session_state: st.session_state.answers = {}
 if 'finished' not in st.session_state: st.session_state.finished = False
 
-# --- 4. 界面逻辑 ---
+# --- 4. 核心逻辑：自动跳转函数 ---
+def handle_click():
+    # 获取当前题目的选择结果（通过 key 访问）
+    current_key = f"radio_{st.session_state.q_idx}"
+    current_answer = st.session_state.get(current_key)
+    
+    if current_answer:
+        # 保存答案
+        st.session_state.answers[st.session_state.q_idx] = current_answer
+        # 如果不是最后一题，索引+1
+        if st.session_state.q_idx < 29:
+            st.session_state.q_idx += 1
+        else:
+            # 最后一题答完，进入结果页
+            st.session_state.finished = True
+
+# --- 5. 界面逻辑 ---
 
 # A. 结果展示界面
 if st.session_state.finished:
@@ -80,18 +96,22 @@ if st.session_state.finished:
         </div>
     """, unsafe_allow_html=True)
 
-    # 光谱图
+    # 光谱图可视化
     st.write("### 📊 吸引力光谱分析")
-    fig, ax = plt.subplots(figsize=(10, 2))
-    ax.axhline(0, color='#E5E7EB', lw=10, solid_capstyle='round', zorder=1)
-    ax.scatter([total_score], [0], color=color, s=400, edgecolors='white', linewidth=3, zorder=5)
+    fig, ax = plt.subplots(figsize=(10, 2.5))
+    # 绘制背景装饰线
+    ax.axhline(0, color='#F3F4F6', lw=15, solid_capstyle='round', zorder=1)
+    # 绘制得分点
+    ax.scatter([total_score], [0], color=color, s=500, edgecolors='white', linewidth=4, zorder=5)
     ax.set_xlim(0, 150)
     ax.set_xticks([0, 75, 150])
-    ax.set_xticklabels(['异性轴', '多元轴', '同性轴'], fontproperties=prop)
+    ax.set_xticklabels(['异性轴', '多元轴', '同性轴'], fontproperties=prop, fontsize=12)
     ax.set_yticks([])
+    # 移除边框
+    for spine in ax.spines.values(): spine.set_visible(False)
     st.pyplot(fig)
 
-    if st.button("重新开启探索之旅", use_container_width=True):
+    if st.button("✨ 重新开启探索之旅", use_container_width=True):
         st.session_state.q_idx = 0
         st.session_state.answers = {}
         st.session_state.finished = False
@@ -102,44 +122,30 @@ else:
     curr = st.session_state.q_idx
     item = QUESTIONS[curr]
 
-    # 进度条
-    st.caption(f"QUESTION {curr + 1} / 30")
+    # 进度显示
+    st.caption(f"PROGRESS: {curr + 1} / 30")
     st.progress((curr + 1) / 30)
 
-    # 题目容器
+    # 题目区域
     with st.container(border=True):
         st.subheader(item["q"])
         
-        # 获取之前的选择
+        # 核心改动：加入 on_change 回调
         prev_ans = st.session_state.answers.get(curr)
-        choice = st.radio(
-            "请选择：",
+        st.radio(
+            "选项：",
             options=item["options"],
-            key=f"radio_{curr}",
+            key=f"radio_{curr}", # 每个题目必须有唯一的 key
             index=item["options"].index(prev_ans) if prev_ans in item["options"] else None,
+            on_change=handle_click, # 用户一点选，立刻执行 handle_click
             label_visibility="collapsed"
         )
 
-    # 导航按钮
-    col1, col2, col3 = st.columns([1, 2, 1])
+    # 辅助按钮：保留“上一题”以防手滑
+    st.write("")
+    if curr > 0:
+        if st.button("⬅️ 返回上一题", use_container_width=True):
+            st.session_state.q_idx -= 1
+            st.rerun()
     
-    with col1:
-        if curr > 0:
-            if st.button("⬅️ 上一题", use_container_width=True):
-                st.session_state.q_idx -= 1
-                st.rerun()
-    
-    with col3:
-        # 只有选择了答案才能点下一题
-        if choice:
-            st.session_state.answers[curr] = choice
-            if curr < 29:
-                if st.button("下一题 ➡️", use_container_width=True):
-                    st.session_state.q_idx += 1
-                    st.rerun()
-            else:
-                if st.button("🎯 完成", use_container_width=True):
-                    st.session_state.finished = True
-                    st.rerun()
-        else:
-            st.button("下一题 ➡️", use_container_width=True, disabled=True)
+    st.info("💡 点击选项即可自动进入下一题")
