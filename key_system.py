@@ -34,9 +34,10 @@ def key_check_gate(test_id):
 
     # 3. 未解锁时显示的 UI 界面
     st.markdown(f"""
-        <div class="q-card">
-            <h2 style="color:#FF6A88;">✨ 激活项目：{test_id.replace('_', ' ').title()}</h2>
-            <p>请输入密钥解锁此项深度测试</p>
+        <div style="max-width: 600px; margin: 50px auto; padding: 40px; border-radius: 30px; background: white; box-shadow: 0 15px 50px rgba(255,106,136,0.2); text-align: center; border: 4px solid #FFE4E9;">
+            <h1 style="font-size: 3rem;">🔐</h1>
+            <h2 style="color: #FF512F;">激活项目</h2>
+            <p style="color: #666;">请输入密钥开启本次探索</p>
         </div>
     """, unsafe_allow_html=True)
 
