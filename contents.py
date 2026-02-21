@@ -89,7 +89,7 @@ def apply_contents_settings():
 
     # 3. 统一侧边栏内容
     with st.sidebar:
-        st.markdown("<h2 style='text-align:center; color:#FF1493;'>🌈 SEAGA</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center; color:#FF1493;'>🌈 Spectrum</h2>", unsafe_allow_html=True)
         st.markdown("---")
         
         # 强制所有页面显示相同的导航菜单
