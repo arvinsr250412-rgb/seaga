@@ -128,87 +128,107 @@ def handle_click():
         else:
             st.session_state.finished = True
 
-# --- 5. 渲染逻辑 ---
+# --- 5. 渲染逻辑 (结果分析增强版) ---
 if st.session_state.finished:
     st.balloons()
     
-    # 1. 计算总分
-    total_score = sum([QUESTIONS[i]["scores"][QUESTIONS[i]["options"].index(st.session_state.answers[i])] for i in range(len(QUESTIONS))])
+    # 1. 精准计分逻辑
+    total = sum([QUESTIONS[i]["scores"][QUESTIONS[i]["options"].index(st.session_state.answers[i])] for i in range(len(QUESTIONS))])
     
-    # 2. 定义结果维度
-    if total_score < 50:
-        tag, color, gradient = "Indigo | 极光深蓝", "#4f46e5", "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)"
-        summary = "你的情感频率如同深海，深沉且专注。在异性之间，你最能找到那种灵魂共振的安定感。"
-        traits = ["传统审美的细腻捕捉", "异性引力的强指向性", "稳固的情感安全感"]
-    elif total_score < 110:
-        tag, color, gradient = "Prism | 棱镜幻彩", "#8b5cf6", "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)"
-        summary = "你的内心拥有一个多维的棱镜，光影交错。性别对你而言并非围墙，而是可以流动的色彩。"
-        traits = ["跨越性别的审美感知", "对灵魂契合度的高度敏感", "自由且流动的爱情观"]
+    # 2. 五大结果导向定义
+    if total <= 35:
+        res = {
+            "title": "恒星引力 | 极纯异性向",
+            "color": "#4f46e5",
+            "gradient": "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+            "desc": "你的情感核心非常稳固，如同恒星般有着明确的轨道。你天然地被异性特质吸引，这种引力简单、直接且纯粹。",
+            "advice": "在亲密关系中，你更看重传统的互补美学。建议在保持稳定的同时，偶尔也探索对方灵魂中不符合传统标签的惊喜部分。"
+        }
+    elif total <= 75:
+        res = {
+            "title": "流星轨迹 | 异性向兼性好奇",
+            "color": "#6366f1",
+            "gradient": "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+            "desc": "你主要在异性轨道上运行，但偶尔也会被星空中的其他光芒吸引。你对同性有着审美上的高度欣赏，甚至有过轻微的心灵悸动。",
+            "advice": "不要害怕这种‘偶尔的偏离’，这说明你拥有极高的审美同理心。这种流动性让你比别人更懂人心。"
+        }
+    elif total <= 105:
+        res = {
+            "title": "双星系统 | 多元/泛性倾向",
+            "color": "#8b5cf6",
+            "gradient": "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+            "desc": "性别在你的世界里不是一道选择题。你被‘人’本身吸引，而非他的标签。你可以在两种性别中找到同样深度的联结。",
+            "advice": "你是天生的灵魂探测器。在恋爱中，‘聊得来’和‘灵魂共振’是你唯一的入场券，请坚持你的这份纯粹。"
+        }
+    elif total <= 135:
+        res = {
+            "title": "星云迷雾 | 同性向兼性包容",
+            "color": "#d946ef",
+            "gradient": "linear-gradient(135deg, #d946ef 0%, #f43f5e 100%)",
+            "desc": "你的情感重心明显倾向于同性，那里有你渴望的深度共鸣。虽然你并不排斥异性的陪伴，但那更像是友谊而非炽热的爱。",
+            "advice": "你拥有极强的共情能力。学会区分‘对异性的欣赏’和‘对同性的渴望’，能帮你更早找到那个对的人。"
+        }
     else:
-        tag, color, gradient = "Rose | 绯红迷雾", "#ec4899", "linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)"
-        summary = "你站在色彩最瑰丽的一端。同性之间那种极致的共情与理解，是你心动信号最猛烈的来源。"
-        traits = ["深度同频的共情力", "同性吸引力的极致敏锐", "突破传统的自由灵魂"]
+        res = {
+            "title": "星系中心 | 坚定同性向",
+            "color": "#ec4899",
+            "gradient": "linear-gradient(135deg, #ec4899 0%, #fb7185 100%)",
+            "desc": "你是光谱中色彩最鲜明的一端。同性之间的那种极致细腻、同频共振是你生命的能量来源。你对异性几乎没有浪漫引力。",
+            "advice": "你的心之所向非常明确。勇敢地拥抱这份独特性，在同频的圈子里，你会绽放出最夺目的光芒。"
+        }
 
-    # 3. 渲染结果页
+    # 3. 界面渲染
     st.markdown('<div class="main-title">Spectrum 探索报告</div>', unsafe_allow_html=True)
     
     with st.container():
         st.markdown('<div class="white-quiz-card-anchor"></div>', unsafe_allow_html=True)
         
-        # 结果头部
+        # 结果头部：新颖的渐变卡片
         st.markdown(f"""
-            <div style="text-align:center; padding: 1rem 0;">
-                <p style="font-size: 0.9rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.1rem;">你的核心色域</p>
-                <h1 style="background: {gradient}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 3rem; font-weight: 800; margin: 0.5rem 0;">{tag}</h1>
+            <div style="background: {res['gradient']}; padding: 2rem; border-radius: 1.5rem; text-align: center; color: white;">
+                <p style="font-size: 0.8rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 2px;">Your Spectrum Identity</p>
+                <h1 style="color: white !important; font-size: 2.2rem; margin: 0.5rem 0;">{res['title']}</h1>
+                <p style="font-size: 1rem; opacity: 0.95; line-height: 1.6;">{res['desc']}</p>
             </div>
         """, unsafe_allow_html=True)
+
+        st.write("")
         
-        st.divider()
-        
-        # 维度分析
-        col1, col2 = st.columns([1, 1])
+        # 深度分析维度
+        col1, col2 = st.columns(2)
         with col1:
-            st.markdown("#### 🌈 情感底色")
-            st.write(summary)
+            st.markdown("#### 💡 灵魂画像")
+            st.info(res['advice'])
+        
         with col2:
-            st.markdown("#### ✨ 核心特质")
-            for trait in traits:
-                st.markdown(f"- **{trait}**")
+            st.markdown("#### 📊 潜在倾向分布")
+            # 这里的比例是基于分数计算的示意图
+            hetero_bias = max(5, 100 - (total / 1.5))
+            homo_bias = min(95, (total / 1.5))
+            fluid_bias = 100 - abs(hetero_bias - homo_bias)
+            
+            st.write(f"异性吸引力: {int(hetero_bias)}%")
+            st.progress(int(hetero_bias)/100)
+            st.write(f"同性吸引力: {int(homo_bias)}%")
+            st.progress(int(homo_bias)/100)
+            st.write(f"灵魂流动性: {int(fluid_bias)}%")
+            st.progress(int(fluid_bias)/100)
 
         st.divider()
-
-        # 图表分析：雷达图替代方案（使用条形图展示维度）
-        st.markdown("#### 📊 多维引力场分析")
         
-        # 模拟三个维度的得分
-        # 这里可以根据题目权重细化，此处演示逻辑：
-        dim_data = pd.DataFrame({
-            '维度': ['传统引力', '灵魂契合', '流动感知'],
-            '强度': [
-                max(10, 100 - total_score * 0.6), 
-                min(95, total_score * 0.8), 
-                min(100, (total_score**1.2) / 10)
-            ]
-        })
-        
-        # 简单的百分比条展示
-        for index, row in dim_data.iterrows():
-            st.write(f"{row['维度']}")
-            st.progress(int(row['强度'])/100)
-
+        # 底部文案
         st.markdown(f"""
-            <div style="background: #f1f5f9; padding: 1.5rem; border-radius: 1rem; margin-top: 1.5rem;">
-                <p style="font-size: 0.85rem; color: #475569; line-height: 1.6;">
-                    <b>Spectrum 寄语：</b> 性取向是一个连续的光谱，而不是非黑即白的方块。
-                    这份报告仅基于你此刻的直觉，它代表了你探索自我的一个锚点。
-                    无论结果如何，去爱那个让你心跳加速的灵魂，才是唯一的真相。
+            <div style="text-align: center; padding: 1rem;">
+                <p style="color: #64748b; font-size: 0.85rem;">
+                    “爱是人类最后的自由，而你是自由的掌舵者。”
                 </p>
+                <p style="color: {res['color']}; font-weight: bold; font-size: 1.1rem;">探索总分：{total} / 150</p>
             </div>
         """, unsafe_allow_html=True)
 
-    # 重新开始按钮
+    # 按钮美化
     st.write("")
-    if st.button("✨ 重新开启探索", use_container_width=True):
+    if st.button("✨ 重新开始探索", use_container_width=True):
         st.session_state.q_idx = 0
         st.session_state.answers = {}
         st.session_state.finished = False
