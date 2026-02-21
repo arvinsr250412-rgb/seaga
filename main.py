@@ -139,39 +139,45 @@ st.markdown("""
     .stTextInput small {
         display: none !important;
     }
-    /* 1. 修改输入框的默认边框颜色和背景 */
+     /* --- 柔和多巴胺输入框定制 --- */
+    
+    /* 1. 基础状态：移除黑边，使用柔和奶油橙 */
     .stTextInput input {
-        border: 2px solid #FF9F43 !important; /* 多巴胺亮橙色 */
-        background-color: #FFF9F3 !important; /* 极浅橙色背景，增加呼吸感 */
-        color: #FF6B35 !important; /* 输入文字颜色 */
-        border-radius: 15px !important;
+        border: 2px solid #FFD8A8 !important; /* 极浅的奶油橙边框 */
+        background-color: #FFF9F2 !important; /* 柔和的杏仁色背景 */
+        color: #FF8B3D !important; /* 字体颜色也调柔和一点 */
+        border-radius: 16px !important;
         padding: 0.8rem 1rem !important;
         font-weight: 600 !important;
+        box-shadow: none !important; /* 彻底移除默认阴影 */
     }
     
-    /* 2. 修改输入框标签（"账号"、"密码"文字）的颜色 */
-    [data-testid="stWidgetLabel"] p {
-        color: #FF9F43 !important;
-        font-weight: 800 !important;
-        font-size: 1.1rem !important;
-    }
-    
-    /* 3. 修改鼠标悬停时的状态 */
+    /* 2. 鼠标悬停状态：边框微深，背景变白 */
     .stTextInput input:hover {
-        border-color: #FF6B35 !important;
+        border-color: #FFC078 !important;
         background-color: #ffffff !important;
     }
     
-    /* 4. 修改输入框获取焦点（点击输入）时的状态 */
+    /* 3. 焦点状态（点击时）：移除黑色外框，改用半透明柔光 */
     .stTextInput input:focus {
-        border-color: #FF4D00 !important; /* 焦点时变为更深的橙色 */
-        box-shadow: 0 0 12px rgba(255, 159, 67, 0.4) !important; /* 橙色发光光晕 */
-        outline: none !important;
+        border-color: #FFA94D !important; /* 边框色稍深 */
+        box-shadow: 0 0 15px rgba(255, 169, 77, 0.3) !important; /* 柔和的橙色光晕，无硬边 */
+        outline: none !important; /* 强制移除浏览器默认黑框 */
     }
     
-    /* 5. 顺便美化一下密码遮罩点的颜色（可选） */
-    .stTextInput input[type="password"] {
-        -webkit-text-security: disc !important;
+    /* 4. 修改输入框上方的文字颜色（账号/密码） */
+    [data-testid="stWidgetLabel"] p {
+        color: #FFA94D !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        letter-spacing: 1px;
+    }
+    
+    /* 5. 隐藏密码切换时的黑色焦点圈 */
+    .stTextInput button {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -312,6 +318,7 @@ else:
 
     st.markdown("---")
     st.markdown("<p style='text-align:center; font-weight:bold; color:#FF6A88;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
