@@ -396,26 +396,6 @@ if st.session_state.step < 30:
             ">
                 🌆 灵魂城市测试
             </h1>
-            
-            <p style="
-                font-size: 1.2rem !important; 
-                font-weight: 700 !important; 
-                color: #FF66B2; 
-                letter-spacing: 8px; 
-                text-transform: uppercase;
-                margin-top: -10px;
-                opacity: 0.8;
-            ">
-                DOPAMINE CITY QUIZ
-            </p>
-            
-            <div style="
-                height: 6px; 
-                width: 80px; 
-                background: linear-gradient(90deg, #FF00CC, #00FFCC); 
-                margin: 15px auto; 
-                border-radius: 10px;
-            "></div>
         </div>
     """, unsafe_allow_html=True)
     if st.session_state.step < len(st.session_state.quiz_data):
@@ -615,6 +595,7 @@ else:
         for k in list(st.session_state.keys()): 
             del st.session_state[k]
         st.rerun()
+
 
 
 
