@@ -151,10 +151,10 @@ def apply_contents_settings():
         
         # --- 1. 定义锁屏函数 (注意缩进) ---
         def lock_all():
-            if not is_admin: # 管理员不受影响
+            if not st.session_state.get("admin_logged_in", False):
                 st.session_state.unlocked_SoulCity = False
                 st.session_state.unlocked_Orientation = False
-
+                st.session_state.needs_auth = None
         # --- 2. 导航菜单 ---
         
         # A. 首页按钮
