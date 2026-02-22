@@ -94,12 +94,7 @@ def apply_contents_settings():
         }
                  /* --- 彻底移除管理员入口 (st.expander) 的所有背景与边框 --- */
         
-        /* 1. 移除外层容器边框 */
-        [data-testid="stExpander"] {
-            border: none !important;
-            box-shadow: none !important;
-            background-color: transparent !important;
-        }
+        
         
         /* 2. 移除点击、悬停、聚焦时的所有背景色 (核心：针对 summary 标签) */
         [data-testid="stExpander"] summary, 
