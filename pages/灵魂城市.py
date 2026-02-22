@@ -602,12 +602,15 @@ def show_soul_city():
         # --- 5. 底部重置按钮 (这里是关键：必须保持缩进！) ---
         st.markdown("<br><br>", unsafe_allow_html=True)
         if st.button("✨ 重新开启灵魂之旅", use_container_width=True, key="reset_quiz"):
+            if not st.session_state.get("admin_logged_in", False):
+                st.session_state.unlocked_Orientation = False # 关键！
             for k in list(st.session_state.keys()): 
-                del st.session_state[k]
+                del st.session_state[k]     
             st.rerun()
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
