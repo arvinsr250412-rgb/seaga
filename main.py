@@ -145,6 +145,9 @@ elif st.session_state.target_page == "Orientation":
             st.session_state.unlocked_Orientation = False # 核心：清除解锁状态
         st.session_state.target_page = "Home"
         st.rerun()
+    else:
+        st.session_state.target_page = "Home"
+        st.rerun()
 
 # 默认页面: 首页
 else:
@@ -212,6 +215,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
