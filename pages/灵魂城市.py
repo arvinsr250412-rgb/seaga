@@ -86,8 +86,8 @@ def show_soul_city():
             line-height: 1.4;
         }
     
-        /* 自定义按钮样式 */
-        div.stButton > button {
+       /* 自定义按钮样式（限定在主区域，不污染侧边栏） */
+        section[data-testid="stMain"] div.stButton > button {
             background: linear-gradient(to right, #FF512F 0%, #DD2476 51%, #FF512F 100%) !important;
             background-size: 200% auto !important;
             color: white !important;
@@ -98,7 +98,7 @@ def show_soul_city():
             font-weight: 800 !important;
             transition: 0.5s !important;
         }
-        div.stButton > button:hover {
+        section[data-testid="stMain"] div.stButton > button:hover {
             background-position: right center !important;
             transform: scale(1.02);
         }
@@ -606,6 +606,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
