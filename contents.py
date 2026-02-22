@@ -142,21 +142,22 @@ def apply_contents_settings():
     """, unsafe_allow_html=True)
 
     # 2. 侧边栏内容构建
-    with st.sidebar:
+  with st.sidebar:
         st.markdown("<h2 style='text-align:center; color:#FF1493;'>🌈 Spectrum</h2>", unsafe_allow_html=True)
         st.markdown("---")
         
-        # --- 导航菜单 ---
-        
-     # --- 导航菜单 ---
-        
-        # 为了代码简洁，我们先获取一下管理员状态
+        # 获取管理员状态
         is_admin = st.session_state.get("admin_logged_in", False)
+        
+        # --- 1. 定义锁屏函数 (注意缩进) ---
         def lock_all():
-        if not is_admin: # 管理员不受影响
-            st.session_state.unlocked_SoulCity = False
-            st.session_state.unlocked_Orientation = False
-        # A. 首页按钮 (保持不变)
+            if not is_admin: # 管理员不受影响
+                st.session_state.unlocked_SoulCity = False
+                st.session_state.unlocked_Orientation = False
+
+        # --- 2. 导航菜单 ---
+        
+        # A. 首页按钮
         if st.button("🏠 首页中心", key="btn_home", use_container_width=True):
             lock_all() # 只要离开当前页就上锁
             st.session_state.target_page = "Home"
@@ -164,7 +165,6 @@ def apply_contents_settings():
             st.rerun()
 
         # B. 灵魂城市按钮
-        # 核心修改：如果普通用户解锁了，或者当前是管理员，都视为解锁状态
         is_soul_unlocked = st.session_state.get("unlocked_SoulCity", False) or is_admin
         soul_label = "🌆 灵魂城市测试" + (" ✅" if is_soul_unlocked else " 🔒")
         
@@ -178,10 +178,9 @@ def apply_contents_settings():
             st.rerun()
 
         # C. 性取向探索按钮
-        # 核心修改同上
         is_orient_unlocked = st.session_state.get("unlocked_Orientation", False) or is_admin
-        
         orient_label = "🌈 性取向探索" + (" ✅" if is_orient_unlocked else " 🔒")
+        
         if st.button(orient_label, key="btn_orient", use_container_width=True):
             if is_orient_unlocked:
                 st.session_state.target_page = "Orientation"
@@ -189,7 +188,7 @@ def apply_contents_settings():
             else:
                 lock_all()
                 st.session_state.needs_auth = "Orientation"
-            st.rerun()
+            st.rerun()+
         # --- 🔐 密钥验证动态区 ---
         # 只有在点击了锁定的项目时才显示
         if st.session_state.get("needs_auth"):
