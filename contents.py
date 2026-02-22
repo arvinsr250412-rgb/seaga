@@ -148,14 +148,21 @@ def apply_contents_settings():
         
         # --- 导航菜单 ---
         
-        # A. 首页按钮
+     # --- 导航菜单 ---
+        
+        # 为了代码简洁，我们先获取一下管理员状态
+        is_admin = st.session_state.get("admin_logged_in", False)
+        
+        # A. 首页按钮 (保持不变)
         if st.button("🏠 首页中心", key="btn_home", use_container_width=True):
             st.session_state.target_page = "Home"
             st.session_state.needs_auth = None
             st.rerun()
 
         # B. 灵魂城市按钮
-        is_soul_unlocked = st.session_state.get("unlocked_SoulCity", False)
+        # 核心修改：如果普通用户解锁了，或者当前是管理员，都视为解锁状态
+        is_soul_unlocked = st.session_state.get("unlocked_SoulCity", False) or is_admin
+        
         soul_label = "🌆 灵魂城市测试" + (" ✅" if is_soul_unlocked else " 🔒")
         if st.button(soul_label, key="btn_soul", use_container_width=True):
             if is_soul_unlocked:
@@ -166,7 +173,9 @@ def apply_contents_settings():
             st.rerun()
 
         # C. 性取向探索按钮
-        is_orient_unlocked = st.session_state.get("unlocked_Orientation", False)
+        # 核心修改同上
+        is_orient_unlocked = st.session_state.get("unlocked_Orientation", False) or is_admin
+        
         orient_label = "🌈 性取向探索" + (" ✅" if is_orient_unlocked else " 🔒")
         if st.button(orient_label, key="btn_orient", use_container_width=True):
             if is_orient_unlocked:
@@ -175,7 +184,6 @@ def apply_contents_settings():
             else:
                 st.session_state.needs_auth = "Orientation"
             st.rerun()
-
         # --- 🔐 密钥验证动态区 ---
         # 只有在点击了锁定的项目时才显示
         if st.session_state.get("needs_auth"):
