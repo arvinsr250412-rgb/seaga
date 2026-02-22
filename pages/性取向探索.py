@@ -235,8 +235,8 @@ def sexual_text():
             st.session_state.q_idx = 0
             st.session_state.answers = {}
             st.session_state.finished = False
-                if not st.session_state.get("admin_logged_in", False):
-            st.session_state.unlocked_Orientation = False # 关键！
+            if not st.session_state.get("admin_logged_in", False):
+                st.session_state.unlocked_Orientation = False # 关键！
             st.rerun()
     
     else:
