@@ -270,6 +270,7 @@ def sexual_text():
                 st.session_state.q_idx -= 1
                 st.rerun()
 
-
+if __name__ == "__main__":
+    sexual_text()
 
 
