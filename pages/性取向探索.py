@@ -232,11 +232,20 @@ def sexual_text():
         # 按钮美化
         st.write("")
         if st.button("✨ 重新开始探索", use_container_width=True):
+            # 1. 清空当前答题状态
             st.session_state.q_idx = 0
             st.session_state.answers = {}
             st.session_state.finished = False
+            
+            # 2. 核心修改：如果是普通用户，不仅上锁，还要重定向
             if not st.session_state.get("admin_logged_in", False):
-                st.session_state.unlocked_Orientation = False # 关键！
+                st.session_state.unlocked_Orientation = False  # 关锁
+                st.session_state.target_page = "Home"          # 踢回首页
+                st.session_state.needs_auth = None             # 清除当前的授权请求状态
+                
+                # 弹窗提示（可选，增加仪式感）
+                st.toast("密钥已失效，请重新激活", icon="🔒") 
+            
             st.rerun()
     
     else:
