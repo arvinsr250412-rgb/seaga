@@ -9,7 +9,7 @@ from pages.灵魂城市 import show_soul_city
 from pages.性取向探索 import sexual_text
 # --- 1. 页面配置 (必须是 Streamlit 命令的第一条) ---
 st.set_page_config(page_title="Spectrum", page_icon="💥", layout="wide")
-
+apply_contents_settings()
 # --- 2. 初始化 Session State ---
 if "admin_logged_in" not in st.session_state:
     st.session_state.admin_logged_in = False
@@ -235,6 +235,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
