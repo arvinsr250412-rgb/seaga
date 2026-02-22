@@ -70,6 +70,13 @@ def sexual_text():
         }
         </style>
     """, unsafe_allow_html=True)
+    if not st.session_state.get("unlocked_Orientation", False) and \
+       not st.session_state.get("admin_logged_in", False):
+        st.session_state.target_page = "Home"
+        # 稍微清理下残留，防止无限循环
+        st.session_state.finished = False 
+        st.rerun()
+        return # 彻底切断
     
     def get_prop():
         import matplotlib.font_manager as fm
