@@ -155,17 +155,20 @@ elif st.session_state.target_page == "SoulCity":
 
 # 页面 C: 性取向探索
 elif st.session_state.target_page == "Orientation":
-    # 【核心修改】门卫逻辑：必须是管理员 OR 已解锁
-    if st.session_state.get("admin_logged_in") or st.session_state.get("unlocked_Orientation"):
+    # --- 核心拦截点：先看锁，再看页面 ---
+    is_unlocked = st.session_state.get("unlocked_Orientation", False)
+    is_admin = st.session_state.get("admin_logged_in", False)
+    
+    if is_unlocked or is_admin:
+        # 只有在解锁或管理员状态下，才准许运行函数
         sexual_text()
-        if st.sidebar.button("🏠返回主页上锁", key="exit_orient"):
-            st.session_state.unlocked_Orientation = False # 退出即销毁
-            st.session_state.target_page = "Home"
-            st.rerun()
     else:
+        # 如果锁上了，强行把状态修正为首页，并立刻刷新
         st.session_state.target_page = "Home"
+        # 同时尝试同步侧边栏状态（假设你的侧边栏 key 叫 "main_nav"）
+        if "main_nav" in st.session_state:
+            st.session_state["main_nav"] = "Home"
         st.rerun()
-
 # 默认页面: 首页
 else:
     # --- 主界面 (多巴胺博客风格) ---
@@ -232,6 +235,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
