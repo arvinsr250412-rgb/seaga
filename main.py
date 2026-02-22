@@ -126,23 +126,32 @@ if st.session_state.target_page == "Admin" and st.session_state.admin_logged_in:
             st.rerun()
 
 # 页面 B: 灵魂城市测试
+# main.py 中修改 --- 6. 页面分发路由 --- 部分
+
+# 页面 B: 灵魂城市测试
 elif st.session_state.target_page == "SoulCity":
-    # 直接调用封装好的函数
-    show_soul_city()
-    # 在底部加一个回主页的小按钮
-    if st.sidebar.button("🏠 回到主页"):
-        if not st.session_state.get("admin_logged_in", False):
-            st.session_state.unlocked_SoulCity = False # 核心：清除解锁状态
+    # 【核心修改】门卫逻辑：必须是管理员 OR 已解锁
+    if st.session_state.get("admin_logged_in") or st.session_state.get("unlocked_SoulCity"):
+        show_soul_city()
+        if st.sidebar.button("🏠返回主页并上锁", key="exit_soul"):
+            st.session_state.unlocked_SoulCity = False # 退出即销毁
+            st.session_state.target_page = "Home"
+            st.rerun()
+    else:
+        # 如果没锁，强行踢回首页并清空目标
         st.session_state.target_page = "Home"
         st.rerun()
 
-# 页面 C: 性取向探索 (示例)
+# 页面 C: 性取向探索
 elif st.session_state.target_page == "Orientation":
-    sexual_text()
-    # 在底部加一个回主页的小按钮
-    if st.sidebar.button("🏠 回到主页"):
-        if not st.session_state.get("admin_logged_in", False):
-            st.session_state.unlocked_Orientation = False # 核心：清除解锁状态
+    # 【核心修改】门卫逻辑：必须是管理员 OR 已解锁
+    if st.session_state.get("admin_logged_in") or st.session_state.get("unlocked_Orientation"):
+        sexual_text()
+        if st.sidebar.button("🏠返回主页上锁", key="exit_orient"):
+            st.session_state.unlocked_Orientation = False # 退出即销毁
+            st.session_state.target_page = "Home"
+            st.rerun()
+    else:
         st.session_state.target_page = "Home"
         st.rerun()
 
@@ -212,6 +221,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
