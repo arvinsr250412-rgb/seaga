@@ -77,6 +77,21 @@ def apply_contents_settings():
             border-color: #FF99AC !important;
             background-color: #FFF0F5 !important;
         }
+        /* 新增：移除悬停黑框 */
+        [data-testid="stSidebarNav"] ul li div:hover {
+            background-color: rgba(255, 255, 255, 0.5) !important; /* 或者完全 transparent */
+            border-radius: 10px;
+        }
+
+        /* 新增：移除 Press Enter 提示 */
+        div[data-testid="InputInstructions"] {
+            visibility: hidden;
+        }
+
+        /* 移除管理员入口点击后的高亮 */
+        .st-emotion-cache-16idsys p {
+            background: none !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
