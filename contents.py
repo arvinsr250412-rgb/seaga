@@ -92,37 +92,49 @@ def apply_contents_settings():
         .st-emotion-cache-16idsys p {
             background: none !important;
         }
-                /* 1. 彻底抹除侧边栏所有导航项的背景（包括选中、悬停、焦点、活动状态） */
-        [data-testid="stSidebarNav"] ul li div,
-        [data-testid="stSidebarNav"] ul li div:hover,
-        [data-testid="stSidebarNav"] ul li div:focus,
-        [data-testid="stSidebarNav"] ul li div:active,
-        [data-testid="stSidebarNavItems"] div[role="button"] {
+                 /* --- 彻底移除管理员入口 (st.expander) 的所有背景与边框 --- */
+        
+        /* 1. 移除外层容器边框 */
+        [data-testid="stExpander"] {
+            border: none !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+        }
+        
+        /* 2. 移除点击、悬停、聚焦时的所有背景色 (核心：针对 summary 标签) */
+        [data-testid="stExpander"] summary, 
+        [data-testid="stExpander"] summary:hover, 
+        [data-testid="stExpander"] summary:focus, 
+        [data-testid="stExpander"] summary:active {
             background-color: transparent !important;
             background: transparent !important;
-            box-shadow: none !important;
+            color: #FF9F43 !important; /* 保持你的多巴胺橙色 */
             outline: none !important;
+            box-shadow: none !important;
+        }
+        
+        /* 3. 移除鼠标移开后可能残留的黑色/灰色高亮矩形 (Emotion Cache 覆盖) */
+        [data-testid="stExpander"] summary:focus-visible {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+        
+        /* 4. 针对 Expander 内部展开后的容器内容也做透明处理 */
+        [data-testid="stExpander"] [data-testid="stVerticalBlock"] {
+            background-color: transparent !important;
             border: none !important;
         }
         
-        /* 2. 移除点击后鼠标移开残留的“焦点框”颜色 */
-        .st-emotion-cache-16idsys:focus:not(:active),
-        .st-emotion-cache-6qob1r:focus:not(:active) {
+        /* 5. 针对侧边栏导航按钮点击后的残留黑影（你原本代码的补充） */
+        div[role="button"]:focus, 
+        div[role="button"]:active,
+        .st-emotion-cache-16idsys:focus:not(:active) {
             background-color: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
         }
         
-        /* 3. 如果你是用 st.radio 做的管理员入口，强制它的选中项也不产生背景 */
-        div[data-testid="stWidgetLabel"] + div {
-            background-color: transparent !important;
-        }
-        
-        /* 4. 针对特定的侧边栏选择器，强制文字颜色，防止背景变黑导致字看不见 */
-        [data-testid="stSidebarNav"] span {
-            color: #FF6A88 !important; /* 你的多巴胺主色 */
-            font-weight: 600;
-        }
-        
-        /* 5. 隐藏输入框下方的指令 (Press Enter) */
+        /* 6. 隐藏输入框下方的指令 (Press Enter to apply) */
         div[data-testid="InputInstructions"] {
             display: none !important;
         }
