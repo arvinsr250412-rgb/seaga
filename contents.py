@@ -142,7 +142,7 @@ def apply_contents_settings():
     """, unsafe_allow_html=True)
 
     # 2. 侧边栏内容构建
-  with st.sidebar:
+    with st.sidebar:
         st.markdown("<h2 style='text-align:center; color:#FF1493;'>🌈 Spectrum</h2>", unsafe_allow_html=True)
         st.markdown("---")
         
@@ -150,10 +150,10 @@ def apply_contents_settings():
         is_admin = st.session_state.get("admin_logged_in", False)
         
         # --- 1. 定义锁屏函数 (注意缩进) ---
-        def lock_all():
-            if not is_admin: # 管理员不受影响
-                st.session_state.unlocked_SoulCity = False
-                st.session_state.unlocked_Orientation = False
+            def lock_all():
+                if not is_admin: # 管理员不受影响
+                    st.session_state.unlocked_SoulCity = False
+                    st.session_state.unlocked_Orientation = False
 
         # --- 2. 导航菜单 ---
         
