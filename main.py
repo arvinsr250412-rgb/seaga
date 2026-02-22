@@ -131,6 +131,8 @@ elif st.session_state.target_page == "SoulCity":
     show_soul_city()
     # 在底部加一个回主页的小按钮
     if st.sidebar.button("🏠 回到主页"):
+        if not st.session_state.get("admin_logged_in", False):
+            st.session_state.unlocked_SoulCity = False # 核心：清除解锁状态
         st.session_state.target_page = "Home"
         st.rerun()
 
@@ -139,13 +141,17 @@ elif st.session_state.target_page == "Orientation":
     sexual_text()
     # 在底部加一个回主页的小按钮
     if st.sidebar.button("🏠 回到主页"):
+        if not st.session_state.get("admin_logged_in", False):
+            st.session_state.unlocked_Orientation = False # 核心：清除解锁状态
         st.session_state.target_page = "Home"
         st.rerun()
 
 # 默认页面: 首页
 else:
     # --- 主界面 (多巴胺博客风格) ---
-    
+    if not st.session_state.get("admin_logged_in", False):
+        st.session_state.unlocked_SoulCity = False
+        st.session_state.unlocked_Orientation = False
     # 1. 巨大的 Hero 标题区
     st.markdown("""
         <div class="hero-container">
@@ -206,6 +212,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
