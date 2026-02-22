@@ -239,23 +239,25 @@ def sexual_text():
         # 按钮美化
         st.write("")
         # --- 性取向探索.py 底部按钮 ---
-        if st.button("✨ 重新开始探索", use_container_width=True):
-            # 1. 清理该页面的答题数据
+        # --- 性取向探索.py 中的重置按钮 ---
+        if st.button("✨ 重新开始探索", use_container_width=True, key="reset_orientation_strict"):
+            # 1. 重置所有答题数据
             st.session_state.q_idx = 0
             st.session_state.answers = {}
             st.session_state.finished = False
             
-            # 2. 权限锁死
-            st.session_state.unlocked_Orientation = False
+            # 2. 只有非管理员才执行关锁操作 (避免管理员测试时把自己关掉)
+            if not st.session_state.get("admin_logged_in", False):
+                st.session_state.unlocked_Orientation = False
             
-            # 3. 跳转回首页并清除拦截状态
+            # 3. 核心：设置目标页面
             st.session_state.target_page = "Home"
-            st.session_state.needs_auth = None
             
-            # 4. 清理输入框 Key（重要）
+            # 4. 清理输入框残留 (与 contents.py 中的 key 对应)
             if "input_key_Orientation" in st.session_state:
                 st.session_state["input_key_Orientation"] = ""
-                
+            
+            # 5. 立即中断并重走 main.py
             st.rerun()
     
     else:
