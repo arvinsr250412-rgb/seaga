@@ -8,6 +8,8 @@ import matplotlib.font_manager as fm
 from contents import apply_contents_settings
 
 
+apply_contents_settings()
+
 # --- 1. 页面配置 ---
 st.set_page_config(page_title="Spectrum | 灵魂城市测试", layout="centered")
 
@@ -31,7 +33,7 @@ prop = get_font()
     
     # 多巴胺糖果风格的契合度卡片 (高对比度，绝不会看不清字)
 def show_soul_city():
-    apply_contents_settings()
+  
 
     # 设置中文支持
     plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'sans-serif']
@@ -606,6 +608,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
