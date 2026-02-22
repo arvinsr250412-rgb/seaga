@@ -92,37 +92,37 @@ def apply_contents_settings():
         .st-emotion-cache-16idsys p {
             background: none !important;
         }
-                /* 1. 彻底移除侧边栏导航项目的点击/悬停灰色背景 */
+                /* 1. 彻底抹除侧边栏所有导航项的背景（包括选中、悬停、焦点、活动状态） */
+        [data-testid="stSidebarNav"] ul li div,
         [data-testid="stSidebarNav"] ul li div:hover,
-        [data-testid="stSidebarNav"] ul li div:active,
         [data-testid="stSidebarNav"] ul li div:focus,
-        [data-testid="stSidebarNav"] ul li div[data-selected="true"] {
+        [data-testid="stSidebarNav"] ul li div:active,
+        [data-testid="stSidebarNavItems"] div[role="button"] {
             background-color: transparent !important;
-            color: #FF6A88 !important; /* 保持文字颜色 */
-        }
-        
-        /* 2. 针对“管理员入口”这种可点击元素，移除焦点状态的黑色框线和阴影 */
-        [data-testid="stExpander"], 
-        [role="button"], 
-        button, 
-        div[tabindex="0"] {
+            background: transparent !important;
+            box-shadow: none !important;
             outline: none !important;
-            box-shadow: none !important;
+            border: none !important;
         }
         
-        /* 特别针对管理员入口悬停时出现的灰色矩形 */
-        .st-emotion-cache-6qob1r:focus:not(:active),
-        .st-emotion-cache-16idsys:focus:not(:active) {
-            background-color: transparent !important;
-            box-shadow: none !important;
-        }
-        
-        /* 3. 彻底移除侧边栏菜单项的背景颜色变化 */
-        [data-testid="stSidebarNavItems"] > li > div {
+        /* 2. 移除点击后鼠标移开残留的“焦点框”颜色 */
+        .st-emotion-cache-16idsys:focus:not(:active),
+        .st-emotion-cache-6qob1r:focus:not(:active) {
             background-color: transparent !important;
         }
         
-        /* 4. 隐藏输入框下方的指令提示文字 (Press Enter to apply) */
+        /* 3. 如果你是用 st.radio 做的管理员入口，强制它的选中项也不产生背景 */
+        div[data-testid="stWidgetLabel"] + div {
+            background-color: transparent !important;
+        }
+        
+        /* 4. 针对特定的侧边栏选择器，强制文字颜色，防止背景变黑导致字看不见 */
+        [data-testid="stSidebarNav"] span {
+            color: #FF6A88 !important; /* 你的多巴胺主色 */
+            font-weight: 600;
+        }
+        
+        /* 5. 隐藏输入框下方的指令 (Press Enter) */
         div[data-testid="InputInstructions"] {
             display: none !important;
         }
