@@ -271,6 +271,6 @@ def sexual_text():
                 st.rerun()
             
 if __name__ == "__main__":
-    show_soul_city()
+    sexual_text()
 
 
