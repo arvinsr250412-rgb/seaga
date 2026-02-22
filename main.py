@@ -25,7 +25,7 @@ if "unlocked_SoulCity" not in st.session_state:
 if "unlocked_Orientation" not in st.session_state:
     st.session_state.unlocked_Orientation = False
 # --- 3. 应用统一配置与侧边栏 (包含所有拦截逻辑) ---
-apply_contents_settings()
+
 
 # --- 4. 多巴胺风格 CSS 全局注入 ---
 st.markdown("""
@@ -235,6 +235,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
