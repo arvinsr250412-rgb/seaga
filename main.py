@@ -96,7 +96,18 @@ def update_keys_to_github(new_data, sha=None):
     return r.status_code in [200, 201]
 
 # --- 6. 页面分发路由 ---
-
+if st.session_state.target_page in ["SoulCity", "Orientation"]:
+    is_admin = st.session_state.get("admin_logged_in", False)
+    # 检查对应的锁
+    if st.session_state.target_page == "SoulCity":
+        has_lock = st.session_state.get("unlocked_SoulCity", False)
+    else:
+        has_lock = st.session_state.get("unlocked_Orientation", False)
+        
+    # 如果既不是管理员也没解锁，强行修正状态并刷新
+    if not is_admin and not has_lock:
+        st.session_state.target_page = "Home"
+        st.rerun()
 # 页面 A: 管理员后台
 if st.session_state.target_page == "Admin" and st.session_state.admin_logged_in:
     st.markdown("<h1 class='hero-title' style='font-size:3.5rem !important;'>Admin Panel 🚀</h1>", unsafe_allow_html=True)
@@ -221,6 +232,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
