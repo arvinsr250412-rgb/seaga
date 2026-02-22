@@ -150,10 +150,10 @@ def apply_contents_settings():
         is_admin = st.session_state.get("admin_logged_in", False)
         
         # --- 1. 定义锁屏函数 (注意缩进) ---
-            def lock_all():
-                if not is_admin: # 管理员不受影响
-                    st.session_state.unlocked_SoulCity = False
-                    st.session_state.unlocked_Orientation = False
+        def lock_all():
+            if not is_admin: # 管理员不受影响
+                st.session_state.unlocked_SoulCity = False
+                st.session_state.unlocked_Orientation = False
 
         # --- 2. 导航菜单 ---
         
@@ -188,7 +188,8 @@ def apply_contents_settings():
             else:
                 lock_all()
                 st.session_state.needs_auth = "Orientation"
-            st.rerun()+
+            st.rerun()
+            
         # --- 🔐 密钥验证动态区 ---
         # 只有在点击了锁定的项目时才显示
         if st.session_state.get("needs_auth"):
