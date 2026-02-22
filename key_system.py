@@ -26,8 +26,9 @@ def _update_github(new_data, sha):
 
 def key_check_gate(test_id):
     # 已解锁直接放行
-    if st.session_state.get(f"unlocked_{test_id}", False):
-        return True
+    # --- 新增：管理员特权通道 ---
+    if st.session_state.get("admin_logged_in", False):
+        return True  # 直接返回 True，视为验证通过，不渲染任何输入框
 
     st.markdown("---")
     u_key = st.text_input(
