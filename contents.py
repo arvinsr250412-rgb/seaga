@@ -92,6 +92,40 @@ def apply_contents_settings():
         .st-emotion-cache-16idsys p {
             background: none !important;
         }
+                /* 1. 彻底移除侧边栏导航项目的点击/悬停灰色背景 */
+        [data-testid="stSidebarNav"] ul li div:hover,
+        [data-testid="stSidebarNav"] ul li div:active,
+        [data-testid="stSidebarNav"] ul li div:focus,
+        [data-testid="stSidebarNav"] ul li div[data-selected="true"] {
+            background-color: transparent !important;
+            color: #FF6A88 !important; /* 保持文字颜色 */
+        }
+        
+        /* 2. 针对“管理员入口”这种可点击元素，移除焦点状态的黑色框线和阴影 */
+        [data-testid="stExpander"], 
+        [role="button"], 
+        button, 
+        div[tabindex="0"] {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        
+        /* 特别针对管理员入口悬停时出现的灰色矩形 */
+        .st-emotion-cache-6qob1r:focus:not(:active),
+        .st-emotion-cache-16idsys:focus:not(:active) {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+        
+        /* 3. 彻底移除侧边栏菜单项的背景颜色变化 */
+        [data-testid="stSidebarNavItems"] > li > div {
+            background-color: transparent !important;
+        }
+        
+        /* 4. 隐藏输入框下方的指令提示文字 (Press Enter to apply) */
+        div[data-testid="InputInstructions"] {
+            display: none !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
