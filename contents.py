@@ -152,9 +152,13 @@ def apply_contents_settings():
         
         # 为了代码简洁，我们先获取一下管理员状态
         is_admin = st.session_state.get("admin_logged_in", False)
-        
+        def lock_all():
+        if not is_admin: # 管理员不受影响
+            st.session_state.unlocked_SoulCity = False
+            st.session_state.unlocked_Orientation = False
         # A. 首页按钮 (保持不变)
         if st.button("🏠 首页中心", key="btn_home", use_container_width=True):
+            lock_all() # 只要离开当前页就上锁
             st.session_state.target_page = "Home"
             st.session_state.needs_auth = None
             st.rerun()
@@ -162,13 +166,14 @@ def apply_contents_settings():
         # B. 灵魂城市按钮
         # 核心修改：如果普通用户解锁了，或者当前是管理员，都视为解锁状态
         is_soul_unlocked = st.session_state.get("unlocked_SoulCity", False) or is_admin
-        
         soul_label = "🌆 灵魂城市测试" + (" ✅" if is_soul_unlocked else " 🔒")
+        
         if st.button(soul_label, key="btn_soul", use_container_width=True):
             if is_soul_unlocked:
                 st.session_state.target_page = "SoulCity"
                 st.session_state.needs_auth = None
             else:
+                lock_all() # 尝试去别的地方前，先确保当前锁好
                 st.session_state.needs_auth = "SoulCity"
             st.rerun()
 
@@ -182,6 +187,7 @@ def apply_contents_settings():
                 st.session_state.target_page = "Orientation"
                 st.session_state.needs_auth = None
             else:
+                lock_all()
                 st.session_state.needs_auth = "Orientation"
             st.rerun()
         # --- 🔐 密钥验证动态区 ---
