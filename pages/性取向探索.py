@@ -245,7 +245,8 @@ def sexual_text():
                 
                 # 弹窗提示（可选，增加仪式感）
                 st.toast("密钥已失效，请重新激活", icon="🔒") 
-            
+                if "auth_success" in st.session_state:
+                    del st.session_state["auth_success"]
             st.rerun()
     
     else:
