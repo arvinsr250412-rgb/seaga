@@ -239,27 +239,22 @@ def sexual_text():
         # 按钮美化
         st.write("")
         # --- 性取向探索.py 底部按钮 ---
-        # --- 性取向探索.py 中的重置按钮 ---
-        # --- 性取向探索.py 底部按钮 ---
-        if st.button("✨ 重新开始探索", use_container_width=True, key="force_kill_session"):
-            # 1. 彻底清空本页的所有数据键
-            keys_to_clear = ['q_idx', 'answers', 'finished']
-            for k in keys_to_clear:
-                if k in st.session_state:
-                    del st.session_state[k]
+        if st.button("✨ 重新开始探索", use_container_width=True, key="reset_final_v2"):
+            # 1. 彻底清空答题痕迹
+            st.session_state.q_idx = 0
+            st.session_state.answers = {}
+            st.session_state.finished = False
             
-            # 2. 强制锁死权限
-            st.session_state.unlocked_Orientation = False
+            # 2. 只有非管理员才关锁
+            if not st.session_state.get("admin_logged_in", False):
+                st.session_state.unlocked_Orientation = False
             
-            # 3. 修正跳转目标
+            # 3. 强制跳转回首页
             st.session_state.target_page = "Home"
             
-            # 4. 关键：清除输入框残留（确保下次进来必须重新输密钥）
+            # 4. 关键：清除密钥输入框的残留缓存
             if "input_key_Orientation" in st.session_state:
                 st.session_state["input_key_Orientation"] = ""
-            
-            # 5. 如果你的 contents.py 侧边栏有 key，尝试在这里强制修改它
-            # 比如：st.session_state["sidebar_selection"] = "Home"
             
             st.rerun()
     
