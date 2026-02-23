@@ -103,7 +103,7 @@ def show_soul_city():
         }
         </style>
     """, unsafe_allow_html=True)
-    """, unsafe_allow_html=True)
+
     if 'history' not in st.session_state:
         st.session_state.history = []  # 用于存放每一题选择后的分数快照
     # --- 2. 核心初始化 ---
@@ -609,6 +609,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
