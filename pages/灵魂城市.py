@@ -45,64 +45,69 @@ def show_soul_city():
     KEY_MAP = {"E": "事业搞钱", "C": "环境气候", "P": "生活节奏", "V": "人文底蕴", "G": "自然景观", "S": "社交活力"}
     # --- 1. 样式配置 (多巴胺色彩增强) ---
     # --- 在 show_soul_city 的 st.markdown Style 块中替换 ---
-   st.markdown("""
+    # --- 1. 样式配置 (清新多巴胺风格：白底彩边) ---
+    st.markdown("""
         <style>
-        /* 1. 题目字体：保持大号且清晰 */
+        /* 页面背景清爽白 */
+        .stApp { background-color: #FFFFFF; }
+
+        /* 题目文字：保持大号且清晰 */
         .q-text {
-            font-size: 2.2rem !important; /* 确保题目够大 */
+            font-size: 2.2rem !important; 
             font-weight: 800 !important;
-            color: #333333 !important;
+            color: #2D3748 !important;
             margin-bottom: 30px !important;
             line-height: 1.4 !important;
         }
 
-        /* 2. 选项按钮：白色背景 + 多巴胺彩色边框 */
-        div.stButton > button {
-            background-color: #FFFFFF !important;
-            color: #FF6B6B !important; /* 字体色：浅红 */
-            border: 2px solid !important; /* 基础边框线 */
-            border-color: #FF8E99 !important; /* 基础边框色：粉色 */
-            border-radius: 15px !important;
-            padding: 18px 25px !important;
-            font-size: 1.2rem !important;
-            font-weight: 600 !important;
-            transition: all 0.2s ease !important;
-            box-shadow: 0 4px 10px rgba(255, 142, 153, 0.1) !important; /* 极淡的粉色投影 */
-            width: 100% !important;
-        }
-
-        /* 悬停效果：边框变为橙色，背景微变 */
-        div.stButton > button:hover {
-            border-color: #FF9E7D !important; /* 悬停变为橙色 */
-            background-color: #FFF5F5 !important; /* 极浅的红底 */
-            color: #FF8E99 !important;
-            transform: translateY(-2px) !important;
-        }
-
-        /* 3. 【重点】结果城市名：极致巨大 */
-        .massive-city-result {
-            font-size: 10rem !important; /* 巨大的字体 */
-            font-weight: 900 !important;
-            text-align: center !important;
-            color: #FF6B6B !important; /* 浅红色 */
-            margin: 30px 0 !important;
-            line-height: 1 !important;
-            letter-spacing: -2px !important;
-            /* 浅色多巴胺渐变效果 */
-            background: linear-gradient(to right, #FF6B6B, #FF8E99, #FF9E7D);
-            -webkit-background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-        }
-
-        /* 答题卡片容器 */
-        .q-card {
-            background: white !important;
-            padding: 20px !important;
+        /* 重点：白底+彩色边框按钮 */
+        section[data-testid="stMain"] div.stButton > button {
+            background-color: #FFFFFF !important; /* 白色背景 */
+            border: 3px solid !important; /* 明显的边框 */
+            border-color: #FF8E99 !important; /* 默认粉色边框 */
             border-radius: 20px !important;
-            text-align: center !important;
+            padding: 1.2rem 2rem !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 15px rgba(255, 142, 153, 0.1) !important;
+        }
+
+        /* 按钮文字：暖色调 */
+        section[data-testid="stMain"] div.stButton > button p {
+            color: #FF6B6B !important; /* 浅红字体 */
+            font-size: 1.3rem !important;
+            font-weight: 700 !important;
+        }
+
+        /* 悬停效果：边框变为橙色 */
+        section[data-testid="stMain"] div.stButton > button:hover {
+            border-color: #FFAD7D !important; /* 橙色边框 */
+            background-color: #FFF9F9 !important; /* 极浅粉背景 */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 173, 125, 0.2) !important;
+        }
+
+        /* 结果页：超大城市名 */
+        .massive-city-title {
+            font-size: 100px !important; /* 极大字体 */
+            font-weight: 900 !important;
+            text-align: center;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E99, #FFAD7D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 40px 0 !important;
+            line-height: 1.1;
+        }
+
+        /* 题目卡片：简化为白底微阴影 */
+        .q-card {
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            text-align: center;
+            margin: 0 auto;
         }
         </style>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
     if 'history' not in st.session_state:
         st.session_state.history = []  # 用于存放每一题选择后的分数快照
@@ -609,6 +614,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
