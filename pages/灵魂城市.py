@@ -394,6 +394,7 @@ def show_soul_city():
         # --- 2. 彩色答题界面 UI 渲染 ---
         # --- 多巴胺色彩主副标题 ---
         st.markdown("""
+            st.markdown(f'<div class="q-card"><p class="q-text">{current_q["question"]}</p></div>', unsafe_allow_html=True)
             <div style="text-align: center; padding: 20px 0; margin-bottom: 10px;">
                 <h1 style="
                     font-size: 4.5rem !important; 
@@ -508,10 +509,9 @@ def show_soul_city():
     
         # --- 2. 结果页顶部：标题与契合度 ---
         # --- 结果展示逻辑 ---
-    
-        st.markdown(f'<div class="result-city-name">{match_1["name"]}</div>', unsafe_allow_html=True)
-        
-        st.markdown('<p style="text-align:center; font-size:1.5rem; font-weight:800; color:#FF6A88; margin-top:-20px;">这就是你的灵魂所属之城</p>', unsafe_allow_html=True)
+        st.markdown(f'<div class="massive-city-title">{match_1["name"]}</div>', unsafe_allow_html=True)
+        st.markdown(f'<p style="text-align:center; font-size:1.5rem; color:#FF8E99; font-weight:bold;">{res1["tag"]}</p>', unsafe_allow_html=True)
+
         
         st.markdown(f"""
             <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
@@ -614,6 +614,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
