@@ -394,7 +394,6 @@ def show_soul_city():
         # --- 2. 彩色答题界面 UI 渲染 ---
         # --- 多巴胺色彩主副标题 ---
         st.markdown("""
-            st.markdown(f'<div class="q-card"><p class="q-text">{current_q["question"]}</p></div>', unsafe_allow_html=True)
             <div style="text-align: center; padding: 20px 0; margin-bottom: 10px;">
                 <h1 style="
                     font-size: 4.5rem !important; 
@@ -614,6 +613,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
