@@ -45,67 +45,64 @@ def show_soul_city():
     KEY_MAP = {"E": "事业搞钱", "C": "环境气候", "P": "生活节奏", "V": "人文底蕴", "G": "自然景观", "S": "社交活力"}
     # --- 1. 样式配置 (多巴胺色彩增强) ---
     # --- 在 show_soul_city 的 st.markdown Style 块中替换 ---
-    st.markdown("""
+   st.markdown("""
         <style>
-        /* 1. 按钮容器：白色背景 + 彩色渐变边框 */
-        section[data-testid="stMain"] div.stButton > button {
-            background: #FFFFFF !important;
-            color: #FF512F !important; /* 默认主色调 */
-            border: 3px solid !important;
-            border-image: linear-gradient(45deg, #FF512F, #DD2476, #FF99AC, #80D0C7) 1 !important; /* 渐变边框 */
-            border-radius: 15px !important; /* 注意：border-image 会让圆角失效，如果需要圆角请看下方方案 */
-            padding: 1.2rem !important;
-            font-size: 1.2rem !important;
+        /* 1. 题目字体：保持大号且清晰 */
+        .q-text {
+            font-size: 2.2rem !important; /* 确保题目够大 */
             font-weight: 800 !important;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
-            transition: all 0.3s ease !important;
-            margin-bottom: 10px !important;
-            text-align: center !important;
+            color: #333333 !important;
+            margin-bottom: 30px !important;
+            line-height: 1.4 !important;
         }
 
-        /* 2. 这里的骚操作：利用特殊的 CSS 让按钮文字呈现渐变色 */
-        section[data-testid="stMain"] div.stButton > button p {
-            background: linear-gradient(45deg, #FF512F, #DD2476) !important;
+        /* 2. 选项按钮：白色背景 + 多巴胺彩色边框 */
+        div.stButton > button {
+            background-color: #FFFFFF !important;
+            color: #FF6B6B !important; /* 字体色：浅红 */
+            border: 2px solid !important; /* 基础边框线 */
+            border-color: #FF8E99 !important; /* 基础边框色：粉色 */
+            border-radius: 15px !important;
+            padding: 18px 25px !important;
+            font-size: 1.2rem !important;
+            font-weight: 600 !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 4px 10px rgba(255, 142, 153, 0.1) !important; /* 极淡的粉色投影 */
+            width: 100% !important;
+        }
+
+        /* 悬停效果：边框变为橙色，背景微变 */
+        div.stButton > button:hover {
+            border-color: #FF9E7D !important; /* 悬停变为橙色 */
+            background-color: #FFF5F5 !important; /* 极浅的红底 */
+            color: #FF8E99 !important;
+            transform: translateY(-2px) !important;
+        }
+
+        /* 3. 【重点】结果城市名：极致巨大 */
+        .massive-city-result {
+            font-size: 10rem !important; /* 巨大的字体 */
+            font-weight: 900 !important;
+            text-align: center !important;
+            color: #FF6B6B !important; /* 浅红色 */
+            margin: 30px 0 !important;
+            line-height: 1 !important;
+            letter-spacing: -2px !important;
+            /* 浅色多巴胺渐变效果 */
+            background: linear-gradient(to right, #FF6B6B, #FF8E99, #FF9E7D);
             -webkit-background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
-            font-size: 1.2rem !important;
-            font-weight: 900 !important;
         }
 
-        /* 3. 悬停效果：多巴胺弹跳感 */
-        section[data-testid="stMain"] div.stButton > button:hover {
-            transform: translateY(-5px) scale(1.01) !important;
-            box-shadow: 0 15px 30px rgba(221, 36, 118, 0.2) !important;
-            background: #FFF5F7 !important; /* 悬停时淡淡的粉色 */
-            border-image: linear-gradient(45deg, #80D0C7, #FF99AC, #DD2476, #FF512F) 1 !important; /* 边框旋转感 */
-        }
-
-        /* 4. 如果你想让按钮有真正的圆角，渐变边框需要换一种写法 */
-        section[data-testid="stMain"] div.stButton > button {
-            border: none !important;
-            position: relative !important;
-            border-radius: 20px !important;
-            background: white !important;
-            z-index: 1 !important;
-        }
-        /* 利用伪元素实现带圆角的渐变边框 */
-        section[data-testid="stMain"] div.stButton > button::before {
-            content: '';
-            position: absolute;
-            top: -3px; bottom: -3px; left: -3px; right: -3px;
-            background: linear-gradient(45deg, #FF512F, #00F2FE, #DD2476);
-            border-radius: 23px !important;
-            z-index: -1 !important;
-            transition: opacity 0.3s !important;
-        }
-
-        /* 答题卡片微调：让标题更显眼 */
+        /* 答题卡片容器 */
         .q-card {
-            background: #FFFFFF !important;
-            border: 2px solid #F0F2F6 !important;
-            box-shadow: 0 25px 50px -12px rgba(255, 106, 136, 0.2) !important;
+            background: white !important;
+            padding: 20px !important;
+            border-radius: 20px !important;
+            text-align: center !important;
         }
         </style>
+    """, unsafe_allow_html=True)
     """, unsafe_allow_html=True)
     if 'history' not in st.session_state:
         st.session_state.history = []  # 用于存放每一题选择后的分数快照
@@ -612,6 +609,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
