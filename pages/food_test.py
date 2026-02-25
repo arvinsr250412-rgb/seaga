@@ -231,6 +231,18 @@ def show_dish_test():
             padding: 8px 20px !important;
             min-height: 0px !important;
         }
+        /* 修改 food_test.py 里的 CSS */
+        /* 只影响主屏幕按钮，不影响侧边栏 */
+        [data-testid="stMain"] .stButton > button {
+            height: 3em !important; 
+            width: 100% !important;
+        }
+        
+        /* 强制侧边栏按钮恢复 content.py 设定的紧凑样式 */
+        [data-testid="stSidebar"] .stButton > button {
+            height: auto !important;
+            padding: 5px 15px !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -316,10 +328,19 @@ def show_dish_test():
             # 图片展示区域 (需确保 images/ 文件夹存在)
             img_path = f"images/{result_data['name']}.jpg"
             if os.path.exists(img_path):
+                # 将 food_test.py 中显示图片的逻辑改为：
                 if img_path:
-                    # 将 width 设为 300 或 400（根据你喜欢的比例调整）
-                    # 同时必须将 use_container_width 设为 False
-                    st.image(img_path, width=350, use_container_width=False)
+                    # 使用 columns 居中并限制宽度
+                    col1, col2, col3 = st.columns([1, 2, 1]) 
+                    with col2:
+                        st.markdown(
+                            f"""
+                            <div style="display: flex; justify-content: center;">
+                                <img src="data:image/png;base64,{get_image_base64(img_path)}" width="300" style="border-radius: 20px;">
+                            </div>
+                            """, 
+                            unsafe_allow_html=True
+                        )
             else:
                 st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images 目录下。")
             # 雷达图展示
