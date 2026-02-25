@@ -366,16 +366,20 @@ def show_dish_test():
 
             st.write("<br>", unsafe_allow_html=True)
             
-            # 重新测试按钮
+        
             st.markdown('<div class="btn-primary">', unsafe_allow_html=True)
-            if st.button("重新翻炒", key="dish_restart_btn", use_container_width=True):
+            # food_test.py 结果页部分
+            if st.button("🔥 重新翻炒", use_container_width=True):
+                # 调用我们在 content 里的逻辑 (如果函数在 content.py，需要 import)
+                # 或者直接在这里手动清理：
                 st.session_state.dish_step = 0
-                    # 清空存放结果的变量，例如：
+                st.session_state.unlocked_FoodTest = False # 强制上锁
                 if 'result_dish' in st.session_state:
-                    del st.session_state.result_dish
-                st.session_state.dish_scores = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
+                    del st.session_state['result_dish']
+                    
+                st.session_state.target_page = "Home" # 返回主页
+                st.success("记录已清空，正在返回主页...")
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
