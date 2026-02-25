@@ -226,6 +226,11 @@ def show_dish_test():
             border: 1px solid #ffedd5;
             margin: 0.2rem;
         }
+        [data-testid="stSidebar"] .stButton > button {
+            height: auto !important;
+            padding: 8px 20px !important;
+            min-height: 0px !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
