@@ -204,6 +204,7 @@ def show_dish_test():
             border: 1px solid #e7e5e4;
             border-radius: 1.25rem !important; /* 更圆润 */
             padding: 0.8rem 1.5rem !important;
+            font-size: 1rem !important;
             font-weight: 500 !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important;
