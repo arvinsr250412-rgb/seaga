@@ -107,15 +107,21 @@ def calculate_dish_result(scores):
     return matched_dish, percentages
 
 def draw_radar_chart(percentages):
-    """使用 Plotly 绘制符合原版配色的雷达图"""
-    categories = ['甜 (B)', '苦 (C)', '辣 (D)', '酸 (A)']
+    """
+    专门修复文字遮挡问题的雷达图函数
+    """
+    # 1. 维度标签（使用 <br> 换行减少横向空间占用）
+    categories = ['甜<br>(B)', '苦<br>(C)', '辣<br>(D)', '酸<br>(A)']
+    
+    # 2. 数据准备
     values = [
         percentages.get('B', 0), 
         percentages.get('C', 0), 
         percentages.get('D', 0), 
         percentages.get('A', 0)
     ]
-    # 闭合折线图
+    
+    # 3. 闭合路径（首尾相连）
     values.append(values[0])
     categories.append(categories[0])
     
@@ -123,31 +129,40 @@ def draw_radar_chart(percentages):
         r=values,
         theta=categories,
         fill='toself',
-        fillcolor='rgba(249, 115, 22, 0.4)', # 橙色透明
+        fillcolor='rgba(249, 115, 22, 0.4)', # 橙色填充
         line=dict(color='#f97316', width=3), # 橙色边框
-        name='味觉比例'
+        hoverinfo='skip' # 移动端更友好，不显示悬浮框
     ))
 
     fig.update_layout(
         polar=dict(
             radialaxis=dict(
                 visible=True,
-                range=[0, max(max(values) + 10, 50)],
+                # 重要：增加 range 的上限（+20），让雷达图形整体“缩小”一点，不顶到文字
+                range=[0, max(max(values) + 20, 60)], 
                 showticklabels=False,
-                gridcolor='#f5f5f4' # stone-100
+                gridcolor='#f5f5f4' # 浅灰色网格
             ),
             angularaxis=dict(
-                tickfont=dict(size=14, color='#57534e', family="Noto Sans SC"), # stone-600
-                gridcolor='#f5f5f4'
+                tickfont=dict(
+                    size=14, 
+                    color='#57534e', 
+                    family="Noto Sans SC, sans-serif"
+                ),
+                gridcolor='#f5f5f4',
+                rotation=90,      # 确保第一个维度在正上方
+                direction="clockwise"
             ),
             bgcolor='white'
         ),
         showlegend=False,
-        margin=dict(l=40, r=40, t=20, b=20),
-        height=300,
+        # 重要：增大 Margin（边距），特别是左右两侧
+        margin=dict(l=80, r=80, t=50, b=50), 
+        height=380, # 适当调高，确保标签垂直方向也不被切断
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
     )
+    
     return fig
 
 # ==========================================
