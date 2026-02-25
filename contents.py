@@ -200,9 +200,10 @@ def apply_contents_settings():
                 st.session_state.target_page = "FoodTest"
                 st.session_state.needs_auth = None
             else:
-                lock_all() # 切换前先清理其他状态
-                # 告诉程序：我现在想解锁的是 FoodTest，请显示密码输入框
+                # 这里不要调用 lock_all()，直接设置需要认证的目标
                 st.session_state.needs_auth = "FoodTest" 
+                # 同时可以把 target_page 设为这个目标，让主屏幕显示“请认证”
+                st.session_state.target_page = "FoodTest" 
             st.rerun()
             
         # --- 🔐 密钥验证动态区 ---
