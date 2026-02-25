@@ -197,7 +197,48 @@ def show_dish_test():
             color: #1c1917; /* stone-900 */
             font-family: 'Noto Sans SC', sans-serif;
         }
-
+                /* 1. 基础按键美化：增加层次感 */
+        div.stButton > button {
+            background: white;
+            color: #44403c;
+            border: 1px solid #e7e5e4;
+            border-radius: 1.25rem !important; /* 更圆润 */
+            padding: 0.8rem 1.5rem !important;
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important;
+        }
+        
+        /* 2. 悬浮效果：轻微上浮并加深阴影 */
+        div.stButton > button:hover {
+            transform: translateY(-2px);
+            border-color: #f97316 !important;
+            color: #f97316 !important;
+            box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.1) !important;
+            background-color: #fff7ed !important;
+        }
+        
+        /* 3. 点击反馈：缩放动效（非常重要，增加交互感） */
+        div.stButton > button:active {
+            transform: scale(0.96) !important;
+            background-color: #ffedd5 !important;
+        }
+        
+        /* 4. 进度条美化 */
+        .stProgress > div > div > div > div {
+            background: linear-gradient(90deg, #fdba74 0%, #f97316 100%);
+            border-radius: 1rem;
+        }
+        
+        /* 5. 答题选项的特殊样式（让选项更显眼） */
+        [data-testid="stMain"] .stButton > button {
+            height: auto !important;
+            min-height: 4.5rem !important; /* 增加高度，更易点击 */
+            margin-bottom: 0.5rem;
+            text-align: left !important;
+            padding-left: 2rem !important;
+        }
         /* 统一按钮样式：大号、圆角、橙色交互 */
         div.stButton > button {
             background-color: #ffffff;
@@ -363,22 +404,26 @@ def show_dish_test():
             st.write("<br>", unsafe_allow_html=True)
             # 图片展示区域 (需确保 images/ 文件夹存在)
             img_path = f"images_food/{result_data['name']}.jpg"
+            
             if os.path.exists(img_path):
-                # 将 food_test.py 中显示图片的逻辑改为：
-                if img_path:
-                    # 使用 columns 居中并限制宽度
-                    col1, col2, col3 = st.columns([1, 2, 1]) 
-                    with col2:
-                        st.markdown(
-                            f"""
-                            <div style="display: flex; justify-content: center;">
-                                <img src="data:image/png;base64,{get_image_base64(img_path)}" width="500" style="border-radius: 20px;">
-                            </div>
-                            """, 
-                            unsafe_allow_html=True
-                        )
-                else:
-                    st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images 目录下。")
+                # 使用极窄的两边留白，让中间图片区域极大化
+                col1, col2, col3 = st.columns([0.1, 4, 0.1]) 
+                with col2:
+                    img_base64 = get_image_base64(img_path)
+                    st.markdown(
+                        f"""
+                        <div style="display: flex; justify-content: center; margin: 1.5rem 0;">
+                            <img src="data:image/jpeg;base64,{img_base64}" 
+                                 style="width: 100%; border-radius: 28px; 
+                                        box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
+                                        border: 6px solid white;
+                                        transition: transform 0.3s ease;">
+                        </div>
+                        """, 
+                        unsafe_allow_html=True
+                    )
+            else:
+                st.warning(f"🍱 正在为你摆盘... (缺少图片: {img_path})")
 
             st.write("<br>", unsafe_allow_html=True)
             # 雷达图展示
