@@ -311,7 +311,10 @@ def show_dish_test():
             # 图片展示区域 (需确保 images/ 文件夹存在)
             img_path = f"images/{result_data['name']}.jpg"
             if os.path.exists(img_path):
-                st.image(img_path, use_container_width=True)
+                if img_path:
+                    # 将 width 设为 300 或 400（根据你喜欢的比例调整）
+                    # 同时必须将 use_container_width 设为 False
+                    st.image(img_path, width=350, use_container_width=False)
             else:
                 st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images 目录下。")
             # 雷达图展示
