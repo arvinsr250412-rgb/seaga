@@ -154,6 +154,7 @@ def apply_contents_settings():
             if not st.session_state.get("admin_logged_in", False):
                 st.session_state.unlocked_SoulCity = False
                 st.session_state.unlocked_Orientation = False
+                st.session_state.unlocked_FoodTest = False
                 st.session_state.needs_auth = None
         # --- 2. 导航菜单 ---
         
@@ -188,6 +189,20 @@ def apply_contents_settings():
             else:
                 lock_all()
                 st.session_state.needs_auth = "Orientation"
+            st.rerun()
+
+        # D. 灵魂味觉测试按钮
+        is_food_unlocked = st.session_state.get("unlocked_FoodTest", False) or is_admin
+        food_label = "🍲 灵魂味觉测试" + (" ✅" if is_food_unlocked else " 🔒")
+        
+        if st.button(food_label, key="btn_food", use_container_width=True):
+            if is_food_unlocked:
+                st.session_state.target_page = "FoodTest"
+                st.session_state.needs_auth = None
+            else:
+                lock_all() # 切换前先清理其他状态
+                # 告诉程序：我现在想解锁的是 FoodTest，请显示密码输入框
+                st.session_state.needs_auth = "FoodTest" 
             st.rerun()
             
         # --- 🔐 密钥验证动态区 ---
