@@ -153,7 +153,7 @@ def draw_radar_chart(percentages):
 # ==========================================
 # 3. 核心视图渲染函数 (供外部调用)
 # ==========================================
-def show_dish_text():
+def show_dish_test():
     """将此函数导入并放置在你原有的 Streamlit 页面路由中"""
     
     # --- 1. 注入 CSS 样式 (高度还原 Tailwind 的 Orange/Stone 主题) ---
