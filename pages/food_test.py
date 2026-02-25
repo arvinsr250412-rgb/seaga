@@ -311,12 +311,10 @@ def show_dish_test():
             # 图片展示区域 (需确保 images/ 文件夹存在)
             img_path = f"images_food/{result_dish}.jpg"
             
-            if os.path.exists(img_path):
+             if os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
             else:
-                # 如果图片不存在，显示一个彩色的占位方块，不让程序挂掉
-                st.warning(f"🍱 哎呀，{result_dish} 的美照还在路中...")
-                st.info("提示：请确保 images_food 目录下有 " + result_dish + ".jpg")
+                st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images 目录下。")
 
             # 雷达图展示
             st.markdown('<h3 style="font-size: 0.625rem; font-weight: 900; color: #d6d3d1; margin-top: 2rem; letter-spacing: 0.2em; text-transform: uppercase;">味觉灵魂雷达</h3>', unsafe_allow_html=True)
