@@ -20,6 +20,9 @@ if "target_page" not in st.session_state:
 
 if "needs_auth" not in st.session_state:
     st.session_state.needs_auth = None
+
+if "unlocked_FoodTest" not in st.session_state:
+    st.session_state.unlocked_FoodTest = False
 # main.py 初始化部分
 if "unlocked_SoulCity" not in st.session_state:
     st.session_state.unlocked_SoulCity = False
@@ -199,6 +202,7 @@ else:
     if not st.session_state.get("admin_logged_in", False):
         st.session_state.unlocked_SoulCity = False
         st.session_state.unlocked_Orientation = False
+        st.session_state.unlocked_FoodTest = False
     # 1. 巨大的 Hero 标题区
     st.markdown("""
         <div class="hero-container">
@@ -259,6 +263,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
