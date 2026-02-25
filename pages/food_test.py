@@ -372,8 +372,8 @@ def show_dish_test():
                             """, 
                             unsafe_allow_html=True
                         )
-            else:
-                st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images 目录下。")
+                else:
+                    st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images 目录下。")
 
             st.write("<br>", unsafe_allow_html=True)
             # 雷达图展示
