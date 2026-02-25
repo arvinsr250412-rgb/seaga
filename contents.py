@@ -193,7 +193,7 @@ def apply_contents_settings():
 
         # D. 灵魂味觉测试按钮
         is_food_unlocked = st.session_state.get("unlocked_FoodTest", False) or is_admin
-        food_label = "🍲 灵魂味觉测试" + (" ✅" if is_food_unlocked else " 🔒")
+        food_label = "🍲 测测你是哪盘菜" + (" ✅" if is_food_unlocked else " 🔒")
         
         if st.button(food_label, key="btn_food", use_container_width=True):
             if is_food_unlocked:
