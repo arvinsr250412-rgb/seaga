@@ -372,7 +372,7 @@ def show_dish_test():
                         st.markdown(
                             f"""
                             <div style="display: flex; justify-content: center;">
-                                <img src="data:image/png;base64,{get_image_base64(img_path)}" width="400" style="border-radius: 20px;">
+                                <img src="data:image/png;base64,{get_image_base64(img_path)}" width="500" style="border-radius: 20px;">
                             </div>
                             """, 
                             unsafe_allow_html=True
