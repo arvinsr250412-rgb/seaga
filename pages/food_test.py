@@ -226,23 +226,30 @@ def show_dish_test():
             border: 1px solid #ffedd5;
             margin: 0.2rem;
         }
+        /* 1. 只缩小主屏幕中的结果图片，不影响其他 */
+        [data-testid="stMain"] img {
+            max-width: 300px !important; /* 强制图片最大宽度 */
+            height: auto !important;
+            margin: 0 auto;
+            display: block;
+        }
+    
+        /* 2. 只修改主屏幕按钮，排除侧边栏按钮 */
+        [data-testid="stMain"] .stButton > button {
+            height: 3.5rem !important;
+            border-radius: 15px !important;
+            background-color: #FFF5F7 !important;
+            color: #FF6A88 !important;
+            border: 2px solid #FFE4E9 !important;
+        }
+    
+        /* 3. 保护侧边栏按钮不被变大 */
         [data-testid="stSidebar"] .stButton > button {
             height: auto !important;
-            padding: 8px 20px !important;
+            padding: 8px 15px !important;
             min-height: 0px !important;
         }
-        /* 修改 food_test.py 里的 CSS */
-        /* 只影响主屏幕按钮，不影响侧边栏 */
-        [data-testid="stMain"] .stButton > button {
-            height: 3em !important; 
-            width: 100% !important;
-        }
         
-        /* 强制侧边栏按钮恢复 content.py 设定的紧凑样式 */
-        [data-testid="stSidebar"] .stButton > button {
-            height: auto !important;
-            padding: 5px 15px !important;
-        }
         </style>
     """, unsafe_allow_html=True)
 
