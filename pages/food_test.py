@@ -357,7 +357,7 @@ def show_dish_test():
             """, unsafe_allow_html=True)
 
             # 图片展示区域 (需确保 images/ 文件夹存在)
-            img_path = f"images/{result_data['name']}.jpg"
+            img_path = f"images_food/{result_data['name']}.jpg"
             if os.path.exists(img_path):
                 # 将 food_test.py 中显示图片的逻辑改为：
                 if img_path:
