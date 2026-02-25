@@ -2,7 +2,9 @@ import streamlit as st
 import plotly.graph_objects as go
 import os
 import time
+from contents import apply_contents_settings
 
+apply_contents_settings()
 # ==========================================
 # 1. 题库与结果数据字典 (精准移植自原版 TS 代码)
 # ==========================================
@@ -307,11 +309,11 @@ def show_dish_test():
             """, unsafe_allow_html=True)
 
             # 图片展示区域 (需确保 images/ 文件夹存在)
-            img_path = f"images/{result_data['name']}.jpg"
+            img_path = f"images_foods/{result_data['name']}.jpg"
             if os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
             else:
-                st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images 目录下。")
+                st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images_food 目录下。")
 
             # 雷达图展示
             st.markdown('<h3 style="font-size: 0.625rem; font-weight: 900; color: #d6d3d1; margin-top: 2rem; letter-spacing: 0.2em; text-transform: uppercase;">味觉灵魂雷达</h3>', unsafe_allow_html=True)
