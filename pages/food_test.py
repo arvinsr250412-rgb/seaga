@@ -4,7 +4,7 @@ import os
 import time
 from contents import apply_contents_settings
 
-apply_contents_settings()
+
 # ==========================================
 # 1. 题库与结果数据字典 (精准移植自原版 TS 代码)
 # ==========================================
