@@ -318,7 +318,14 @@ def show_dish_test():
             padding: 8px 15px !important;
             min-height: 0px !important;
         }
-        
+        button[kind="secondary"] {
+            background-color: transparent !important;
+            border: 1px dashed #d6d3d1 !important;
+            color: #a8a29e !important;
+            font-size: 0.85rem !important;
+            height: 2.5rem !important;
+            margin-top: 2rem !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -391,7 +398,17 @@ def show_dish_test():
                     # 进入下一题或结算
                     st.session_state.dish_step += 1
                     st.rerun()
-            
+            if 1 < st.session_state.dish_step <= len(DISH_QUESTIONS):
+                st.write("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
+                # 使用普通按钮或自定义样式
+                if st.button("⬅️  返回上一题", key="back_btn", use_container_width=True):
+                    # 1. 弹出最后一次记录的维度
+                    last_dim = st.session_state.dish_history.pop()
+                    # 2. 扣除对应的分数值
+                    st.session_state.dish_scores[last_dim] -= 1
+                    # 3. 退回上一步
+                    st.session_state.dish_step -= 1
+                    st.rerun()
     # 【结果与加载视图】
     elif st.session_state.dish_step > len(DISH_QUESTIONS):
         col1, col2, col3 = st.columns([1, 10, 1])
