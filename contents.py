@@ -156,11 +156,22 @@ def apply_contents_settings():
                 st.session_state.unlocked_Orientation = False
                 st.session_state.unlocked_FoodTest = False
                 st.session_state.needs_auth = None
+
+        def reset_food_test():
+            """专门用来清空食物测试进度的函数"""
+            if 'dish_step' in st.session_state:
+                st.session_state.dish_step = 0
+            if 'user_answers' in st.session_state: # 假设你存了答案在这个变量里
+                st.session_state.user_answers = []
+            # 如果有其他控制结果显示的变量，一并清空
+        
+        
         # --- 2. 导航菜单 ---
         
         # A. 首页按钮
         if st.button("🏠 首页中心", key="btn_home", use_container_width=True):
             lock_all() # 只要离开当前页就上锁
+            reset_food_test() # 清除进度
             st.session_state.target_page = "Home"
             st.session_state.needs_auth = None
             st.rerun()
