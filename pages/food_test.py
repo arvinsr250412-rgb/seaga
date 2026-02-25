@@ -342,6 +342,9 @@ def show_dish_test():
             st.markdown('<div class="btn-primary">', unsafe_allow_html=True)
             if st.button("重新翻炒", key="dish_restart_btn", use_container_width=True):
                 st.session_state.dish_step = 0
+                    # 清空存放结果的变量，例如：
+                if 'result_dish' in st.session_state:
+                    del st.session_state.result_dish
                 st.session_state.dish_scores = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
