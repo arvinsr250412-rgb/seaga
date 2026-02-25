@@ -304,3 +304,4 @@ st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay 
 
 
 
+
