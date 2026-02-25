@@ -327,7 +327,8 @@ def show_dish_test():
         st.session_state.dish_step = 0 # 0: Home, 1-25: Quiz, 26: Result
     if 'dish_scores' not in st.session_state:
         st.session_state.dish_scores = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
-
+    if 'dish_history' not in st.session_state:
+        st.session_state.dish_history = []
     # --- 3. 视图渲染逻辑 ---
     
     # 【首页视图】
@@ -386,10 +387,20 @@ def show_dish_test():
                     # 记录得分
                     dim = opt['dim']
                     st.session_state.dish_scores[dim] += 1
+                    st.session_state.dish_history.append(dim)
                     # 进入下一题或结算
                     st.session_state.dish_step += 1
                     st.rerun()
-
+            if st.session_state.dish_step > 1:
+            st.write("<br>", unsafe_allow_html=True) # 留点间距
+            if st.button("⬅️ 返回上一题", use_container_width=True):
+                # 1. 获取最后一题选择的维度
+                last_dim = st.session_state.dish_history.pop()
+                # 2. 扣除对应的分数
+                st.session_state.dish_scores[last_dim] -= 1
+                # 3. 步骤减一
+                st.session_state.dish_step -= 1
+                st.rerun()
     # 【结果与加载视图】
     elif st.session_state.dish_step > len(DISH_QUESTIONS):
         col1, col2, col3 = st.columns([1, 10, 1])
