@@ -169,6 +169,29 @@ elif st.session_state.target_page == "Orientation":
         if "main_nav" in st.session_state:
             st.session_state["main_nav"] = "Home"
         st.rerun()
+
+# 页面 D: 灵魂味觉测试
+elif st.session_state.target_page == "FoodTest":
+    # 鉴权逻辑：管理员或已解锁
+    is_unlocked = st.session_state.get("unlocked_FoodTest", False)
+    is_admin = st.session_state.get("admin_logged_in", False)
+    
+    if is_unlocked or is_admin:
+        # 这里调用你在 content.py 中定义的测试函数（假设名字叫 show_food_test）
+        show_food_test() 
+        
+        # 侧边栏辅助返回按钮
+        if st.sidebar.button("🏠返回主页并上锁", key="exit_food"):
+            st.session_state.unlocked_FoodTest = False 
+            st.session_state.target_page = "Home"
+            st.rerun()
+    else:
+        # 没锁强行访问则踢回首页
+        st.session_state.target_page = "Home"
+        if "main_nav" in st.session_state:
+            st.session_state["main_nav"] = "Home"
+        st.rerun()
+        
 # 默认页面: 首页
 else:
     # --- 主界面 (多巴胺博客风格) ---
@@ -235,6 +258,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
