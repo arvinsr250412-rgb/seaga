@@ -156,16 +156,29 @@ def apply_contents_settings():
                 st.session_state.unlocked_Orientation = False
                 st.session_state.unlocked_FoodTest = False
                 st.session_state.needs_auth = None
-
-        def reset_food_test():
-            """专门用来清空食物测试进度的函数"""
-            if 'dish_step' in st.session_state:
-                st.session_state.dish_step = 0
-            if 'user_answers' in st.session_state: # 假设你存了答案在这个变量里
-                st.session_state.user_answers = []
-            # 如果有其他控制结果显示的变量，一并清空
+                
+       def reset_and_lock_all():
+            # 1. 定义需要清理的变量名（请根据你 food_test.py 里的实际变量名调整）
+            keys_to_clear = [
+                'dish_step',      # 题目进度
+                'needs_auth',     # 正在进行的验证状态
+                'unlocked_SoulCity', 
+                'unlocked_Orientation', 
+                'unlocked_FoodTest'
+            ]
+            
+            # 2. 执行清理
+            for key in keys_to_clear:
+                if key in st.session_state:
+                    # 特殊处理：如果是布尔值锁，设为 False；如果是进度，设为 0
+                    if "unlocked" in key:
+                        st.session_state[key] = False
+                    else:
+                        st.session_state[key] = None if key == 'needs_auth' else 0
         
-        
+            # 3. 强制清除可能残存的结果（如果有直接存结果变量）
+            if 'result_dish' in st.session_state:
+                del st.session_state['result_dish']
         # --- 2. 导航菜单 ---
         
         # A. 首页按钮
