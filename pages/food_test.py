@@ -338,3 +338,8 @@ def show_dish_test():
                 st.session_state.dish_scores = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
+
+
+if __name__ == "__main__":
+    show_dish_test()
+
