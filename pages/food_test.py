@@ -187,6 +187,23 @@ def show_dish_test():
     # --- 1. 注入 CSS 样式 (高度还原 Tailwind 的 Orange/Stone 主题) ---
     st.markdown("""
         <style>
+        /* 专门针对返回按钮的缩小样式 */
+        div[data-testid="stHorizontalBlock"] button[key="back_btn"] {
+            height: 2rem !important;        /* 高度减半 */
+            width: auto !important;         /* 宽度自适应，不再占满全行 */
+            min-height: 0px !important;     /* 移除之前设置的最小高度限制 */
+            padding: 0px 1rem !important;   /* 缩减内边距 */
+            font-size: 0.8rem !important;   /* 字体变小 */
+            background-color: transparent !important; /* 透明背景 */
+            border: 1px solid #e7e5e4 !important;    /* 细边框 */
+            color: #a8a29e !important;      /* 灰色文字，不抢眼 */
+        }
+        
+        /* 悬浮时稍微亮一点点 */
+        div[data-testid="stHorizontalBlock"] button[key="back_btn"]:hover {
+            color: #f97316 !important;
+            border-color: #f97316 !important;
+        }
         /* 隐藏Streamlit默认的顶部栏和页脚 */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
@@ -260,14 +277,8 @@ def show_dish_test():
             background-color: #fff7ed;
             transform: scale(0.98);
         }
-        button[kind="secondary"] {
-            background-color: transparent !important;
-            border: 1px dashed #d6d3d1 !important;
-            color: #a8a29e !important;
-            font-size: 0.85rem !important;
-            height: 2.5rem !important;
-            margin-top: 2rem !important;
-        }
+
+
         /* 特定按钮：开始/重开 按钮 (橘色实心) */
         .btn-primary > div > button {
             background-color: #f97316 !important; /* orange-500 */
@@ -400,15 +411,18 @@ def show_dish_test():
                     st.rerun()
             if 1 < st.session_state.dish_step <= len(DISH_QUESTIONS):
                 st.write("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
-                # 使用普通按钮或自定义样式
-                if st.button("⬅️  返回上一题", key="back_btn", use_container_width=True):
-                    # 1. 弹出最后一次记录的维度
-                    last_dim = st.session_state.dish_history.pop()
-                    # 2. 扣除对应的分数值
-                    st.session_state.dish_scores[last_dim] -= 1
-                    # 3. 退回上一步
-                    st.session_state.dish_step -= 1
-                    st.rerun()
+                
+                # 创建三个小列，[1.5, 1, 1] 会把按钮放在左边
+                # 如果想放右边，可以改成 [2, 2, 1]，然后在最后的 with sub_col3 里写按钮
+                sub_col1, sub_col2, sub_col3 = st.columns([1.5, 1, 1])
+                
+                with sub_col1:
+                    if st.button("⬅️ 返回上题", key="back_btn"):
+                        # 逻辑保持不变
+                        last_dim = st.session_state.dish_history.pop()
+                        st.session_state.dish_scores[last_dim] -= 1
+                        st.session_state.dish_step -= 1
+                        st.rerun()
     # 【结果与加载视图】
     elif st.session_state.dish_step > len(DISH_QUESTIONS):
         col1, col2, col3 = st.columns([1, 10, 1])
