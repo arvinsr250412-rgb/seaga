@@ -391,16 +391,7 @@ def show_dish_test():
                     # 进入下一题或结算
                     st.session_state.dish_step += 1
                     st.rerun()
-            if st.session_state.dish_step > 1:
-            st.write("<br>", unsafe_allow_html=True) # 留点间距
-            if st.button("⬅️ 返回上一题", use_container_width=True):
-                # 1. 获取最后一题选择的维度
-                last_dim = st.session_state.dish_history.pop()
-                # 2. 扣除对应的分数
-                st.session_state.dish_scores[last_dim] -= 1
-                # 3. 步骤减一
-                st.session_state.dish_step -= 1
-                st.rerun()
+            
     # 【结果与加载视图】
     elif st.session_state.dish_step > len(DISH_QUESTIONS):
         col1, col2, col3 = st.columns([1, 10, 1])
