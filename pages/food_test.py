@@ -260,7 +260,14 @@ def show_dish_test():
             background-color: #fff7ed;
             transform: scale(0.98);
         }
-
+        button[kind="secondary"] {
+            background-color: transparent !important;
+            border: 1px dashed #d6d3d1 !important;
+            color: #a8a29e !important;
+            font-size: 0.85rem !important;
+            height: 2.5rem !important;
+            margin-top: 2rem !important;
+        }
         /* 特定按钮：开始/重开 按钮 (橘色实心) */
         .btn-primary > div > button {
             background-color: #f97316 !important; /* orange-500 */
@@ -318,14 +325,7 @@ def show_dish_test():
             padding: 8px 15px !important;
             min-height: 0px !important;
         }
-        button[kind="secondary"] {
-            background-color: transparent !important;
-            border: 1px dashed #d6d3d1 !important;
-            color: #a8a29e !important;
-            font-size: 0.85rem !important;
-            height: 2.5rem !important;
-            margin-top: 2rem !important;
-        }
+        
         </style>
     """, unsafe_allow_html=True)
 
