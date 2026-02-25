@@ -4,7 +4,11 @@ import os
 import time
 import plotly.graph_objects as go
 from contents import apply_contents_settings
+import base64
 
+def get_image_base64(path):
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
 
 # ==========================================
 # 1. 题库与结果数据字典 (精准移植自原版 TS 代码)
