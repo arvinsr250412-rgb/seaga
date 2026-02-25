@@ -309,7 +309,7 @@ def show_dish_test():
             """, unsafe_allow_html=True)
 
             # 图片展示区域 (需确保 images/ 文件夹存在)
-            img_path = f"images_foods/{result_data['name']}.jpg"
+            img_path = f"images_food/{result_data['name']}.jpg"
             if os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
             else:
