@@ -179,7 +179,7 @@ elif st.session_state.target_page == "FoodTest":
     
     if is_unlocked or is_admin:
         # 这里调用你在 content.py 中定义的测试函数（假设名字叫 show_food_test）
-        show_dish_test() 
+        show_dish_text() 
         
         # 侧边栏辅助返回按钮
         if st.sidebar.button("🏠返回主页并上锁", key="exit_food"):
@@ -259,6 +259,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
