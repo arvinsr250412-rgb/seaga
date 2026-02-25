@@ -2,6 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import os
 import time
+import plotly.graph_objects as go
 from contents import apply_contents_settings
 
 
@@ -108,12 +109,9 @@ def calculate_dish_result(scores):
 
 def draw_radar_chart(percentages):
     """
-    专门修复文字遮挡问题的雷达图函数
+    进阶优化版：更具设计感、细节更丰富的雷达图
     """
-    # 1. 维度标签（使用 <br> 换行减少横向空间占用）
     categories = ['甜<br>(B)', '苦<br>(C)', '辣<br>(D)', '酸<br>(A)']
-    
-    # 2. 数据准备
     values = [
         percentages.get('B', 0), 
         percentages.get('C', 0), 
@@ -121,46 +119,57 @@ def draw_radar_chart(percentages):
         percentages.get('A', 0)
     ]
     
-    # 3. 闭合路径（首尾相连）
+    # 闭合路径
     values.append(values[0])
     categories.append(categories[0])
+    
+    # 优化点 1: 友好的悬浮提示 (Hover text)
+    hover_texts = [f"{cat.replace('<br>', '')}占比: {val}%" for cat, val in zip(categories, values)]
     
     fig = go.Figure(data=go.Scatterpolar(
         r=values,
         theta=categories,
         fill='toself',
-        fillcolor='rgba(249, 115, 22, 0.4)', # 橙色填充
-        line=dict(color='#f97316', width=3), # 橙色边框
-        hoverinfo='skip' # 移动端更友好，不显示悬浮框
+        fillcolor='rgba(249, 115, 22, 0.35)', # 稍微降低透明度，显得更轻盈
+        line=dict(color='#ea580c', width=2.5), # 边框颜色加深一点 (orange-600)，增加对比度
+        marker=dict(
+            size=6, 
+            color='#ffffff', # 数据点中心留白
+            line=dict(color='#ea580c', width=2) # 数据点外圈颜色
+        ),
+        hoverinfo='text',
+        hovertext=hover_texts # 鼠标悬浮时显示干净的文本，而不是默认的复杂框
     ))
 
     fig.update_layout(
         polar=dict(
             radialaxis=dict(
                 visible=True,
-                # 重要：增加 range 的上限（+20），让雷达图形整体“缩小”一点，不顶到文字
-                range=[0, max(max(values) + 20, 60)], 
+                range=[0, max(max(values) + 25, 60)], 
                 showticklabels=False,
-                gridcolor='#f5f5f4' # 浅灰色网格
+                gridcolor='rgba(231, 229, 228, 0.7)', # stone-200 柔和的内部网格线
+                linecolor='rgba(0,0,0,0)', # 隐藏内部轴的粗线
             ),
             angularaxis=dict(
                 tickfont=dict(
-                    size=14, 
-                    color='#57534e', 
-                    family="Noto Sans SC, sans-serif"
+                    size=13, # 稍微缩小字号，显得更精致
+                    color='#78716c', # stone-500，采用高级灰而不是死黑
+                    family="Noto Sans SC, sans-serif",
+                    weight='bold' # 加粗标签，提升辨识度
                 ),
-                gridcolor='#f5f5f4',
-                rotation=90,      # 确保第一个维度在正上方
+                gridcolor='rgba(231, 229, 228, 0.7)',
+                linecolor='rgba(0,0,0,0)', # 优化点 2: 去掉最外圈的丑陋黑边
+                rotation=90,
                 direction="clockwise"
             ),
-            bgcolor='white'
+            bgcolor='#fafaf9' # 优化点 3: 给雷达图内部圆盘加一个极浅的暖底色 (stone-50)
         ),
         showlegend=False,
-        # 重要：增大 Margin（边距），特别是左右两侧
-        margin=dict(l=80, r=80, t=50, b=50), 
-        height=380, # 适当调高，确保标签垂直方向也不被切断
-        paper_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=65, r=65, t=40, b=40), # 边距适配
+        height=350, # 配合整体卡片的高度
+        paper_bgcolor='rgba(0,0,0,0)', # 外部背景完全透明，融入你的卡片
         plot_bgcolor='rgba(0,0,0,0)',
+        hovermode='closest'
     )
     
     return fig
@@ -369,8 +378,10 @@ def show_dish_test():
             st.write("<br>", unsafe_allow_html=True)
             # 雷达图展示
             st.markdown('<h3 style="font-size: 0.625rem; font-weight: 900; color: #d6d3d1; margin-top: 2rem; letter-spacing: 0.2em; text-transform: uppercase;">味觉灵魂雷达</h3>', unsafe_allow_html=True)
-            st.plotly_chart(draw_radar_chart(percentages), use_container_width=True, config={'displayModeBar': False})
+           
             st.write("<br>", unsafe_allow_html=True)
+            st.plotly_chart(draw_radar_chart(percentages), use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False})
+            
             # 解说文案与金句
             st.markdown(f"""
                     <div style="text-align: left; margin-top: 1rem;">
