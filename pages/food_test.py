@@ -350,10 +350,12 @@ def show_dish_test():
                         )
             else:
                 st.warning(f"缺少图片文件: `{img_path}`，请将图片放入 images 目录下。")
+
+            st.write("<br>", unsafe_allow_html=True)
             # 雷达图展示
             st.markdown('<h3 style="font-size: 0.625rem; font-weight: 900; color: #d6d3d1; margin-top: 2rem; letter-spacing: 0.2em; text-transform: uppercase;">味觉灵魂雷达</h3>', unsafe_allow_html=True)
             st.plotly_chart(draw_radar_chart(percentages), use_container_width=True, config={'displayModeBar': False})
-
+            st.write("<br>", unsafe_allow_html=True)
             # 解说文案与金句
             st.markdown(f"""
                     <div style="text-align: left; margin-top: 1rem;">
