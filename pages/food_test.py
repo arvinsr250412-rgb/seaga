@@ -350,18 +350,31 @@ def show_dish_test():
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
 
-    # 【答题视图】
+# 【答题视图】
     elif 1 <= st.session_state.dish_step <= len(DISH_QUESTIONS):
         q_idx = st.session_state.dish_step - 1
         q_data = DISH_QUESTIONS[q_idx]
         
-        # 进度条 (使用 Streamlit 原生)
+        # 进度条
         st.progress(st.session_state.dish_step / len(DISH_QUESTIONS))
         
+        # --- 优化后的题目展示区域 ---
         st.markdown(f"""
-            <div style="margin-top: 2rem; max-width: 28rem; margin-left: auto; margin-right: auto;">
-                <div style="color: #a8a29e; font-family: monospace; font-size: 0.75rem; margin-bottom: 0.75rem;">[{q_idx + 1}/25]</div>
-                <h2 style="font-size: 1.5rem; font-weight: bold; color: #292524; margin-bottom: 3rem; line-height: 1.25; min-height: 4rem;">{q_data['text']}</h2>
+            <div style="margin-top: 2.5rem; max-width: 32rem; margin-left: auto; margin-right: auto; text-align: center;">
+                <div style="color: #fb923c; font-family: 'Courier New', monospace; font-size: 0.9rem; 
+                            font-weight: bold; margin-bottom: 1rem; letter-spacing: 0.1em;">
+                    STEP {q_idx + 1} / 25
+                </div>
+                <h2 style="font-size: 2rem; /* 从1.5rem增大到2rem */
+                           font-weight: 800; 
+                           color: #292524; 
+                           margin-bottom: 3.5rem; 
+                           line-height: 1.4; 
+                           min-height: 5rem;
+                           letter-spacing: -0.02em;
+                           padding: 0 10px;">
+                    {q_data['text']}
+                </h2>
             </div>
         """, unsafe_allow_html=True)
 
