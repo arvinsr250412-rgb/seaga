@@ -150,20 +150,35 @@ def apply_contents_settings():
         is_admin = st.session_state.get("admin_logged_in", False)
         
         # --- 1. 定义锁屏函数 (注意缩进) ---
-        def lock_all():
-            if not st.session_state.get("admin_logged_in", False):
-                st.session_state.unlocked_SoulCity = False
-                st.session_state.unlocked_Orientation = False
-                st.session_state.unlocked_FoodTest = False
-                st.session_state.needs_auth = None
-                
+        def reset_and_lock_all():
+            """销毁所有测试记录、重置进度、强制上锁"""
+            # 1. 定义需要清理的变量名（请根据你 food_test.py 里的实际变量名调整）
+            keys_to_clear = [
+                'dish_step',      # 题目进度
+                'needs_auth',     # 正在进行的验证状态
+                'unlocked_SoulCity', 
+                'unlocked_Orientation', 
+                'unlocked_FoodTest'
+            ]
+            
+            # 2. 执行清理
+            for key in keys_to_clear:
+                if key in st.session_state:
+                    # 特殊处理：如果是布尔值锁，设为 False；如果是进度，设为 0
+                    if "unlocked" in key:
+                        st.session_state[key] = False
+                    else:
+                        st.session_state[key] = None if key == 'needs_auth' else 0
+        
+            # 3. 强制清除可能残存的结果（如果有直接存结果变量）
+            if 'result_dish' in st.session_state:
+                del st.session_state['result_dish']
 
         # --- 2. 导航菜单 ---
         
         # A. 首页按钮
         if st.button("🏠 首页中心", key="btn_home", use_container_width=True):
-            lock_all() # 只要离开当前页就上锁
-            reset_food_test() # 清除进度
+            reset_and_lock_all()
             st.session_state.target_page = "Home"
             st.session_state.needs_auth = None
             st.rerun()
@@ -177,7 +192,7 @@ def apply_contents_settings():
                 st.session_state.target_page = "SoulCity"
                 st.session_state.needs_auth = None
             else:
-                lock_all() # 尝试去别的地方前，先确保当前锁好
+                reset_and_lock_all()
                 st.session_state.needs_auth = "SoulCity"
             st.rerun()
 
@@ -190,7 +205,7 @@ def apply_contents_settings():
                 st.session_state.target_page = "Orientation"
                 st.session_state.needs_auth = None
             else:
-                lock_all()
+                reset_and_lock_all()
                 st.session_state.needs_auth = "Orientation"
             st.rerun()
 
@@ -203,6 +218,7 @@ def apply_contents_settings():
                 st.session_state.target_page = "FoodTest"
                 st.session_state.needs_auth = None
             else:
+                reset_and_lock_all()
                 # 这里不要调用 lock_all()，直接设置需要认证的目标
                 st.session_state.needs_auth = "FoodTest" 
                 # 同时可以把 target_page 设为这个目标，让主屏幕显示“请认证”
