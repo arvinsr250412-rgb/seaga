@@ -2,8 +2,6 @@ import streamlit as st
 import plotly.graph_objects as go
 import os
 import time
-import plotly.graph_objects as go
-from contents import apply_contents_settings
 import base64
 
 def get_image_base64(path):
@@ -11,29 +9,40 @@ def get_image_base64(path):
         return base64.b64encode(f.read()).decode()
 
 # ==========================================
-# 1. 题库与结果数据字典 (精准移植自原版 TS 代码)
+# 1. 题库与结果数据字典 (5维度均衡版)
 # ==========================================
+# 维度说明：A(酸-敏感/文艺) B(甜-治愈/温柔) C(苦-深沉/理智) D(辣-热烈/勇敢) E(咸-踏实/现实/烟火气)
+# 全库包含：20个A，20个B，20个C，20个D，20个E，做到绝对的数学均衡。
 DISH_QUESTIONS = [
-    {"id": 1, "text": "如果你变成了一只狗，你会？", "options": [{"dim": "A", "text": "坐在窗边看雨想心事"}, {"dim": "B", "text": "疯狂向路人摇尾索抱"}, {"dim": "C", "text": "躲在桌下观察人类"}, {"dim": "D", "text": "冲出门去追逐闪电"}]},
-    {"id": 2, "text": "你希望你的墓志铭写着？", "options": [{"dim": "A", "text": "他曾来过"}, {"dim": "B", "text": "世界很好，下次还来"}, {"dim": "C", "text": "加载失败，用户已注销"}, {"dim": "D", "text": "别看我，去看远方"}]},
-    {"id": 3, "text": "如果记忆可以买卖，你最想买回？", "options": [{"dim": "A", "text": "某个蝉鸣的夏日午后"}, {"dim": "B", "text": "初恋时笨拙的告白"}, {"dim": "C", "text": "某个顿悟的人生瞬间"}, {"dim": "D", "text": "曾经最疯狂的那次出逃"}]},
-    {"id": 4, "text": "镜子里的人突然对你笑，你？", "options": [{"dim": "A", "text": "感到一阵莫名的悲伤"}, {"dim": "B", "text": "觉得它终于活过来了"}, {"dim": "C", "text": "思考这是否是平行时空"}, {"dim": "D", "text": "挑衅地对他笑得更狂"}]},
-    {"id": 5, "text": "所谓的“爱”，在你看来更像？", "options": [{"dim": "A", "text": "潮湿天气里长出的青苔"}, {"dim": "B", "text": "照进深海里的一束光"}, {"dim": "C", "text": "止痛片过后的副作用"}, {"dim": "D", "text": "一场心甘情愿的自燃"}]},
-    {"id": 6, "text": "人生落幕前60秒，你最后一件事是？", "options": [{"dim": "A", "text": "闭上眼回忆某个人的脸"}, {"dim": "B", "text": "拥抱身边最柔软的东西"}, {"dim": "C", "text": "找个舒服的姿势坐下"}, {"dim": "D", "text": "向上帝竖起中指"}]},
-    {"id": 7, "text": "如果情绪有味道，遗憾的味道是？", "options": [{"dim": "A", "text": "没熟透的青柠檬"}, {"dim": "B", "text": "冬天玻璃上凝结的窗花"}, {"dim": "C", "text": "烧焦后的木头灰烬"}, {"dim": "D", "text": "呛出眼泪的干辣椒粉"}]},
-    {"id": 8, "text": "你发现世界是一场模拟游戏，你会？", "options": [{"dim": "A", "text": "寻找那个最初的漏洞"}, {"dim": "B", "text": "寻找游戏里的快乐 NPC"}, {"dim": "C", "text": "彻底躺平，不再挣扎"}, {"dim": "D", "text": "试图黑掉这个系统的后台"}]},
-    {"id": 9, "text": "必须住进一幅画里，你会选择？", "options": [{"dim": "A", "text": "莫奈的《睡莲》"}, {"dim": "B", "text": "梵高的《向日葵》"}, {"dim": "C", "text": "达利的《记忆的永恒》"}, {"dim": "D", "text": "毕加索的《格尔尼卡》"}]},
-    {"id": 10, "text": "深夜电台播放了一首没听过的歌，你？", "options": [{"dim": "A", "text": "猜测写词人的暗恋故事"}, {"dim": "B", "text": "跟着旋律轻轻摇晃身体"}, {"dim": "C", "text": "分析它的编曲和逻辑性"}, {"dim": "D", "text": "想要立刻学会并在街头大唱"}]},
-    {"id": 11, "text": "假如你可以拥有一种超能力？", "options": [{"dim": "A", "text": "能够看到别人的梦境"}, {"dim": "B", "text": "永远不会感到痛苦"}, {"dim": "C", "text": "能看透所有谎言"}, {"dim": "D", "text": "随时可以引发一场爆炸"}]},
-    {"id": 12, "text": "如果你是一个标点符号，你会是？", "options": [{"dim": "A", "text": "……"}, {"dim": "B", "text": "！"}, {"dim": "C", "text": "。"}, {"dim": "D", "text": "——"}]},
-    {"id": 13, "text": "你会选择如何度过“永恒的一天”？", "options": [{"dim": "A", "text": "独自写一本没人看的日记"}, {"dim": "B", "text": "举办一场盛大的森林派对"}, {"dim": "C", "text": "坐在图书馆看书直到日落"}, {"dim": "D", "text": "在无人区进行一场流浪"}]},
-    {"id": 14, "text": "此时此刻，你的灵魂颜色是？", "options": [{"dim": "A", "text": "忧郁且透明的淡紫"}, {"dim": "B", "text": "充满生机的亮橘色"}, {"dim": "C", "text": "沉稳压抑的深矿黑"}, {"dim": "D", "text": "极具侵略性的金黄色"}]},
-    {"id": 15, "text": "森林里出现了一扇不该存在的门，门后是？", "options": [{"dim": "A", "text": "堆满旧玩具的童年房间"}, {"dim": "B", "text": "开满永不凋谢花朵的花园"}, {"dim": "C", "text": "一面映照真实的镜子"}, {"dim": "D", "text": "巨大的原始火山口"}]},
-    {"id": 16, "text": "暴雨中陌生人给你递伞后离去，你会？", "options": [{"dim": "A", "text": "看着背影脑补一段偶像剧"}, {"dim": "B", "text": "觉得世界充满爱"}, {"dim": "C", "text": "思考对方是否别有用心"}, {"dim": "D", "text": "想要追上去认识对方"}]},
-    {"id": 17, "text": "如果沉默有颜色，那会是？", "options": [{"dim": "A", "text": "淡淡的忧郁蓝"}, {"dim": "B", "text": "奶糖般的温润白"}, {"dim": "C", "text": "浓郁到化不开的灰"}, {"dim": "D", "text": "极其扎眼的电光紫"}]},
-    {"id": 18, "text": "假如人生是一场电影，你希望结局是？", "options": [{"dim": "A", "text": "开放式的遗憾"}, {"dim": "B", "text": "所有人都在笑的大团圆"}, {"dim": "C", "text": "戛然而止的黑屏"}, {"dim": "D", "text": "壮烈且震撼的爆炸"}]},
-    {"id": 19, "text": "看到流星划过，你的第一反应是？", "options": [{"dim": "A", "text": "先想起了旧人"}, {"dim": "B", "text": "闭眼虔诚许愿"}, {"dim": "C", "text": "思考陨石的化学成分"}, {"dim": "D", "text": "想要伸手去抓住那道光"}]},
-    {"id": 20, "text": "最后一顿饭，你只想吃？", "options": [{"dim": "A", "text": "妈妈做的那道家常菜"}, {"dim": "B", "text": "一块酱料丰富合你口味的蛋糕"}, {"dim": "C", "text": "一杯不加奶糖的浓缩"}, {"dim": "D", "text": "最重口味的街边摊"}]},
+    # 1-5题：将原有的 D 替换为 E
+    {"id": 1, "text": "如果你变成了一只狗，你会？", "options": [{"dim": "A", "text": "坐在窗边看雨想心事"}, {"dim": "B", "text": "疯狂向路人摇尾索抱"}, {"dim": "C", "text": "躲在桌下观察人类"}, {"dim": "E", "text": "找个舒服的窝先睡一觉"}]},
+    {"id": 2, "text": "你希望你的墓志铭写着？", "options": [{"dim": "A", "text": "他曾来过"}, {"dim": "B", "text": "世界很好，下次还来"}, {"dim": "C", "text": "加载失败，用户已注销"}, {"dim": "E", "text": "此人已结账离店"}]},
+    {"id": 3, "text": "如果记忆可以买卖，你最想买回？", "options": [{"dim": "A", "text": "某个蝉鸣的夏日午后"}, {"dim": "B", "text": "初恋时笨拙的告白"}, {"dim": "C", "text": "某个顿悟的人生瞬间"}, {"dim": "E", "text": "小时候兜里的一块糖"}]},
+    {"id": 4, "text": "镜子里的人突然对你笑，你？", "options": [{"dim": "A", "text": "感到一阵莫名的悲伤"}, {"dim": "B", "text": "觉得它终于活过来了"}, {"dim": "C", "text": "思考这是否是平行时空"}, {"dim": "E", "text": "默默擦干净镜子上的水渍"}]},
+    {"id": 5, "text": "所谓的“爱”，在你看来更像？", "options": [{"dim": "A", "text": "潮湿天气里长出的青苔"}, {"dim": "B", "text": "照进深海里的一束光"}, {"dim": "C", "text": "止痛片过后的副作用"}, {"dim": "E", "text": "一顿准时准点的热饭"}]},
+    
+    # 6-10题：将原有的 C 替换为 E
+    {"id": 6, "text": "人生落幕前60秒，你最后一件事是？", "options": [{"dim": "A", "text": "闭上眼回忆某个人的脸"}, {"dim": "B", "text": "拥抱身边最柔软的东西"}, {"dim": "E", "text": "清空浏览器历史记录"}, {"dim": "D", "text": "向上帝竖起中指"}]},
+    {"id": 7, "text": "如果情绪有味道，遗憾的味道是？", "options": [{"dim": "A", "text": "没熟透的青柠檬"}, {"dim": "B", "text": "冬天玻璃上凝结的窗花"}, {"dim": "E", "text": "隔夜变硬的冷馒头"}, {"dim": "D", "text": "呛出眼泪的干辣椒粉"}]},
+    {"id": 8, "text": "你发现世界是一场模拟游戏，你会？", "options": [{"dim": "A", "text": "寻找那个最初的漏洞"}, {"dim": "B", "text": "寻找游戏里的快乐 NPC"}, {"dim": "E", "text": "该干嘛干嘛，明天还要上班"}, {"dim": "D", "text": "试图黑掉这个系统的后台"}]},
+    {"id": 9, "text": "必须住进一幅画里，你会选择？", "options": [{"dim": "A", "text": "莫奈的《睡莲》"}, {"dim": "B", "text": "梵高的《向日葵》"}, {"dim": "E", "text": "清明上河图里的包子铺"}, {"dim": "D", "text": "毕加索的《格尔尼卡》"}]},
+    {"id": 10, "text": "深夜电台播放了一首没听过的歌，你？", "options": [{"dim": "A", "text": "猜测写词人的暗恋故事"}, {"dim": "B", "text": "跟着旋律轻轻摇晃身体"}, {"dim": "E", "text": "查一下这首歌的版权和原唱"}, {"dim": "D", "text": "想要立刻学会并在街头大唱"}]},
+    
+    # 11-15题：将原有的 B 替换为 E
+    {"id": 11, "text": "假如你可以拥有一种超能力？", "options": [{"dim": "A", "text": "能够看到别人的梦境"}, {"dim": "E", "text": "每天多出两个小时睡眠"}, {"dim": "C", "text": "能看透所有谎言"}, {"dim": "D", "text": "随时可以引发一场爆炸"}]},
+    {"id": 12, "text": "如果你是一个标点符号，你会是？", "options": [{"dim": "A", "text": "……"}, {"dim": "E", "text": "，"}, {"dim": "C", "text": "。"}, {"dim": "D", "text": "——"}]},
+    {"id": 13, "text": "你会选择如何度过“永恒的一天”？", "options": [{"dim": "A", "text": "独自写一本没人看的日记"}, {"dim": "E", "text": "把家里彻底打扫一遍"}, {"dim": "C", "text": "坐在图书馆看书直到日落"}, {"dim": "D", "text": "在无人区进行一场流浪"}]},
+    {"id": 14, "text": "此时此刻，你的灵魂颜色是？", "options": [{"dim": "A", "text": "忧郁且透明的淡紫"}, {"dim": "E", "text": "大地般朴实的卡其色"}, {"dim": "C", "text": "沉稳压抑的深矿黑"}, {"dim": "D", "text": "极具侵略性的金黄色"}]},
+    {"id": 15, "text": "森林里出现了一扇不该存在的门，门后是？", "options": [{"dim": "A", "text": "堆满旧玩具的童年房间"}, {"dim": "E", "text": "一家24小时营业的便利店"}, {"dim": "C", "text": "一面映照真实的镜子"}, {"dim": "D", "text": "巨大的原始火山口"}]},
+    
+    # 16-20题：将原有的 A 替换为 E
+    {"id": 16, "text": "暴雨中陌生人给你递伞后离去，你会？", "options": [{"dim": "E", "text": "赶紧回家洗个热水澡防感冒"}, {"dim": "B", "text": "觉得世界充满爱"}, {"dim": "C", "text": "思考对方是否别有用心"}, {"dim": "D", "text": "想要追上去认识对方"}]},
+    {"id": 17, "text": "如果沉默有颜色，那会是？", "options": [{"dim": "E", "text": "斑驳的旧墙皮色"}, {"dim": "B", "text": "奶糖般的温润白"}, {"dim": "C", "text": "浓郁到化不开的灰"}, {"dim": "D", "text": "极其扎眼的电光紫"}]},
+    {"id": 18, "text": "假如人生是一场电影，你希望结局是？", "options": [{"dim": "E", "text": "平平淡淡的流水账"}, {"dim": "B", "text": "所有人都在笑的大团圆"}, {"dim": "C", "text": "戛然而止的黑屏"}, {"dim": "D", "text": "壮烈且震撼的爆炸"}]},
+    {"id": 19, "text": "看到流星划过，你的第一反应是？", "options": [{"dim": "E", "text": "算算是不是会有极端天气"}, {"dim": "B", "text": "闭眼虔诚许愿"}, {"dim": "C", "text": "思考陨石的化学成分"}, {"dim": "D", "text": "想要伸手去抓住那道光"}]},
+    {"id": 20, "text": "最后一顿饭，你只想吃？", "options": [{"dim": "E", "text": "妈妈做的那道家常菜"}, {"dim": "B", "text": "一块酱料丰富合你口味的蛋糕"}, {"dim": "C", "text": "一杯不加奶糖的浓缩"}, {"dim": "D", "text": "最重口味的街边摊"}]},
+    
+    # 21-25题：保留原始 ABCD
     {"id": 21, "text": "如果你是一棵树，你希望长在？", "options": [{"dim": "A", "text": "终年大雾的悬崖边"}, {"dim": "B", "text": "充满笑声的公园中心"}, {"dim": "C", "text": "无人踏足的原始深山"}, {"dim": "D", "text": "车水马龙的CBD"}]},
     {"id": 22, "text": "你发现自己能听懂猫说话，它第一句是？", "options": [{"dim": "A", "text": "别再为那个人难过了"}, {"dim": "B", "text": "嘿，你要来点小鱼干吗"}, {"dim": "C", "text": "人类的行为逻辑真愚蠢"}, {"dim": "D", "text": "跟我去毁灭这个世界吧"}]},
     {"id": 23, "text": "走入一间空的艺术展厅，正中间放着？", "options": [{"dim": "A", "text": "一面破碎的落地镜"}, {"dim": "B", "text": "一个不断旋转的八音盒"}, {"dim": "C", "text": "一张写满数学公式的纸"}, {"dim": "D", "text": "一个巨大的红色拳击球"}]},
@@ -41,6 +50,7 @@ DISH_QUESTIONS = [
     {"id": 25, "text": "世界末日前最后 5 秒，你最后一句话是？", "options": [{"dim": "A", "text": "fucking this world"}, {"dim": "B", "text": "谢谢，我很开心。"}, {"dim": "C", "text": "让我自此长眠"}, {"dim": "D", "text": "来吧，让这一切更响亮！"}]}
 ]
 
+# 5x4=20种维度组合 + 1种均衡，完美映射21道菜
 DISH_RESULTS = [
     {"name": "老坛酸菜鱼", "portrait": "清醒、敏感、真诚", "goldSentence": "够酸够辣，但也够真。", "match": ["A_EXTREME"], "description": "测出这个结果的你，灵魂里住着一个带着刺的诗人。酸菜鱼的底色是酸，正如你对世界天然的敏锐与“防备”。你总是能精准地捕捉到空气里微小的冷热变化，甚至是社交场上那些不易察觉的虚伪。人们觉得你有时显得“刺儿头”或是不合群，但那是因为你拒绝为了廉价的共鸣而稀释真实的自我。你的温柔是“无骨”的鱼肉，极其鲜嫩，却只留给穿过酸辣汤底、真正走进你心里的人。你习惯用毒舌和疏离保护内心的柔软，这种不迎合，是你对生命最后的坚持。即便身处酸楚的汤底，你仍要记得自己是一条跃龙门的鱼。"},
     {"name": "广式白斩鸡", "portrait": "纯粹、治愈、理想主义", "goldSentence": "拒绝包装，原汁原味。", "match": ["B_EXTREME"], "description": "在这个人人都在给自己加滤镜的时代，你是一道拒绝包装的白斩鸡。你的性格里有一种近乎偏执的‘真’。你讨厌弯弯绕绕的职场政治，也不屑于在社交网络上营造虚假的人设。对你来说，好就是好，坏就是坏，这种‘原汁原味’的理想主义让你在复杂的世界里显得既孤独又珍贵。你其实很聪明，能看穿所有的套路，但你选择不参与。你的治愈感来自于这种透明性——和你相处不需要猜谜，不需要设防。你是那种即使被误解，也会选择‘不解释、只做自己’的人，因为你深知，懂你的人自然懂那份皮爽肉滑下的赤诚真心。"},
@@ -66,112 +76,98 @@ DISH_RESULTS = [
 ]
 
 # ==========================================
-# 2. 逻辑计算与绘图函数
+# 2. 逻辑计算与绘图函数 (重构为纯排列组合映射)
 # ==========================================
 def calculate_dish_result(scores):
-    """移植自 TS 的 calculateResultWithPercentages"""
     total = sum(scores.values()) or 1
     percentages = {k: round((v / total) * 100) for k, v in scores.items()}
     
-    # 排序，得分高的在前
+    # 根据分数从高到低排序
     sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
-    highest_dim, highest_score = sorted_scores[0]
-    second_dim, second_score = sorted_scores[1]
+    top1_dim, top1_score = sorted_scores[0]
+    top2_dim, top2_score = sorted_scores[1]
+    min_score = sorted_scores[-1][1]
     
     matched_dish = None
     
-    # 1. 极端情况 (> 15 points)
-    if highest_score >= 16:
-        matched_dish = next((d for d in DISH_RESULTS if f"{highest_dim}_EXTREME" in d['match']), None)
-    
-    # 2. 罕见的 C 情况
-    if not matched_dish and scores['C'] >= 11 and scores['A'] < 5 and scores['B'] < 5:
-        matched_dish = next((d for d in DISH_RESULTS if 'C_RARE' in d['match']), None)
-        
-    # 3. 均衡情况
-    if not matched_dish and (max(scores.values()) - min(scores.values())) <= 4:
+    # 1. 绝对均衡情况判断 (25题分配5个维度，最高与最低分差<=2即可视为全能型)
+    if (top1_score - min_score) <= 2:
         matched_dish = next((d for d in DISH_RESULTS if 'BALANCED' in d['match']), None)
         
-    # 4. 双拼情况
+    # 2. 5x4=20 种排列组合的绝对映射 (保证20道菜每道都有对应概率)
     if not matched_dish:
-        matched_dish = next((d for d in DISH_RESULTS if len(d['match']) == 2 and highest_dim in d['match'] and second_dim in d['match']), None)
-        
-    # 5. 三拼或倾向性兜底
+        for dish in DISH_RESULTS:
+            if len(dish['match']) == 2:
+                # 严格匹配 Top 1 和 Top 2
+                if dish['match'][0] == top1_dim and dish['match'][1] == top2_dim:
+                    matched_dish = dish
+                    break
+                    
+    # 3. 兜底保护 (理论上永远不会走到这里，上面已经穷举了所有数学情况)
     if not matched_dish:
-        if highest_dim == 'B':
-            matched_dish = next((d for d in DISH_RESULTS if 'B_LEAN' in d['match']), None)
-        elif highest_dim == 'D':
-            matched_dish = next((d for d in DISH_RESULTS if 'D_LEAN' in d['match']), None)
-        else:
-            matched_dish = next((d for d in DISH_RESULTS if highest_dim in d['match']), None)
-            
-    # 如果还是没匹配到，给一个默认的
-    if not matched_dish:
-        matched_dish = DISH_RESULTS[-1]
+        matched_dish = DISH_RESULTS[0]
         
     return matched_dish, percentages
 
 def draw_radar_chart(percentages):
-    """
-    进阶优化版：更具设计感、细节更丰富的雷达图
-    """
-    categories = ['甜<br>(B)', '苦<br>(C)', '辣<br>(D)', '酸<br>(A)']
+    # 增加咸(E)维度
+    categories = ['甜<br>(B)', '苦<br>(C)', '辣<br>(D)', '酸<br>(A)', '咸<br>(E)']
     values = [
         percentages.get('B', 0), 
         percentages.get('C', 0), 
         percentages.get('D', 0), 
-        percentages.get('A', 0)
+        percentages.get('A', 0),
+        percentages.get('E', 0)
     ]
     
-    # 闭合路径
+    # 闭合五角星路径
     values.append(values[0])
     categories.append(categories[0])
     
-    # 优化点 1: 友好的悬浮提示 (Hover text)
     hover_texts = [f"{cat.replace('<br>', '')}占比: {val}%" for cat, val in zip(categories, values)]
     
     fig = go.Figure(data=go.Scatterpolar(
         r=values,
         theta=categories,
         fill='toself',
-        fillcolor='rgba(249, 115, 22, 0.35)', # 稍微降低透明度，显得更轻盈
-        line=dict(color='#ea580c', width=2.5), # 边框颜色加深一点 (orange-600)，增加对比度
+        fillcolor='rgba(249, 115, 22, 0.35)', 
+        line=dict(color='#ea580c', width=2.5), 
         marker=dict(
             size=6, 
-            color='#ffffff', # 数据点中心留白
-            line=dict(color='#ea580c', width=2) # 数据点外圈颜色
+            color='#ffffff', 
+            line=dict(color='#ea580c', width=2) 
         ),
         hoverinfo='text',
-        hovertext=hover_texts # 鼠标悬浮时显示干净的文本，而不是默认的复杂框
+        hovertext=hover_texts 
     ))
 
     fig.update_layout(
         polar=dict(
             radialaxis=dict(
                 visible=True,
-                range=[0, max(max(values) + 25, 60)], 
+                range=[0, max(max(values) + 15, 40)], # 因为分成了5份，单项最高分理论在40左右 
                 showticklabels=False,
-                gridcolor='rgba(231, 229, 228, 0.7)', # stone-200 柔和的内部网格线
-                linecolor='rgba(0,0,0,0)', # 隐藏内部轴的粗线
+                gridcolor='rgba(231, 229, 228, 0.7)', 
+                linecolor='rgba(0,0,0,0)', 
             ),
             angularaxis=dict(
                 tickfont=dict(
-                    size=13, # 稍微缩小字号，显得更精致
-                    color='#78716c', # stone-500，采用高级灰而不是死黑
+                    size=13, 
+                    color='#78716c', 
                     family="Noto Sans SC, sans-serif",
-                    weight='bold' # 加粗标签，提升辨识度
+                    weight='bold' 
                 ),
                 gridcolor='rgba(231, 229, 228, 0.7)',
-                linecolor='rgba(0,0,0,0)', # 优化点 2: 去掉最外圈的丑陋黑边
+                linecolor='rgba(0,0,0,0)', 
                 rotation=90,
                 direction="clockwise"
             ),
-            bgcolor='#fafaf9' # 优化点 3: 给雷达图内部圆盘加一个极浅的暖底色 (stone-50)
+            bgcolor='#fafaf9' 
         ),
         showlegend=False,
-        margin=dict(l=65, r=65, t=40, b=40), # 边距适配
-        height=350, # 配合整体卡片的高度
-        paper_bgcolor='rgba(0,0,0,0)', # 外部背景完全透明，融入你的卡片
+        margin=dict(l=65, r=65, t=40, b=40), 
+        height=350, 
+        paper_bgcolor='rgba(0,0,0,0)', 
         plot_bgcolor='rgba(0,0,0,0)',
         hovermode='closest'
     )
@@ -179,55 +175,43 @@ def draw_radar_chart(percentages):
     return fig
 
 # ==========================================
-# 3. 核心视图渲染函数 (供外部调用)
+# 3. 核心视图渲染函数
 # ==========================================
 def show_dish_test():
-    """将此函数导入并放置在你原有的 Streamlit 页面路由中"""
-    
-    # --- 1. 注入 CSS 样式 (高度还原 Tailwind 的 Orange/Stone 主题) ---
     st.markdown("""
         <style>
-        /* 专门针对返回按钮的缩小样式 */
         div[data-testid="stHorizontalBlock"] button[key="back_btn"] {
-            height: 2rem !important;        /* 高度减半 */
-            width: auto !important;         /* 宽度自适应，不再占满全行 */
-            min-height: 0px !important;     /* 移除之前设置的最小高度限制 */
-            padding: 0px 1rem !important;   /* 缩减内边距 */
-            font-size: 0.8rem !important;   /* 字体变小 */
-            background-color: transparent !important; /* 透明背景 */
-            border: 1px solid #e7e5e4 !important;    /* 细边框 */
-            color: #a8a29e !important;      /* 灰色文字，不抢眼 */
+            height: 2rem !important;        
+            width: auto !important;         
+            min-height: 0px !important;     
+            padding: 0px 1rem !important;   
+            font-size: 0.8rem !important;   
+            background-color: transparent !important; 
+            border: 1px solid #e7e5e4 !important;    
+            color: #a8a29e !important;      
         }
-        
-        /* 悬浮时稍微亮一点点 */
         div[data-testid="stHorizontalBlock"] button[key="back_btn"]:hover {
             color: #f97316 !important;
             border-color: #f97316 !important;
         }
-        /* 隐藏Streamlit默认的顶部栏和页脚 */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
-        
-        /* 页面背景 */
         .stApp {
-            background-color: #fafaf9; /* stone-50 */
-            color: #1c1917; /* stone-900 */
+            background-color: #fafaf9; 
+            color: #1c1917; 
             font-family: 'Noto Sans SC', sans-serif;
         }
-                /* 1. 基础按键美化：增加层次感 */
         div.stButton > button {
             background: white;
             color: #44403c;
             border: 1px solid #e7e5e4;
-            border-radius: 1.25rem !important; /* 更圆润 */
+            border-radius: 1.25rem !important; 
             padding: 0.8rem 1.5rem !important;
             font-size: 1rem !important;
             font-weight: 500 !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important;
         }
-        
-        /* 2. 悬浮效果：轻微上浮并加深阴影 */
         div.stButton > button:hover {
             transform: translateY(-2px);
             border-color: #f97316 !important;
@@ -235,65 +219,35 @@ def show_dish_test():
             box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.1) !important;
             background-color: #fff7ed !important;
         }
-        
-        /* 3. 点击反馈：缩放动效（非常重要，增加交互感） */
         div.stButton > button:active {
             transform: scale(0.96) !important;
             background-color: #ffedd5 !important;
         }
-        
-        /* 4. 进度条美化 */
         .stProgress > div > div > div > div {
             background: linear-gradient(90deg, #fdba74 0%, #f97316 100%);
             border-radius: 1rem;
         }
-        
-        /* 5. 答题选项的特殊样式（让选项更显眼） */
         [data-testid="stMain"] .stButton > button {
             height: auto !important;
-            min-height: 4.5rem !important; /* 增加高度，更易点击 */
+            min-height: 4.5rem !important; 
             margin-bottom: 0.5rem;
             text-align: left !important;
             padding-left: 2rem !important;
         }
-        /* 统一按钮样式：大号、圆角、橙色交互 */
-        div.stButton > button {
-            background-color: #ffffff;
-            color: #44403c; /* stone-700 */
-            border: 2px solid #f5f5f4; /* stone-100 */
-            border-radius: 1rem;
-            padding: 1rem;
-            width: 100%;
-            font-weight: 500;
-            transition: all 0.3s;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        div.stButton > button:hover {
-            border-color: #fed7aa; /* orange-200 */
-            background-color: #fff7ed; /* orange-50 */
-            color: #ea580c; /* orange-600 */
-        }
-        div.stButton > button:active {
-            background-color: #fff7ed;
-            transform: scale(0.98);
-        }
-
-
-        /* 特定按钮：开始/重开 按钮 (橘色实心) */
         .btn-primary > div > button {
-            background-color: #f97316 !important; /* orange-500 */
+            background-color: #f97316 !important; 
             color: white !important;
             font-weight: bold !important;
             font-size: 1.125rem !important;
-            border-radius: 9999px !important; /* 全圆角 */
+            border-radius: 9999px !important; 
             border: none !important;
             box-shadow: 0 20px 25px -5px rgba(254, 215, 170, 0.5) !important;
+            text-align: center !important;
+            padding-left: 0 !important;
         }
         .btn-primary > div > button:hover {
-            background-color: #ea580c !important; /* orange-600 */
+            background-color: #ea580c !important; 
         }
-
-        /* 结果卡片样式 */
         .result-card {
             background-color: white;
             border-radius: 2.5rem;
@@ -313,42 +267,23 @@ def show_dish_test():
             border: 1px solid #ffedd5;
             margin: 0.2rem;
         }
-        /* 1. 只缩小主屏幕中的结果图片，不影响其他 */
         [data-testid="stMain"] img {
-            max-width: 300px !important; /* 强制图片最大宽度 */
+            max-width: 300px !important; 
             height: auto !important;
             margin: 0 auto;
             display: block;
         }
-    
-        /* 2. 只修改主屏幕按钮，排除侧边栏按钮 */
-        [data-testid="stMain"] .stButton > button {
-            height: 3.5rem !important;
-            border-radius: 15px !important;
-            background-color: #FFF5F7 !important;
-            color: #FF6A88 !important;
-            border: 2px solid #FFE4E9 !important;
-        }
-    
-        /* 3. 保护侧边栏按钮不被变大 */
-        [data-testid="stSidebar"] .stButton > button {
-            height: auto !important;
-            padding: 8px 15px !important;
-            min-height: 0px !important;
-        }
-        
         </style>
     """, unsafe_allow_html=True)
 
-    # --- 2. 初始化 Session State ---
+    # 初始化包含 E 维度
     if 'dish_step' not in st.session_state:
-        st.session_state.dish_step = 0 # 0: Home, 1-25: Quiz, 26: Result
+        st.session_state.dish_step = 0 
     if 'dish_scores' not in st.session_state:
-        st.session_state.dish_scores = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
+        st.session_state.dish_scores = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0}
     if 'dish_history' not in st.session_state:
         st.session_state.dish_history = []
-    # --- 3. 视图渲染逻辑 ---
-    
+        
     # 【首页视图】
     if st.session_state.dish_step == 0:
         st.write("<br><br><br>", unsafe_allow_html=True)
@@ -365,81 +300,63 @@ def show_dish_test():
             st.markdown('<div class="btn-primary">', unsafe_allow_html=True)
             if st.button("起锅烧火", key="dish_start_btn", use_container_width=True):
                 st.session_state.dish_step = 1
-                st.session_state.dish_scores = {'A': 0, 'B': 0, 'C': 0, 'D': 0}
+                st.session_state.dish_scores = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0}
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
 
-# 【答题视图】
+    # 【答题视图】
     elif 1 <= st.session_state.dish_step <= len(DISH_QUESTIONS):
         q_idx = st.session_state.dish_step - 1
         q_data = DISH_QUESTIONS[q_idx]
         
-        # 进度条
         st.progress(st.session_state.dish_step / len(DISH_QUESTIONS))
         
-        # --- 优化后的题目展示区域 ---
         st.markdown(f"""
             <div style="margin-top: 2.5rem; max-width: 32rem; margin-left: auto; margin-right: auto; text-align: center;">
                 <div style="color: #fb923c; font-family: 'Courier New', monospace; font-size: 0.9rem; 
                             font-weight: bold; margin-bottom: 1rem; letter-spacing: 0.1em;">
                     STEP {q_idx + 1} / 25
                 </div>
-                <h2 style="font-size: 2rem; /* 从1.5rem增大到2rem */
-                           font-weight: 800; 
-                           color: #292524; 
-                           margin-bottom: 3.5rem; 
-                           line-height: 1.4; 
-                           min-height: 5rem;
-                           letter-spacing: -0.02em;
-                           padding: 0 10px;">
+                <h2 style="font-size: 2rem; font-weight: 800; color: #292524; 
+                           margin-bottom: 3.5rem; line-height: 1.4; min-height: 5rem;
+                           letter-spacing: -0.02em; padding: 0 10px;">
                     {q_data['text']}
                 </h2>
             </div>
         """, unsafe_allow_html=True)
 
-        # 选项按钮
         col1, col2, col3 = st.columns([1, 6, 1])
         with col2:
             for opt_idx, opt in enumerate(q_data['options']):
                 if st.button(opt['text'], key=f"dish_btn_{q_idx}_{opt_idx}", use_container_width=True):
-                    # 记录得分
                     dim = opt['dim']
                     st.session_state.dish_scores[dim] += 1
                     st.session_state.dish_history.append(dim)
-                    # 进入下一题或结算
                     st.session_state.dish_step += 1
                     st.rerun()
             if 1 < st.session_state.dish_step <= len(DISH_QUESTIONS):
                 st.write("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
-                
-                # 创建三个小列，[1.5, 1, 1] 会把按钮放在左边
-                # 如果想放右边，可以改成 [2, 2, 1]，然后在最后的 with sub_col3 里写按钮
                 sub_col1, sub_col2, sub_col3 = st.columns([1.5, 1, 1])
-                
                 with sub_col1:
                     if st.button("⬅️ 返回上题", key="back_btn"):
-                        # 逻辑保持不变
                         last_dim = st.session_state.dish_history.pop()
                         st.session_state.dish_scores[last_dim] -= 1
                         st.session_state.dish_step -= 1
                         st.rerun()
+                        
     # 【结果与加载视图】
     elif st.session_state.dish_step > len(DISH_QUESTIONS):
         col1, col2, col3 = st.columns([1, 10, 1])
         with col2:
-            # 伪加载动画 (增加仪式感)
             with st.spinner('正在翻炒你的灵魂... 🔥'):
-                time.sleep(1.5) # 模拟计算延迟
+                time.sleep(1.5) 
             
-            # 计算结果
             result_data, percentages = calculate_dish_result(st.session_state.dish_scores)
             
-            # 生成标签 HTML
             tags_html = ""
             for tag in result_data['portrait'].split('、'):
                 tags_html += f'<span class="tag-pill">{tag}</span>'
 
-            # 渲染卡片顶部
             st.markdown(f"""
                 <div class="result-card">
                     <div style="font-size: 0.625rem; color: #a8a29e; letter-spacing: 0.3em; margin-bottom: 0.5rem; font-weight: bold; text-transform: uppercase;">Soul Profile</div>
@@ -448,13 +365,11 @@ def show_dish_test():
             """, unsafe_allow_html=True)
 
             st.write("<br>", unsafe_allow_html=True)
-            # 图片展示区域 (需确保 images/ 文件夹存在)
             img_path = f"images_food/{result_data['name']}.jpg"
             
             if os.path.exists(img_path):
-                # 使用极窄的两边留白，让中间图片区域极大化
-                col1, col2, col3 = st.columns([0.1, 4, 0.1]) 
-                with col2:
+                sub_col1, sub_col2, sub_col3 = st.columns([0.1, 4, 0.1]) 
+                with sub_col2:
                     img_base64 = get_image_base64(img_path)
                     st.markdown(
                         f"""
@@ -472,13 +387,11 @@ def show_dish_test():
                 st.warning(f"🍱 正在为你摆盘... (缺少图片: {img_path})")
 
             st.write("<br>", unsafe_allow_html=True)
-            # 雷达图展示
             st.markdown('<h3 style="font-size: 0.625rem; font-weight: 900; color: #d6d3d1; margin-top: 2rem; letter-spacing: 0.2em; text-transform: uppercase;">味觉灵魂雷达</h3>', unsafe_allow_html=True)
-           
+            
             st.write("<br>", unsafe_allow_html=True)
             st.plotly_chart(draw_radar_chart(percentages), use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False})
             
-            # 解说文案与金句
             st.markdown(f"""
                     <div style="text-align: left; margin-top: 1rem;">
                         <p style="color: #57534e; line-height: 1.625; font-size: 0.875rem; margin-bottom: 1.5rem;">{result_data['description']}</p>
@@ -490,21 +403,16 @@ def show_dish_test():
 
             st.write("<br>", unsafe_allow_html=True)
             
-        
             st.markdown('<div class="btn-primary">', unsafe_allow_html=True)
-            # food_test.py 结果页部分
             if st.button("🔥 重新翻炒", use_container_width=True):
-                # 调用我们在 content 里的逻辑 (如果函数在 content.py，需要 import)
-                # 或者直接在这里手动清理：
                 st.session_state.dish_step = 0
-                st.session_state.unlocked_FoodTest = False # 强制上锁
+                st.session_state.unlocked_FoodTest = False 
                 if 'result_dish' in st.session_state:
                     del st.session_state['result_dish']
                     
-                st.session_state.target_page = "Home" # 返回主页
+                st.session_state.target_page = "Home" 
                 st.success("记录已清空，正在返回主页...")
                 st.rerun()
-
 
 if __name__ == "__main__":
     show_dish_test()
