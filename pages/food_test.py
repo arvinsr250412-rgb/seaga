@@ -111,10 +111,10 @@ def calculate_dish_result(scores):
     # 建立候选池，解决概率公平问题
     candidates = []
     for dish in DISH_RESULTS:
-        m_list = dish['match']
-        # 只要 Top1 和 Top2 都在该菜品的 match 标签里，就入选
-        if top1_dim in m_list and top2_dim in m_list:
+        # 如果菜品 match 数组同时包含第一和第二维度
+        if top1_dim in dish['match'] and top2_dim in dish['match']:
             candidates.append(dish)
+            
     if candidates:
         return random.choice(candidates), percentages
 
