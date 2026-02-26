@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import os
 import time
 import base64
-
+import random
 def get_image_base64(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
@@ -82,32 +82,41 @@ def calculate_dish_result(scores):
     total = sum(scores.values()) or 1
     percentages = {k: round((v / total) * 100) for k, v in scores.items()}
     
-    # 根据分数从高到低排序
+    # 获取排序后的维度 (例如: [('D', 12), ('A', 5), ...])
     sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
     top1_dim, top1_score = sorted_scores[0]
     top2_dim, top2_score = sorted_scores[1]
     min_score = sorted_scores[-1][1]
     
-    matched_dish = None
-    
-    # 1. 绝对均衡情况判断 (25题分配5个维度，最高与最低分差<=2即可视为全能型)
+    # 1. 判定【一碗白米饭】 (绝对均衡)
     if (top1_score - min_score) <= 2:
-        matched_dish = next((d for d in DISH_RESULTS if 'BALANCED' in d['match']), None)
-        
-    # 2. 5x4=20 种排列组合的绝对映射 (保证20道菜每道都有对应概率)
-    if not matched_dish:
+        return next(d for d in DISH_RESULTS if 'BALANCED' in d['match']), percentages
+
+    # 2. 判定【极致单属性】 (如果第一名比第二名高出很多，触发 EXTREME/LEAN 菜品)
+    # 这里的阈值设为 4 分（可调），即某属性遥遥领先
+    if (top1_score - top2_score) >= 4:
+        extreme_match = f"{top1_dim}_EXTREME"
+        lean_match = f"{top1_dim}_LEAN"
         for dish in DISH_RESULTS:
-            if len(dish['match']) == 2:
-                # 严格匹配 Top 1 和 Top 2
-                if dish['match'][0] == top1_dim and dish['match'][1] == top2_dim:
-                    matched_dish = dish
-                    break
-                    
-    # 3. 兜底保护 (理论上永远不会走到这里，上面已经穷举了所有数学情况)
-    if not matched_dish:
-        matched_dish = DISH_RESULTS[0]
-        
-    return matched_dish, percentages
+            if extreme_match in dish['match'] or lean_match in dish['match']:
+                return dish, percentages
+
+    # 3. 判定【Top 2 组合】 (收集所有符合 Top1+Top2 的菜品，随机选一个防止“首位覆盖”)
+    candidates = []
+    for dish in DISH_RESULTS:
+        # 情况 A: 严格匹配 [Top1, Top2]
+        if len(dish['match']) == 2 and dish['match'][0] == top1_dim and dish['match'][1] == top2_dim:
+            candidates.append(dish)
+        # 情况 B: 某些复杂菜品匹配三个维度 [Top1, Top2, Any]
+        elif len(dish['match']) == 3 and top1_dim in dish['match'] and top2_dim in dish['match']:
+            candidates.append(dish)
+
+    if candidates:
+        return random.choice(candidates), percentages
+
+    # 4. 判定【稀有/隐藏兜底】 (如果以上都没中，随机给一个带有当前 Top1 标签的稀有菜)
+    rare_candidates = [d for d in DISH_RESULTS if top1_dim in str(d['match'])]
+    return random.choice(rare_candidates) if rare_candidates else DISH_RESULTS[0], percentages
 
 def draw_radar_chart(percentages):
     # 增加咸(E)维度
