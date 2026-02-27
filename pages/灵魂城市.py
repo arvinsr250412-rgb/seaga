@@ -48,6 +48,9 @@ def show_soul_city():
     # --- 1. 样式配置 (清新多巴胺风格：白底彩边) ---
     st.markdown("""
         <style>
+        :root {
+            --dopamine-gradient: linear-gradient(45deg, #FF6B6B, #FF8E99, #FFAD7D);
+        }
         /* 页面背景清爽白 */
         .stApp { background-color: #FFFFFF; }
 
@@ -105,6 +108,23 @@ def show_soul_city():
             border-radius: 30px;
             text-align: center;
             margin: 0 auto;
+        }
+        /* 选项按钮深度美化 */
+        section[data-testid="stMain"] div.stButton > button {
+            background-color: #FFFFFF !important;
+            border: 2px solid #F0F2F6 !important; /* 初始淡色边框 */
+            border-radius: 16px !important;
+            padding: 1rem 2rem !important;
+            min-height: 4rem !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+        
+        /* 悬停时边框变色并放大 */
+        section[data-testid="stMain"] div.stButton > button:hover {
+            border-color: #FF8E99 !important;
+            color: #FF6B6B !important;
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 142, 153, 0.15) !important;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -351,12 +371,12 @@ def show_soul_city():
         ax.set_theta_offset(np.pi / 2) # 设置顶点从正上方开始
         ax.set_theta_direction(-1)     # 顺时针排列
         
-        # 绘制填充区域
-        # 将原本的蓝色 '#3B82F6' 换成粉橙色系
-        ax.fill(angles, values, color='#FF6A88', alpha=0.25)
-        ax.plot(angles, values, color='#FF6A88', linewidth=2.5, marker='o', 
-                markersize=6, markerfacecolor='white', markeredgewidth=2)
-        
+
+        # 将 fill 和 plot 的颜色微调为更柔和的粉橙色
+        ax.fill(angles, values, color='#FF8E99', alpha=0.3) # 增加透明度
+        ax.plot(angles, values, color='#FF8E99', linewidth=3, marker='o', 
+                markersize=8, markerfacecolor='white', markeredgecolor='#FF8E99')
+                
         # 3. 圆形背景美化
         # 设置圆形网格线（关键步：使用 set_rgrids 指定圆圈）
         max_val = max(max(values), 10) # 确保有足够的空间
@@ -613,6 +633,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
