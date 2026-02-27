@@ -48,86 +48,49 @@ def show_soul_city():
     # --- 1. 样式配置 (清新多巴胺风格：白底彩边) ---
     st.markdown("""
         <style>
-        :root {
-            --dopamine-gradient: linear-gradient(45deg, #FF6B6B, #FF8E99, #FFAD7D);
-        }
-        /* 页面背景清爽白 */
+        /* 1. 全局背景清爽 */
         .stApp { background-color: #FFFFFF; }
 
-        /* 题目文字：保持大号且清晰 */
+        /* 2. 题目样式：大号、深色、无卡片背景 */
         .q-text {
             font-size: 2.2rem !important; 
             font-weight: 800 !important;
             color: #2D3748 !important;
-            margin-bottom: 30px !important;
+            text-align: center;
+            margin: 50px 0 !important;
             line-height: 1.4 !important;
         }
 
-        /* 重点：白底+彩色边框按钮 */
+        /* 3. 按钮：白底、粉色粗边框、彩色文字 */
         section[data-testid="stMain"] div.stButton > button {
-            background-color: #FFFFFF !important; /* 白色背景 */
-            border: 3px solid !important; /* 明显的边框 */
-            border-color: #FF8E99 !important; /* 默认粉色边框 */
+            background-color: #FFFFFF !important;
+            border: 3px solid #FF8E99 !important; /* 统一的清新粉边 */
             border-radius: 20px !important;
             padding: 1.2rem 2rem !important;
+            min-height: 4.5rem !important;
             transition: all 0.3s ease !important;
-            box-shadow: 0 4px 15px rgba(255, 142, 153, 0.1) !important;
         }
 
-        /* 按钮文字：暖色调 */
+        /* 按钮内文字样式 */
         section[data-testid="stMain"] div.stButton > button p {
-            color: #FF6B6B !important; /* 浅红字体 */
+            color: #FF6B6B !important; 
             font-size: 1.3rem !important;
             font-weight: 700 !important;
         }
 
-        /* 悬停效果：边框变为橙色 */
+        /* 悬停效果：边框变色 */
         section[data-testid="stMain"] div.stButton > button:hover {
-            border-color: #FFAD7D !important; /* 橙色边框 */
-            background-color: #FFF9F9 !important; /* 极浅粉背景 */
+            border-color: #FFAD7D !important; /* 悬停变橙色 */
+            background-color: #FFF9F9 !important;
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 173, 125, 0.2) !important;
-        }
-
-        /* 结果页：超大城市名 */
-        .massive-city-title {
-            font-size: 100px !important; /* 极大字体 */
-            font-weight: 900 !important;
-            text-align: center;
-            background: linear-gradient(45deg, #FF6B6B, #FF8E99, #FFAD7D);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 40px 0 !important;
-            line-height: 1.1;
-        }
-
-        /* 题目卡片：简化为白底微阴影 */
-        .q-card {
-            background: white;
-            padding: 30px;
-            border-radius: 30px;
-            text-align: center;
-            margin: 0 auto;
-        }
-        /* 选项按钮深度美化 */
-        section[data-testid="stMain"] div.stButton > button {
-            background-color: #FFFFFF !important;
-            border: 2px solid #F0F2F6 !important; /* 初始淡色边框 */
-            border-radius: 16px !important;
-            padding: 1rem 2rem !important;
-            min-height: 4rem !important;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        }
-        
-        /* 悬停时边框变色并放大 */
-        section[data-testid="stMain"] div.stButton > button:hover {
-            border-color: #FF8E99 !important;
-            color: #FF6B6B !important;
-            transform: scale(1.02) translateY(-2px);
             box-shadow: 0 10px 20px rgba(255, 142, 153, 0.15) !important;
         }
+
+        /* 隐藏Streamlit默认元素 */
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
         </style>
-        """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
     if 'history' not in st.session_state:
         st.session_state.history = []  # 用于存放每一题选择后的分数快照
@@ -633,6 +596,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
