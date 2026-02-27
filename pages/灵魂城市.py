@@ -70,7 +70,23 @@ def show_soul_city():
             min-height: 4.5rem !important;
             transition: all 0.3s ease !important;
         }
-
+                /* 选项按钮深度美化 */
+        section[data-testid="stMain"] div.stButton > button {
+            background-color: #FFFFFF !important;
+            border: 2px solid #F0F2F6 !important; /* 初始淡色边框 */
+            border-radius: 16px !important;
+            padding: 1rem 2rem !important;
+            min-height: 4rem !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+        
+        /* 悬停时边框变色并放大 */
+        section[data-testid="stMain"] div.stButton > button:hover {
+            border-color: #FF8E99 !important;
+            color: #FF6B6B !important;
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 142, 153, 0.15) !important;
+        }
         /* 按钮内文字样式 */
         section[data-testid="stMain"] div.stButton > button p {
             color: #FF6B6B !important; 
@@ -85,7 +101,43 @@ def show_soul_city():
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(255, 142, 153, 0.15) !important;
         }
-
+                /* 结果页：巨型城市名 */
+        .massive-city-title {
+            font-size: 120px !important; /* 极大字体 */
+            font-weight: 900 !important;
+            text-align: center;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E99, #FFAD7D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 50px !important;
+            margin-bottom: 0px !important;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+        
+        /* 城市标签：紧跟在名字下方的副标题 */
+        .city-tagline {
+            text-align: center;
+            font-size: 1.5rem !important;
+            color: #FF8E99;
+            font-weight: 700;
+            margin-top: -10px !important;
+            margin-bottom: 40px !important;
+            letter-spacing: 4px;
+        }
+        
+        /* 契合度数字：醒目但不抢戏 */
+        .match-rate-box {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #4A5568;
+            font-weight: 600;
+            background: #FFF5F5;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 0 auto;
+        }
         /* 隐藏Streamlit默认元素 */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
@@ -596,6 +648,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
