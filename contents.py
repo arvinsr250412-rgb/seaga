@@ -159,6 +159,9 @@ def apply_contents_settings():
                 'unlocked_SoulCity', 
                 'unlocked_Orientation', 
                 'unlocked_FoodTest'
+                'vitamin_step',      # 新增：维生素题目进度
+                'vit_scores',        # 新增：维生素加权分数
+                'unlocked_Vitamin'   # 新增：维生素页面锁
             ]
             
             # 2. 执行清理
@@ -224,7 +227,21 @@ def apply_contents_settings():
                 # 同时可以把 target_page 设为这个目标，让主屏幕显示“请认证”
                 st.session_state.target_page = "FoodTest" 
             st.rerun()
-            
+
+        # E. 维生素缺乏精准评估
+        is_vit_unlocked = st.session_state.get("unlocked_Vitamin", False) or is_admin
+        vit_label = "🧬 维生素缺乏评估" + (" ✅" if is_vit_unlocked else " 🔒")
+        
+        if st.button(vit_label, key="btn_vit", use_container_width=True):
+            if is_vit_unlocked:
+                st.session_state.target_page = "VitaminTest"
+                st.session_state.needs_auth = None
+            else:
+                reset_and_lock_all()
+                st.session_state.needs_auth = "VitaminTest"
+                st.session_state.target_page = "VitaminTest"
+            st.rerun()
+                    
         # --- 🔐 密钥验证动态区 ---
         # 只有在点击了锁定的项目时才显示
         if st.session_state.get("needs_auth"):
