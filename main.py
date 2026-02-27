@@ -8,6 +8,7 @@ from contents import apply_contents_settings
 from pages.灵魂城市 import show_soul_city
 from pages.性取向探索 import sexual_text
 from pages.food_test import show_dish_test
+from pages.vitamin_test import show_vitamin_test
 # --- 1. 页面配置 (必须是 Streamlit 命令的第一条) ---
 st.set_page_config(page_title="Spectrum", page_icon="💥", layout="wide")
 apply_contents_settings()
@@ -21,13 +22,15 @@ if "target_page" not in st.session_state:
 if "needs_auth" not in st.session_state:
     st.session_state.needs_auth = None
 
+
 if "unlocked_FoodTest" not in st.session_state:
     st.session_state.unlocked_FoodTest = False
-# main.py 初始化部分
 if "unlocked_SoulCity" not in st.session_state:
     st.session_state.unlocked_SoulCity = False
 if "unlocked_Orientation" not in st.session_state:
     st.session_state.unlocked_Orientation = False
+if "unlocked_Vitamin" not in st.session_state:
+    st.session_state.unlocked_Vitamin = False
 # --- 3. 应用统一配置与侧边栏 (包含所有拦截逻辑) ---
 
 
@@ -195,6 +198,23 @@ elif st.session_state.target_page == "FoodTest":
         if "main_nav" in st.session_state:
             st.session_state["main_nav"] = "Home"
         st.rerun()
+
+# 页面 E: 维生素缺乏评估
+elif st.session_state.target_page == "VitaminTest":
+    is_unlocked = st.session_state.get("unlocked_Vitamin", False)
+    is_admin = st.session_state.get("admin_logged_in", False)
+    
+    if is_unlocked or is_admin:
+        show_vitamin_test() # 调用 vitamin_test.py 里的函数
+        
+        # 侧边栏辅助返回按钮
+        if st.sidebar.button("🏠返回主页并上锁", key="exit_vit"):
+            st.session_state.unlocked_Vitamin = False 
+            st.session_state.target_page = "Home"
+            st.rerun()
+    else:
+        st.session_state.target_page = "Home"
+        st.rerun()
         
 # 默认页面: 首页
 else:
@@ -203,6 +223,7 @@ else:
         st.session_state.unlocked_SoulCity = False
         st.session_state.unlocked_Orientation = False
         st.session_state.unlocked_FoodTest = False
+        st.session_state.unlocked_Vitamin = False
     # 1. 巨大的 Hero 标题区
     st.markdown("""
         <div class="hero-container">
@@ -263,6 +284,7 @@ else:
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; opacity:0.6;'>© 2026 Spectrum | Stay Colorful.</p>", unsafe_allow_html=True)
+
 
 
 
