@@ -89,7 +89,7 @@ def show_soul_city():
         }
         /* 按钮内文字样式 */
         section[data-testid="stMain"] div.stButton > button p {
-            color: #FF6B6B !important; 
+            color: #1E293B !important; 
             font-size: 1.3rem !important;
             font-weight: 700 !important;
         }
@@ -648,6 +648,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
