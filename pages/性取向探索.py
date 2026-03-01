@@ -68,6 +68,63 @@ def sexual_text():
             border: 1px solid #e2e8f0 !important;
             border-radius: 0.8rem !important;
         }
+        /* 答题卡片多巴胺风格 */
+        .question-card {
+            background: #ffffff;
+            border: 3px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 10px 10px 0px #f1f5f9;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .question-card:hover {
+            border-color: #8b5cf6;
+            box-shadow: 10px 10px 0px #ede9fe;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 开始界面的巨型标题 */
+        .start-massive-title {
+            font-size: clamp(3rem, 10vw, 5rem) !important; 
+            font-weight: 900 !important;
+            text-align: center;
+            background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 3rem !important;
+            margin-bottom: 1rem !important;
+            line-height: 1.1;
+        }
+        /* --- 结果页专属 UI --- */
+        /* 巨型结果标题：带响应式缩放，防止手机端溢出 */
+        .massive-result-title {
+            font-size: clamp(4rem, 12vw, 6.5rem) !important; 
+            font-weight: 900 !important;
+            text-align: center;
+            margin-top: 2rem !important;
+            margin-bottom: 0rem !important;
+            line-height: 1.1;
+            letter-spacing: -2px;
+        }
+
+        /* 结果页：副标题/引言 */
+        .result-tagline {
+            text-align: center;
+            font-size: 1.2rem !important;
+            font-weight: 700;
+            margin-top: 0.5rem !important;
+            margin-bottom: 2rem !important;
+            letter-spacing: 4px;
+        }
         </style>
     """, unsafe_allow_html=True)
     if not st.session_state.get("unlocked_Orientation", False) and \
@@ -124,6 +181,7 @@ def sexual_text():
     ]
     
     # --- 4. 状态管理 ---
+    if 'started' not in st.session_state: st.session_state.started = False
     if 'q_idx' not in st.session_state: st.session_state.q_idx = 0
     if 'answers' not in st.session_state: st.session_state.answers = {}
     if 'finished' not in st.session_state: st.session_state.finished = False
@@ -187,52 +245,91 @@ def sexual_text():
                 "advice": "你的心之所向非常明确。勇敢地拥抱这份独特性，在同频的圈子里，你会绽放出最夺目的光芒。"
             }
     
-        # 3. 界面渲染
+        # 3. 界面渲染 (全新多巴胺排版)
         st.markdown('<div class="main-title">Spectrum 探索报告</div>', unsafe_allow_html=True)
         
         with st.container():
             st.markdown('<div class="white-quiz-card-anchor"></div>', unsafe_allow_html=True)
             
-            # 结果头部：新颖的渐变卡片
+            # --- A. 分离主副标题，制造视觉冲击 ---
+            # 把 "恒星引力 | 极纯异性向" 拆开
+            main_title, sub_title = res['title'].split(" | ")
+            
+            # 巨型文字主标题 (直接内联动态渐变色)
             st.markdown(f"""
-                <div style="background: {res['gradient']}; padding: 2rem; border-radius: 1.5rem; text-align: center; color: white;">
-                    <p style="font-size: 0.8rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 2px;">Your Spectrum Identity</p>
-                    <h1 style="color: white !important; font-size: 2.2rem; margin: 0.5rem 0;">{res['title']}</h1>
-                    <p style="font-size: 1rem; opacity: 0.95; line-height: 1.6;">{res['desc']}</p>
+                <div class="massive-result-title" style="
+                    background: {res['gradient']};
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                ">
+                    {main_title}
+                </div>
+                <div class="result-tagline" style="color: {res['color']};">
+                    “ {sub_title} ”
                 </div>
             """, unsafe_allow_html=True)
-    
-            st.write("")
+
+            # 核心描述文案 (居中呼吸感排版)
+            st.markdown(f"""
+                <div style="text-align: center; color: #475569; font-size: 1.1rem; line-height: 1.8; margin: 0 1rem 3rem 1rem;">
+                    {res['desc']}
+                </div>
+            """, unsafe_allow_html=True)
             
-            # 深度分析维度
-            col1, col2 = st.columns(2)
+            # --- B. 灵魂导航 (多巴胺硬阴影卡片) ---
+            # 阴影颜色采用主色调加透明度 (如加15代表低透明度)
+            st.markdown(f"""
+                <div style="
+                    padding: 30px;
+                    border-radius: 25px;
+                    border: 3px solid {res['color']}40; 
+                    background: #FFFFFF;
+                    box-shadow: 15px 15px 0px {res['color']}15;
+                    margin-bottom: 40px;
+                ">
+                    <div style="color: {res['color']}; font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center;">
+                        <span style="margin-right:8px;">✨</span> 灵魂导航 · ADVICE
+                    </div>
+                    <div style="color: #4A5568; font-size: 1.05rem; line-height: 1.8; text-align: justify;">
+                        {res['advice']}
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+            # --- C. 潜在倾向分布 (极简重构) ---
+            st.markdown("#### 📊 灵魂成分解析")
+            st.write("") # 留白
+            
+            # 分数计算
+            hetero_bias = max(5, 100 - (total / 1.5))
+            homo_bias = min(95, (total / 1.5))
+            fluid_bias = 100 - abs(hetero_bias - homo_bias)
+            
+            col1, col2, col3 = st.columns(3)
             with col1:
-                st.markdown("#### 💡 灵魂画像")
-                st.info(res['advice'])
-            
-            with col2:
-                st.markdown("#### 📊 潜在倾向分布")
-                # 这里的比例是基于分数计算的示意图
-                hetero_bias = max(5, 100 - (total / 1.5))
-                homo_bias = min(95, (total / 1.5))
-                fluid_bias = 100 - abs(hetero_bias - homo_bias)
-                
-                st.write(f"异性吸引力: {int(hetero_bias)}%")
+                st.markdown(f"<p style='text-align:center; color:#64748b; font-size:0.9rem;'>异性引力</p>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='text-align:center; color:#4f46e5; margin-top:-10px;'>{int(hetero_bias)}%</h3>", unsafe_allow_html=True)
                 st.progress(int(hetero_bias)/100)
-                st.write(f"同性吸引力: {int(homo_bias)}%")
+            with col2:
+                st.markdown(f"<p style='text-align:center; color:#64748b; font-size:0.9rem;'>同性引力</p>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='text-align:center; color:#ec4899; margin-top:-10px;'>{int(homo_bias)}%</h3>", unsafe_allow_html=True)
                 st.progress(int(homo_bias)/100)
-                st.write(f"灵魂流动性: {int(fluid_bias)}%")
+            with col3:
+                st.markdown(f"<p style='text-align:center; color:#64748b; font-size:0.9rem;'>灵魂流动性</p>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='text-align:center; color:#8b5cf6; margin-top:-10px;'>{int(fluid_bias)}%</h3>", unsafe_allow_html=True)
                 st.progress(int(fluid_bias)/100)
-    
+
             st.divider()
             
-            # 底部文案
+            # --- D. 底部文案 ---
             st.markdown(f"""
                 <div style="text-align: center; padding: 1rem;">
-                    <p style="color: #64748b; font-size: 0.85rem;">
+                    <p style="color: #64748b; font-size: 0.9rem; font-style: italic;">
                         “爱是人类最后的自由，而你是自由的掌舵者。”
                     </p>
-                    <p style="color: {res['color']}; font-weight: bold; font-size: 1.1rem;">探索总分：{total} / 150</p>
+                    <p style="color: {res['color']}; font-weight: 900; font-size: 1.2rem; margin-top: 10px;">
+                        探索指数：{total} / 150
+                    </p>
                 </div>
             """, unsafe_allow_html=True)
     
@@ -241,6 +338,7 @@ def sexual_text():
         # --- 性取向探索.py 底部按钮 ---
         if st.button("✨ 重新开始探索", use_container_width=True, key="reset_final_v2"):
             # 1. 彻底清空答题痕迹
+            st.session_state.started = False
             st.session_state.q_idx = 0
             st.session_state.answers = {}
             st.session_state.finished = False
@@ -259,37 +357,86 @@ def sexual_text():
             st.rerun()
     
     else:
-        # --- B. 答题主页面 ---
-        curr = st.session_state.q_idx
-        st.markdown('<div class="main-title">Spectrum Lab</div>', unsafe_allow_html=True)
+        # --- B. 路由分发：开始界面 vs 答题界面 ---
         
-        # 进度条展示
-        progress_val = (curr + 1) / len(QUESTIONS)
-        st.progress(progress_val)
-        st.markdown(f"<p style='text-align:center;'>第 {curr+1} / {len(QUESTIONS)} 题</p>", unsafe_allow_html=True)
-    
-        with st.container():
-            st.markdown('<div class="white-quiz-card-anchor"></div>', unsafe_allow_html=True)
-            st.markdown(f"### {QUESTIONS[curr]['q']}")
+        if not st.session_state.started:
+            # ==========================================
+            # 1. 欢迎/开始界面 (Start Screen)
+            # ==========================================
+            st.markdown('<div class="start-massive-title">Spectrum Lab</div>', unsafe_allow_html=True)
+            st.markdown('<div class="result-tagline" style="color: #64748b;">“ 探索你灵魂的真实光谱 ”</div>', unsafe_allow_html=True)
             
-            # 选项
-            prev_val = st.session_state.answers.get(curr)
-            st.radio(
-                "Select",
-                options=QUESTIONS[curr]["options"],
-                key=f"radio_{curr}",
-                index=QUESTIONS[curr]["options"].index(prev_val) if prev_val in QUESTIONS[curr]["options"] else None,
-                on_change=handle_click,
-                label_visibility="collapsed"
-            )
-    
-        # --- 核心修改：导航按钮逻辑 ---
-        # 仅在不是第一题时显示“返回”按钮
-        if curr > 0:
-            st.write("") # 增加一点间距
-            if st.button("⬅️ 返回上一题", use_container_width=True):
-                st.session_state.q_idx -= 1
-                st.rerun()
+            with st.container():
+                st.markdown('<div class="white-quiz-card-anchor"></div>', unsafe_allow_html=True)
+                
+                # 介绍卡片
+                st.markdown("""
+                    <div style="
+                        padding: 30px;
+                        border-radius: 25px;
+                        border: 3px solid #f1f5f9; 
+                        background: #FFFFFF;
+                        box-shadow: 15px 15px 0px #f8fafc;
+                        margin-bottom: 40px;
+                        text-align: center;
+                    ">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">🌌</div>
+                        <h3 style="color: #4f46e5; font-weight: 800; margin-bottom: 15px;">欢迎来到性取向探索实验室</h3>
+                        <p style="color: #64748b; font-size: 1.05rem; line-height: 1.8;">
+                            这不是一次简单的非黑即白测试。在这里，性取向是一道流动的光谱。<br>
+                            接下来的 <b>30</b> 个问题，将带你潜入潜意识，描绘出你专属的灵魂画像。
+                        </p>
+                        <p style="color: #ec4899; font-weight: 600; font-size: 0.95rem; margin-top: 20px;">
+                            💡 请遵循直觉作答，无需过度思考。
+                        </p>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                # 开始按钮
+                if st.button("🚀 点击开始探索", use_container_width=True):
+                    st.session_state.started = True
+                    st.rerun()
+
+        else:
+            # ==========================================
+            # 2. 答题主页面 (Quiz Screen)
+            # ==========================================
+            curr = st.session_state.q_idx
+            
+            # 顶部小标题和进度条
+            st.markdown(f"<p style='text-align:center; color:#8b5cf6; font-weight:700; font-size:1.1rem; margin-bottom: 5px; letter-spacing: 2px;'>QUESTION {curr+1} / {len(QUESTIONS)}</p>", unsafe_allow_html=True)
+            progress_val = (curr + 1) / len(QUESTIONS)
+            st.progress(progress_val)
+            
+            st.write("") # 留白
+            
+            with st.container():
+                st.markdown('<div class="white-quiz-card-anchor"></div>', unsafe_allow_html=True)
+                
+                # 使用多巴胺卡片包裹题目
+                st.markdown(f"""
+                    <div class="question-card">
+                        <div class="question-text">{QUESTIONS[curr]['q']}</div>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                # 选项部分
+                prev_val = st.session_state.answers.get(curr)
+                st.radio(
+                    "Select",
+                    options=QUESTIONS[curr]["options"],
+                    key=f"radio_{curr}",
+                    index=QUESTIONS[curr]["options"].index(prev_val) if prev_val in QUESTIONS[curr]["options"] else None,
+                    on_change=handle_click,
+                    label_visibility="collapsed"
+                )
+        
+            # 导航按钮逻辑
+            if curr > 0:
+                st.write("") 
+                if st.button("⬅️ 返回上一题", use_container_width=True):
+                    st.session_state.q_idx -= 1
+                    st.rerun()
 
 if __name__ == "__main__":
     sexual_text()
