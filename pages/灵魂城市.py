@@ -141,12 +141,36 @@ def show_soul_city():
         /* 隐藏Streamlit默认元素 */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
+        /* 城市测试专属：巨型开始标题 */
+        .city-start-title {
+            font-size: clamp(3.5rem, 15vw, 6.5rem) !important;
+            font-weight: 900 !important;
+            text-align: center;
+            background: linear-gradient(45deg, #FF00CC, #3333FF, #00FFCC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+    
+        /* 城市测试欢迎卡片 */
+        .city-welcome-card {
+            background: #ffffff;
+            border: 3px solid #FF99AC;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 15px 15px 0px #FFF0F5;
+            text-align: center;
+            margin: 2rem 0;
+        }
         </style>
     """, unsafe_allow_html=True)
 
     if 'history' not in st.session_state:
         st.session_state.history = []  # 用于存放每一题选择后的分数快照
     # --- 2. 核心初始化 ---
+    if 'city_started' not in st.session_state: 
+        st.session_state.city_started = False
     if 'step' not in st.session_state:
         st.session_state.step = 0
     if 'scores' not in st.session_state:
@@ -425,90 +449,115 @@ def show_soul_city():
     # --- 5. 流程控制 (答题逻辑与结果展示) ---
     
     if st.session_state.step < 30:
-    
-        # --- 2. 彩色答题界面 UI 渲染 ---
-        # --- 多巴胺色彩主副标题 ---
-        st.markdown("""
-            <div style="text-align: center; padding: 20px 0; margin-bottom: 10px;">
-                <h1 style="
-                    font-size: 4.5rem !important; 
-                    font-weight: 900 !important; 
-                    background: linear-gradient(45deg, #FF00CC, #3333FF, #00FFCC); 
-                    -webkit-background-clip: text; 
-                    -webkit-text-fill-color: transparent; 
-                    margin-bottom: 5px;
-                    text-shadow: 10px 10px 20px rgba(0,0,0,0.05);
-                    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-                ">
-                    🌆 灵魂城市测试
-                </h1>
-            </div>
-        """, unsafe_allow_html=True)
-        if st.session_state.step < len(st.session_state.quiz_data):
-            # --- 1. 数据预处理 ---
-            curr_q = st.session_state.quiz_data[st.session_state.step]
-            raw_q_text = curr_q.get('q', "题目载入中...")
+        if not st.session_state.city_started:
+            st.markdown('<div class="city-start-title">SOUL CITY</div>', unsafe_allow_html=True)
+            st.markdown('<p style="text-align:center; font-size:1.2rem; color:#64748b; letter-spacing:8px; font-weight:bold;">寻找你的灵魂居所</p>', unsafe_allow_html=True)
             
-            # 清洗题号逻辑
-            display_q = raw_q_text.split(". ", 1)[-1] if ". " in raw_q_text else raw_q_text
-            
-            # 计算当前进度百分比
-            progress_val = (st.session_state.step) / 30 # 使用 step 表现已完成比例
-    
-            
-            
-            
-            # 彩色进度条
-            st.progress(progress_val)
-    
-            # 答题卡片
-            st.markdown(f"""
-                <div class="q-card">
-                    <div style="color: #3B82F6; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 2px;">
-                        Step {st.session_state.step + 1} of 30
+            with st.container():
+                st.markdown(f"""
+                    <div class="city-welcome-card">
+                        <div style="font-size: 4rem; margin-bottom: 20px;">✈️</div>
+                        <h2 style="color: #2D3748; font-weight: 800;">在这个世界上，总有一座城市懂你</h2>
+                        <p style="color: #718096; font-size: 1.1rem; line-height: 1.8;">
+                            这不是地理位置的匹配，而是生活频率的共振。<br>
+                            通过 30 个关于审美、生活方式和直觉的选择，<br>
+                            我们将为你签发那份迟到的<b>“灵魂居留证”</b>。
+                        </p>
+                        <div style="margin-top: 30px; padding: 10px; background: #FFF5F7; border-radius: 15px; color: #FF6A88; font-weight: bold;">
+                            💡 提示：请跟随第一直觉，不要思考超过 3 秒。
+                        </div>
                     </div>
-                    <div class="q-text">{display_q}</div>
-                </div>
-            """, unsafe_allow_html=True)
-    
-            # 选项按钮：垂直排列
-            st.markdown('<div style="margin-top: -10px;"></div>', unsafe_allow_html=True)
-            
-            for idx, (ans_text, weight) in enumerate(curr_q.get("a", [])):
-                if st.button(ans_text, key=f"ans_{st.session_state.step}_{idx}", use_container_width=True):
-                    # 【新增逻辑】在变动分数前，备份当前状态
-                    st.session_state.history.append(st.session_state.scores.copy())
-                    
-                    # 记录分数
-                    for dim_key, score_val in weight.items():
-                        full_dim_name = KEY_MAP.get(dim_key)
-                        if full_dim_name in st.session_state.scores:
-                            st.session_state.scores[full_dim_name] += score_val
-                    
-                    # 自动进入下一题
-                    st.session_state.step += 1
+                """, unsafe_allow_html=True)
+                
+                # 开始按钮
+                if st.button("🗺️ 开启时空穿梭", use_container_width=True, key="start_city_btn"):
+                    st.session_state.city_started = True
                     st.rerun()
-    
-            # --- 3. 【新增】撤回功能区 ---
-            # 仅在步数大于 0 时（即非第一题）显示
-            if st.session_state.step > 0:
-                st.markdown("<br>", unsafe_allow_html=True)
-                col1, col2 = st.columns([1, 4])
-                with col1:
-                    if st.button("⬅ 上一题", key="undo_action"):
-                        # 弹出历史栈顶的分数镜像
-                        prev_scores = st.session_state.history.pop()
-                        st.session_state.scores = prev_scores
-                        # 进度回退
-                        st.session_state.step -= 1
-                        st.rerun()
-    
-            # 底部的视觉点缀
-            st.markdown(f"""
-                <div style="text-align: center; color: #BDC3C7; font-size: 0.8rem; margin-top: 30px;">
-                    您的每一次选择，都在勾勒灵魂的轮廓
+                    
+        else:
+            # --- 2. 彩色答题界面 UI 渲染 ---
+            # --- 多巴胺色彩主副标题 ---
+            st.markdown("""
+                <div style="text-align: center; padding: 20px 0; margin-bottom: 10px;">
+                    <h1 style="
+                        font-size: 4.5rem !important; 
+                        font-weight: 900 !important; 
+                        background: linear-gradient(45deg, #FF00CC, #3333FF, #00FFCC); 
+                        -webkit-background-clip: text; 
+                        -webkit-text-fill-color: transparent; 
+                        margin-bottom: 5px;
+                        text-shadow: 10px 10px 20px rgba(0,0,0,0.05);
+                        font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+                    ">
+                        🌆 灵魂城市测试
+                    </h1>
                 </div>
             """, unsafe_allow_html=True)
+            if st.session_state.step < len(st.session_state.quiz_data):
+                # --- 1. 数据预处理 ---
+                curr_q = st.session_state.quiz_data[st.session_state.step]
+                raw_q_text = curr_q.get('q', "题目载入中...")
+                
+                # 清洗题号逻辑
+                display_q = raw_q_text.split(". ", 1)[-1] if ". " in raw_q_text else raw_q_text
+                
+                # 计算当前进度百分比
+                progress_val = (st.session_state.step) / 30 # 使用 step 表现已完成比例
+        
+                
+                
+                
+                # 彩色进度条
+                st.progress(progress_val)
+        
+                # 答题卡片
+                st.markdown(f"""
+                    <div class="q-card">
+                        <div style="color: #3B82F6; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 2px;">
+                            Step {st.session_state.step + 1} of 30
+                        </div>
+                        <div class="q-text">{display_q}</div>
+                    </div>
+                """, unsafe_allow_html=True)
+        
+                # 选项按钮：垂直排列
+                st.markdown('<div style="margin-top: -10px;"></div>', unsafe_allow_html=True)
+                
+                for idx, (ans_text, weight) in enumerate(curr_q.get("a", [])):
+                    if st.button(ans_text, key=f"ans_{st.session_state.step}_{idx}", use_container_width=True):
+                        # 【新增逻辑】在变动分数前，备份当前状态
+                        st.session_state.history.append(st.session_state.scores.copy())
+                        
+                        # 记录分数
+                        for dim_key, score_val in weight.items():
+                            full_dim_name = KEY_MAP.get(dim_key)
+                            if full_dim_name in st.session_state.scores:
+                                st.session_state.scores[full_dim_name] += score_val
+                        
+                        # 自动进入下一题
+                        st.session_state.step += 1
+                        st.rerun()
+        
+                # --- 3. 【新增】撤回功能区 ---
+                # 仅在步数大于 0 时（即非第一题）显示
+                if st.session_state.step > 0:
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    col1, col2 = st.columns([1, 4])
+                    with col1:
+                        if st.button("⬅ 上一题", key="undo_action"):
+                            # 弹出历史栈顶的分数镜像
+                            prev_scores = st.session_state.history.pop()
+                            st.session_state.scores = prev_scores
+                            # 进度回退
+                            st.session_state.step -= 1
+                            st.rerun()
+        
+                # 底部的视觉点缀
+                st.markdown(f"""
+                    <div style="text-align: center; color: #BDC3C7; font-size: 0.8rem; margin-top: 30px;">
+                        您的每一次选择，都在勾勒灵魂的轮廓
+                    </div>
+                """, unsafe_allow_html=True)
     else:
         # --- 1. 核心计算：寻找首选与次选城市 ---
         st.balloons()
@@ -640,6 +689,7 @@ def show_soul_city():
         # --- 5. 底部重置按钮 (这里是关键：必须保持缩进！) ---
         st.markdown("<br><br>", unsafe_allow_html=True)
         if st.button("✨ 重新开启灵魂之旅", use_container_width=True, key="reset_quiz"):
+            st.session_state.city_started = False
             if not st.session_state.get("admin_logged_in", False):
                 st.session_state.unlocked_Orientation = False # 关键！
             for k in list(st.session_state.keys()): 
@@ -648,6 +698,7 @@ def show_soul_city():
             
 if __name__ == "__main__":
     show_soul_city()
+
 
 
 
